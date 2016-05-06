@@ -1,0 +1,46 @@
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.csprojResolveAssemblyReference.cache
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\Chart\TeeChartPanel.baml
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\MainWindow.baml
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\MeasureItem\Spot.baml
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\Chart\TeeChartPanel.g.cs
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\MainWindow.g.cs
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\MeasureItem\Spot.g.cs
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\App.g.cs
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load_MarkupCompile.cache
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.g.resources
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.Chart.TeeChart.resources
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.Properties.Resources.resources
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.csproj.GenerateResource.Cache
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.exe.licenses
+D:\Working\StressTest\PTW_Load\PTW_Load\bin\Debug\PTW_Load.exe.config
+D:\Working\StressTest\PTW_Load\PTW_Load\bin\Debug\PTW_Load.exe
+D:\Working\StressTest\PTW_Load\PTW_Load\bin\Debug\PTW_Load.pdb
+D:\Working\StressTest\PTW_Load\PTW_Load\bin\Debug\CalcLib.dll
+D:\Working\StressTest\PTW_Load\PTW_Load\bin\Debug\TeeChart.dll
+D:\Working\StressTest\PTW_Load\PTW_Load\bin\Debug\CalcLib.pdb
+D:\Working\StressTest\PTW_Load\PTW_Load\bin\Debug\TeeChart.xml
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.exe
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.pdb
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+D:\Working\StressTest\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load_MarkupCompile.lref
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\bin\Debug\PTW_Load.exe.config
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\bin\Debug\PTW_Load.exe
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\bin\Debug\PTW_Load.pdb
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.csprojResolveAssemblyReference.cache
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\Chart\TeeChartPanel.baml
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\MeasureItem\Spot.baml
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\Chart\TeeChartPanel.g.cs
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\MainWindow.g.cs
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\MeasureItem\Spot.g.cs
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\App.g.cs
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load_MarkupCompile.cache
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load_MarkupCompile.lref
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\MainWindow.baml
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.g.resources
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.Chart.TeeChart.resources
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.Properties.Resources.resources
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.csproj.GenerateResource.Cache
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.exe.licenses
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.exe
+D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.pdb

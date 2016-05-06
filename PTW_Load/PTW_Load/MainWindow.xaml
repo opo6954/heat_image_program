@@ -1,0 +1,120 @@
+﻿<Window x:Class="PTW_Load.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="800" Width="800" Loaded="Window_Loaded" xmlns:my="clr-namespace:PTW_Load.Chart">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1.1*" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="0.3*" />
+            <RowDefinition Height="5"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Button Content="Load" Height="29" HorizontalAlignment="Left" Margin="12,4,0,0" Name="button_load" VerticalAlignment="Top" Width="75" Click="button_load_Click" />
+                <Button Content="Play" Height="29" HorizontalAlignment="Left" Margin="113,37,0,0" Name="button_play" VerticalAlignment="Top" Width="75" Click="button_play_Click" IsEnabled="false"/>
+                <Button Content="Analysis" Height="28" HorizontalAlignment="Left" Margin="113,73,0,0" Name="button_analysis" VerticalAlignment="Top" Width="75" Click="button_analysis_Click" IsEnabled="false" />
+                <TextBox Height="28" HorizontalAlignment="Left" IsEnabled="false" Margin="46,38,0,0" Name="textBox_mpa" VerticalAlignment="Top" Width="61" />
+                <TextBox Height="28" HorizontalAlignment="Left" Margin="46,73,0,0" Name="textBox_repeat" VerticalAlignment="Top" Width="61" IsEnabled="false" />
+                <CheckBox Content="Spot 0" Height="16" HorizontalAlignment="Left" Margin="12,106,0,0" Name="checkBox0" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                <CheckBox Content="Spot 1" Height="16" HorizontalAlignment="Left" Margin="71,106,0,0" Name="checkBox1" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                <CheckBox Content="Spot 2" Height="16" HorizontalAlignment="Left" Margin="130,106,0,0" Name="checkBox2" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                <CheckBox Content="Spot 3" Height="16" HorizontalAlignment="Left" Margin="12,126,0,0" Name="checkBox3" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                <CheckBox Content="Spot 4" Height="16" HorizontalAlignment="Left" Margin="71,126,0,0" Name="checkBox4" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                <Button Content="Export" Height="29" HorizontalAlignment="Left" Margin="12,144,0,0" Name="button_export" VerticalAlignment="Top" Width="75" Click="button_export_Click" IsEnabled="false"/>
+                <Label Content="Km" Height="28" HorizontalAlignment="Left" Margin="6,39,0,0" Name="label1" VerticalAlignment="Top" />
+                <Label Content="Cycle" Height="28" HorizontalAlignment="Left" Margin="6,71,0,0" Name="label2" VerticalAlignment="Top" />
+            </Grid>
+            <GridSplitter Grid.Column="1"  Width ="5" HorizontalAlignment="Stretch"/>
+            <Grid Grid.Column="2" Grid.ColumnSpan="3" Margin="0,0,0,0">
+                <Label Content="File load name" Height="29" HorizontalAlignment="Left" Margin="12,3,0,0" Name="file_load_name_dir" VerticalAlignment="Top" Width="91"/>
+                <TextBox Height="20" HorizontalAlignment="Left" IsEnabled="false" Margin="108,8,0,0" Name="file_load_name" VerticalAlignment="Top" Width="71" />
+                <Label Content="Frame number" Height="29" HorizontalAlignment="Left" Margin="12,35,0,0" Name="frame_load_name_dir" VerticalAlignment="Top" Width="91"/>
+                <TextBox Height="20" HorizontalAlignment="Left" IsEnabled="false" Margin="108,40,0,0" Name="frame_load_name" VerticalAlignment="Top" Width="71" />
+                <Label Content="temporal info" Height="29" HorizontalAlignment="Left" Margin="12,65,0,0" Name="tmp_load_name_dir" VerticalAlignment="Top" Width="91"/>
+                <TextBox Height="20" HorizontalAlignment="Left" IsEnabled="false" Margin="108,70,0,0" Name="tmp_load_name" VerticalAlignment="Top" Width="71" />
+                <CheckBox Content="Color Pallete" Height="16" HorizontalAlignment="Left" Margin="20,100,0,0" Name="checkColorPallete" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+            </Grid>
+
+            <GridSplitter Grid.Column="3"  Width ="5" HorizontalAlignment="Stretch"/>
+            
+            <Grid Grid.Column="4" Name="grid_edit" PreviewMouseDown="Grid_PreviewMouseDown" PreviewMouseMove="Grid_PreviewMouseMove" PreviewMouseUp="Grid_PreviewMouseUp" SizeChanged="grid_edit_SizeChanged">
+                <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_display_gray" Stretch="Fill" VerticalAlignment="Stretch" Margin="0,0,68,0" />
+                <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_display_RGB" Stretch="Fill" VerticalAlignment="Stretch" Margin="0,0,68,0" />                
+                <Label Content="2505" Height="29" HorizontalAlignment="Left" Margin="323,10,0,0" Name="colorValue4" VerticalAlignment="Top" Width="36"/>
+                <Label Content="200" Height="29" HorizontalAlignment="Left" Margin="323,40,0,0" Name="colorValue3" VerticalAlignment="Top" Width="36"/>
+                <Label Content="150" Height="29" HorizontalAlignment="Left" Margin="323,70,0,0" Name="colorValue2" VerticalAlignment="Top" Width="36"/>
+                <Label Content="100" Height="29" HorizontalAlignment="Left" Margin="323,100,0,0" Name="colorValue1" VerticalAlignment="Top" Width="36"/>
+                <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="323,130,0,0" Name="colorValue0" VerticalAlignment="Top" Width="36"/>
+                <Image Visibility="Visible" HorizontalAlignment="Stretch" Name="imageGrayBarGrid" Stretch="Fill" VerticalAlignment="Stretch" Margin="364,0,0,31" RenderTransformOrigin="3.291,0.602" />
+                <Image Visibility="Hidden" HorizontalAlignment="Stretch" Name="imageColorBarGrid" Stretch="Fill" VerticalAlignment="Stretch" Margin="364,0,0,31" RenderTransformOrigin="3.291,0.602" />
+            </Grid>
+                  
+        </Grid>
+        <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_avg_gray" Stretch="Fill" VerticalAlignment="Stretch" />
+                <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_avg_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
+                
+            </Grid>
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+            <Grid Grid.Column="2">
+                <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_delta_gray" Stretch="Fill" VerticalAlignment="Stretch" />
+                <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_delta_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
+            </Grid>
+        </Grid>
+        <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch" />
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_stress_gray" Stretch="Fill" VerticalAlignment="Stretch" />
+                <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_stress_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
+            </Grid>
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+            <Grid Grid.Column="2">
+                <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_rev_gray" Stretch="Fill" VerticalAlignment="Stretch" />
+                <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_rev_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
+            </Grid>
+        </Grid>
+        <GridSplitter Grid.Row="5" Height="5" HorizontalAlignment="Stretch" />
+        <Grid Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <my:TeeChartPanel x:Name="teeChartPanel" Grid.Column="0"/>
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+            <my:TeeChartPanel x:Name="teeChartPanel_h" Grid.Column="2"/>
+        </Grid>
+
+        <Grid Grid.Row="7">
+            <Label Content="Debug Windows" Height="28" HorizontalAlignment="Left" Margin="10,10,0,0" Name="DebugTitle" VerticalAlignment="Top" />
+            <Label Content="Debug power" Height="132" HorizontalAlignment="Left" Margin="10,38,0,0" Name="DebugInfo" VerticalAlignment="Top" Width="761" />
+        </Grid>
+
+    </Grid>
+</Window>
