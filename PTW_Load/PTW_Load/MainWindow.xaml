@@ -21,13 +21,13 @@
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="2.03*" />
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <Button Content="Load" Height="29" HorizontalAlignment="Left" Margin="12,4,0,0" Name="button_load" VerticalAlignment="Top" Width="75" Click="button_load_Click" />
                 <Button Content="Play" Height="29" HorizontalAlignment="Left" Margin="113,37,0,0" Name="button_play" VerticalAlignment="Top" Width="75" Click="button_play_Click" IsEnabled="false"/>
                 <Button Content="Analysis" Height="28" HorizontalAlignment="Left" Margin="113,73,0,0" Name="button_analysis" VerticalAlignment="Top" Width="75" Click="button_analysis_Click" IsEnabled="false" />
-                <TextBox Height="28" HorizontalAlignment="Left" IsEnabled="false" Margin="46,38,0,0" Name="textBox_mpa" VerticalAlignment="Top" Width="61" />
+                <ComboBox Height="28" HorizontalAlignment="Left" IsEnabled="false" Margin="46,45,0,0" Name="textBox_mpa" VerticalAlignment="Top" Width="61" />
                 <TextBox Height="28" HorizontalAlignment="Left" Margin="46,73,0,0" Name="textBox_repeat" VerticalAlignment="Top" Width="61" IsEnabled="false" />
                 <CheckBox Content="Spot 0" Height="16" HorizontalAlignment="Left" Margin="12,106,0,0" Name="checkBox0" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
                 <CheckBox Content="Spot 1" Height="16" HorizontalAlignment="Left" Margin="71,106,0,0" Name="checkBox1" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
@@ -54,11 +54,11 @@
             <Grid Grid.Column="4" Name="grid_edit" PreviewMouseDown="Grid_PreviewMouseDown" PreviewMouseMove="Grid_PreviewMouseMove" PreviewMouseUp="Grid_PreviewMouseUp" SizeChanged="grid_edit_SizeChanged">
                 <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_display_gray" Stretch="Fill" VerticalAlignment="Stretch" Margin="0,0,68,0" />
                 <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_display_RGB" Stretch="Fill" VerticalAlignment="Stretch" Margin="0,0,68,0" />                
-                <Label Content="2505" Height="29" HorizontalAlignment="Left" Margin="323,10,0,0" Name="colorValue4" VerticalAlignment="Top" Width="36"/>
-                <Label Content="200" Height="29" HorizontalAlignment="Left" Margin="323,40,0,0" Name="colorValue3" VerticalAlignment="Top" Width="36"/>
-                <Label Content="150" Height="29" HorizontalAlignment="Left" Margin="323,70,0,0" Name="colorValue2" VerticalAlignment="Top" Width="36"/>
-                <Label Content="100" Height="29" HorizontalAlignment="Left" Margin="323,100,0,0" Name="colorValue1" VerticalAlignment="Top" Width="36"/>
-                <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="323,130,0,0" Name="colorValue0" VerticalAlignment="Top" Width="36"/>
+                <Label Content="25.05" Height="29" HorizontalAlignment="Left" Margin="323,10,0,0" Name="colorValue4" VerticalAlignment="Top" Width="38"/>
+                <Label Content="200" Height="29" HorizontalAlignment="Left" Margin="323,40,0,0" Name="colorValue3" VerticalAlignment="Top" Width="38"/>
+                <Label Content="150" Height="29" HorizontalAlignment="Left" Margin="323,70,0,0" Name="colorValue2" VerticalAlignment="Top" Width="368"/>
+                <Label Content="100" Height="29" HorizontalAlignment="Left" Margin="323,100,0,0" Name="colorValue1" VerticalAlignment="Top" Width="38"/>
+                <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="323,130,0,0" Name="colorValue0" VerticalAlignment="Top" Width="38"/>
                 <Image Visibility="Visible" HorizontalAlignment="Stretch" Name="imageGrayBarGrid" Stretch="Fill" VerticalAlignment="Stretch" Margin="364,0,0,31" RenderTransformOrigin="3.291,0.602" />
                 <Image Visibility="Hidden" HorizontalAlignment="Stretch" Name="imageColorBarGrid" Stretch="Fill" VerticalAlignment="Stretch" Margin="364,0,0,31" RenderTransformOrigin="3.291,0.602" />
             </Grid>

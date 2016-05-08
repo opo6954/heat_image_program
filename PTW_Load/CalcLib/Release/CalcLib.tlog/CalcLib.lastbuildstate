@@ -1,2 +1,2 @@
-#TargetFrameworkVersion=v4.5:PlatformToolSet=v120:EnableManagedIncrementalBuild=true:VCToolArchitecture=Native32Bit
-Release|Win32|D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\|
+#TargetFrameworkVersion=v4.5.2:PlatformToolSet=v140:EnableManagedIncrementalBuild=true:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=8.1
+Release|Win32|Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\|

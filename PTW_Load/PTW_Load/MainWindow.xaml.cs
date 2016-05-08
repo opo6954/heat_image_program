@@ -1,4 +1,17 @@
-﻿using System;
+﻿/*
+지금 문제중의 하나가 바로 spot data를 계산을 해야하는데
+
+position에 따라 바뀌도록 해야되는데
+
+말이지...
+
+*/
+
+
+
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -71,7 +84,7 @@ namespace PTW_Load
 
         short[] AvgImage;
         short[] DeltaImage;
-        short[] StressImage;
+        public short[] StressImage;
         short[] AmplitudeImage;
 
         double mpa;
@@ -140,6 +153,9 @@ namespace PTW_Load
         private void ChangeLabelBar(float min, float max)
         {
             float divider = 5;
+            max = max / 100;
+            min = min / 100;
+
             float diff = (max - min) / divider;
 
             colorValue0.Content = min.ToString();
@@ -150,6 +166,12 @@ namespace PTW_Load
             colorValue4.Content = max.ToString();
         }
 
+        delegate void OnChangeSpotValue(Spot spot, double value);
+        private void ChangeSpotValue(Spot spot, double value)
+        {
+            spot.setSpotValue(value);
+        }
+        
 
 
         delegate void OnChangeUI(bool state);
@@ -220,7 +242,12 @@ namespace PTW_Load
                 foreach (Spot spot in SpotItems)
                 {
                     if (spot.Visibility == Visibility.Visible)
+                    {
                         spotData.Add(ConvertTemp(body[spot.Y * 640 + spot.X]));
+                        
+                        //LHW DEBUG
+                        
+                    }
                     else
                         spotData.Add(-1);
                 }
@@ -288,6 +315,32 @@ namespace PTW_Load
                 StressImage[i] = (short)(DeltaImage[i] / (mpa * ConvertTemp(firstFrame[i])) * 100000);
             }
 
+
+            foreach (Spot spot in SpotItems)
+            {
+                if (spot.Visibility == Visibility.Visible)
+                {
+                    this.Dispatcher.Invoke(new OnChangeSpotValue(ChangeSpotValue), new Object[] {spot, (double)(StressImage[spot.Y*640 + spot.X])/100.0 });
+                }
+            }
+
+
+
+            /*
+            foreach (Spot spot in SpotItems)
+                {
+                    if (spot.Visibility == Visibility.Visible)
+                    {
+                        spotData.Add(ConvertTemp(body[spot.Y * 640 + spot.X]));
+                        
+                        //LHW DEBUG
+                        
+                    }
+                    else
+                        spotData.Add(-1);
+                }
+            */
+
             Marshal.Copy(StressImage, 0, pRet, 327680);
 
             DrawImageFromData(pRet, image_stress_gray);
@@ -304,7 +357,7 @@ namespace PTW_Load
              
         }
 
-        int ConvertTemp(int pixel)
+        public int ConvertTemp(int pixel)
         {
             int[] DL = {8667, 8878, 9095, 9318, 9548,
 		        9784, 10027, 10276, 10533, 10797,
@@ -865,7 +918,7 @@ namespace PTW_Load
                 Spot spot = new Spot();
 
                 spot.Visibility = Visibility.Collapsed;
-
+                
                 spot.X = 320;
                 spot.Y = 250;
                 spot.RealWidth = grid_edit.ActualWidth;

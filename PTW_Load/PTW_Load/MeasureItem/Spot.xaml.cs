@@ -36,6 +36,10 @@ namespace PTW_Load.MeasureItem
                 label.Content = value;
             }
         }
+        public void setSpotValue(double spotValue)
+        {
+            value.Text = spotValue.ToString();           
+        }
 
         public int X
         {
@@ -68,7 +72,8 @@ namespace PTW_Load.MeasureItem
             VerticalAlignment = VerticalAlignment.Top;
             HorizontalAlignment = HorizontalAlignment.Left;
 
-            
+
+
         }
 
         public bool MouseDownEvent(double x, double y)
@@ -120,9 +125,40 @@ namespace PTW_Load.MeasureItem
             }
         }
 
+        public void setStressValue(double val)
+        {
+            value.Text = val.ToString();
+        }
+
+        public void setStressValue()
+        {
+            MainWindow myWin = (MainWindow)System.Windows.Application.Current.MainWindow;
+
+            if (myWin.StressImage != null)
+                value.Text = ((myWin.StressImage[Y * 640 + X]) / 100.0).ToString();
+        }
+
         public void MouseUpEvent(double x, double y)
         {
             IsPress = false;
+
+            setStressValue();
+            
+
+            /*
+            foreach (Spot spot in SpotItems)
+            {
+                if (spot.Visibility == Visibility.Visible)
+                {
+                    spotData.Add(ConvertTemp(body[spot.Y * 640 + spot.X]));
+
+                    //LHW DEBUG
+
+                }
+                else
+                    spotData.Add(-1);
+            }
+            */
         }
 
         private bool CheckMouseCursor(double x, double y)

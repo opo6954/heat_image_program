@@ -1,32 +1,20 @@
-﻿빌드 시작: 2016-04-20 오후 6:03:54
-     1>2 노드의 "D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\CalcLib\CalcLib.vcxproj" 프로젝트(Build 대상)입니다.
-     1>ClCompile:
-         D:\Program Files\vs2012\VC\bin\CL.exe /c /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\\" /AI"C:\Program Files (x86)\Windows Kits\8.0\References\CommonConfiguration\Neutral" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\\" /Zi /clr /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _WINDLL /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Release\CalcLib.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\mscorlib.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Xml.dll" /analyze- /errorReport:prompt /clr:nostdlib Stdafx.cpp
-         Stdafx.cpp
-         D:\Program Files\vs2012\VC\bin\CL.exe /c /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\\" /AI"C:\Program Files (x86)\Windows Kits\8.0\References\CommonConfiguration\Neutral" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\\" /Zi /clr /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _WINDLL /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\CalcLib.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\mscorlib.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Xml.dll" /analyze- /errorReport:prompt /clr:nostdlib AssemblyInfo.cpp CalcLib.cpp
-         AssemblyInfo.cpp
-         CalcLib.cpp
-     1>CalcLib.cpp(75): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
-     1>CalcLib.cpp(79): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
-     1>CalcLib.cpp(83): warning C4018: '>' : signed 또는 unsigned가 일치하지 않습니다.
-     1>CalcLib.cpp(87): warning C4018: '>' : signed 또는 unsigned가 일치하지 않습니다.
-     1>CalcLib.cpp(110): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
-     1>CalcLib.cpp(114): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
-     1>CalcLib.cpp(118): warning C4018: '>' : signed 또는 unsigned가 일치하지 않습니다.
-     1>CalcLib.cpp(122): warning C4018: '>' : signed 또는 unsigned가 일치하지 않습니다.
-         코드를 생성하고 있습니다...
-         D:\Program Files\vs2012\VC\bin\CL.exe /c /Zi /clr /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _WINDLL /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /TP /analyze- /errorReport:prompt "C:\Users\Narrain\AppData\Local\Temp\.NETFramework,Version=v4.5.AssemblyAttributes.cpp"
-         .NETFramework,Version=v4.5.AssemblyAttributes.cpp
-       Link:
-         D:\Program Files\vs2012\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\Release\CalcLib.dll" /INCREMENTAL:NO /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\Release\CalcLib.pdb" /TLBID:1 /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X86 /SAFESEH /DLL Release\app.res
-         Release\AssemblyInfo.obj
-         Release\CalcLib.obj
-         Release\Stdafx.obj
-         "Release\.NETFramework,Version=v4.5.AssemblyAttributes.obj"
-            D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\Release\CalcLib.lib 라이브러리 및 D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\Release\CalcLib.exp 개체를 생성하고 있습니다.
-         CalcLib.vcxproj -> D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\Release\CalcLib.dll
-     1>"D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\CalcLib\CalcLib.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
-
-빌드했습니다.
-
-경과 시간: 00:00:02.51
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(368,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+  Stdafx.cpp
+  AssemblyInfo.cpp
+AssemblyInfo.cpp(40): warning C4947: 'System::Security::Permissions::SecurityAction::RequestMinimum': marked as obsolete
+  AssemblyInfo.cpp(40): note: Message: 'Assembly level declarative security is obsolete and is no longer enforced by the CLR by default. See http://go.microsoft.com/fwlink/?LinkID=155570 for more information.'
+  CalcLib.cpp
+CalcLib.cpp(75): warning C4018: '<': signed/unsigned mismatch
+CalcLib.cpp(79): warning C4018: '<': signed/unsigned mismatch
+CalcLib.cpp(83): warning C4018: '>': signed/unsigned mismatch
+CalcLib.cpp(87): warning C4018: '>': signed/unsigned mismatch
+CalcLib.cpp(110): warning C4018: '<': signed/unsigned mismatch
+CalcLib.cpp(114): warning C4018: '<': signed/unsigned mismatch
+CalcLib.cpp(118): warning C4018: '>': signed/unsigned mismatch
+CalcLib.cpp(122): warning C4018: '>': signed/unsigned mismatch
+CalcLib.cpp(196): warning C4244: 'initializing': conversion from 'double' to 'byte', possible loss of data
+CalcLib.cpp(261): warning C4244: 'initializing': conversion from 'double' to 'byte', possible loss of data
+  Generating Code...
+  .NETFramework,Version=v4.5.2.AssemblyAttributes.cpp
+     Creating library ../PTW_LOAD_bin_Release\CalcLib.lib and object ../PTW_LOAD_bin_Release\CalcLib.exp
+  CalcLib.vcxproj -> Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\CalcLib\../PTW_LOAD_bin_Release\CalcLib.dll

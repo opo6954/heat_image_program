@@ -44,3 +44,24 @@ D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그�
 D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.exe.licenses
 D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.exe
 D:\1mythings\part-time\Heat image program\origin_program\응력측정프로그램 (2)\소프트웨어\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.pdb
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\bin\Debug\PTW_Load.exe.config
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.exe
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.pdb
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\bin\Debug\PTW_Load.exe
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\bin\Debug\PTW_Load.pdb
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.csprojResolveAssemblyReference.cache
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\Chart\TeeChartPanel.baml
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\MeasureItem\Spot.baml
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\Chart\TeeChartPanel.g.cs
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\MainWindow.g.cs
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\MeasureItem\Spot.g.cs
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\App.g.cs
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load_MarkupCompile.cache
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load_MarkupCompile.lref
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\MainWindow.baml
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.g.resources
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.Chart.TeeChart.resources
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.Properties.Resources.resources
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.csproj.GenerateResource.Cache
+Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.exe.licenses
