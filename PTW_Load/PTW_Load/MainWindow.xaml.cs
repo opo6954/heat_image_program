@@ -1,16 +1,4 @@
-﻿/*
-지금 문제중의 하나가 바로 spot data를 계산을 해야하는데
-
-position에 따라 바뀌도록 해야되는데
-
-말이지...
-
-*/
-
-
-
-
-
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +27,9 @@ namespace PTW_Load
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
+
+    
     
     public partial class MainWindow : Window
     {
@@ -79,12 +70,20 @@ namespace PTW_Load
         private List<Spot> SpotItems = new List<Spot>();
         private Spot PressedSpot = null;
 
+
+        private PolySpotAll polySpotAll;
+        private PolySpot PressedPoly = null;
+
+        private List<Material> MaterialItems = new List<Material>();
+
         int start;
         int end;
 
         short[] AvgImage;
         short[] DeltaImage;
         public short[] StressImage;
+
+
         short[] AmplitudeImage;
 
         double mpa;
@@ -93,12 +92,212 @@ namespace PTW_Load
         public MainWindow()
         {
             InitializeComponent();
-            initialize();
+            
         }
 
         private void initialize()
         {
             setGrayColorBar();
+            setMaterials();
+
+
+            polySpotAll = new PolySpotAll();
+
+            
+            
+            polySpotAll.initialize( grid_edit.ActualWidth, grid_edit.ActualHeight);
+
+            polySpotAll.setVisible(false);
+            
+            grid_edit.Children.Add(polySpotAll.polyPt[0]);
+
+            grid_edit.Children.Add(polySpotAll.polyPt[1]);
+            grid_edit.Children.Add(polySpotAll.polyPt[2]);
+            
+            grid_edit.Children.Add(polySpotAll.polyLine[0]);
+            grid_edit.Children.Add(polySpotAll.polyLine[1]);
+            grid_edit.Children.Add(polySpotAll.polyLine[2]);
+
+            
+            
+
+            /*
+            Spot spot = new Spot();
+
+            spot.Visibility = Visibility.Visible;
+
+            spot.X = 0;
+            spot.Y = 250;
+            spot.RealWidth = grid_edit.ActualWidth;
+            spot.RealHeight = grid_edit.ActualHeight;
+            spot.ID = "po";
+            spot.Position();
+            SpotItems.Add(spot);
+            grid_edit.Children.Add(spot);
+            */
+
+            
+
+        }
+
+        private double findValueWithPt(string valStr)
+        {
+            string[] index = valStr.Split(',');
+
+            double valueUp = findValueWithoutPt(index[0]);
+            double valueD=0;
+
+
+            //index[1]에만 소수점 자리 포함됨
+            //1 0
+            for (int i = index[1].Length - 1; i >= 0; i--)
+            {
+                valueD = valueD + char.GetNumericValue(index[1][i]) * Math.Pow(10, -1 * (i+1));
+            }
+
+            return valueUp + valueD;
+        }
+        private double findValueWithoutPt(string valueStr)
+        {
+            double valueD=0;
+
+
+            for (int i = valueStr.Length - 1; i >= 0; i--)
+            {
+                valueD = valueD + char.GetNumericValue(valueStr[i]) * Math.Pow(10, valueStr.Length - (i + 1));
+            }
+
+            return valueD;
+
+        }
+        private double findIndex(string val)
+        {
+            string[] value = val.Split('E');
+
+            double valueUp=-1;
+
+            if (value[0].Contains(','))
+                valueUp = findValueWithPt(value[0]);
+            else
+                valueUp = findValueWithoutPt(value[0]);
+            
+
+            double index = 0;
+            double isMinus = 1;
+
+            if (value[1][0] == '-')//음수일 경우
+                isMinus = -1;
+            else
+                isMinus = 1;
+
+            for (int i = value[1].Length - 1; i > 0; i--)
+            {
+                index = index + char.GetNumericValue(value[1][i]) * Math.Pow(10, value[1].Length - (i + 1));
+            }
+
+            valueUp = valueUp * Math.Pow(10, isMinus * index);
+
+            return valueUp;
+
+}
+
+        private void setMaterials()
+        {
+            try
+            {
+                using (StreamReader sr = new StreamReader("Materials.ini"))
+                {
+                    string currentLine = sr.ReadLine();
+
+                    int infoCnt = 0;
+                    string _name="";
+                    double _alpha=-1;
+                    double _Cp=-1;
+                    double _Km=-1;
+                    double _Rho=-1;
+
+                    
+                    while (currentLine != null)
+                    {
+                        
+                        if (currentLine.Contains('['))
+                        {
+                            _name = currentLine.TrimStart('[');
+                            _name = _name.TrimEnd(']');
+                            
+                            infoCnt++;
+                        }
+                        else if (currentLine.Contains("="))
+                        {
+                            string[] num = currentLine.Split('=');//0번째: 이름. 1번째: 값
+
+                            double valueD=0;
+
+
+                            if (num[1].Contains('E'))//if exponential is contained
+                            {
+                                valueD = findIndex(num[1]);
+                             }
+                            else//그냥 숫자인 경우
+                            {
+                                
+                                if(num[1].Contains(','))//소수점 포함될 시 0,0001
+                                {
+                                    valueD = findValueWithPt(num[1]);
+                                }
+                                else//소수점 없이 걍 정수일시
+                                {
+                                    valueD = findValueWithoutPt(num[1]);
+                                }
+
+                            }
+
+                            if (num[0] == "Alpha")
+                            {
+                                _alpha = valueD;
+                            }
+                            else if (num[0] == "Cp")
+                            {
+                                _Cp = valueD;
+                            }
+                            else if (num[0] == "Km")
+                            {
+                                _Km = valueD;
+                            }
+                            else if (num[0] == "Rho")
+                            {
+                                _Rho = valueD;
+                            }
+
+                            infoCnt++;
+                        }
+                        
+
+                        if (infoCnt == 5)
+                        {
+                            MaterialItems.Add(new Material() { name=_name, alpha=_alpha,Cp=_Cp,Km=_Km,Rho=_Rho,dispNameKm=_name + "  " + _Km.ToString()});
+                            infoCnt = 0;
+                        }
+
+                        currentLine = sr.ReadLine();
+                    }
+                    
+                }
+            }
+            catch (Exception e)
+            {
+                
+            }
+
+            //combobox에 집어넣자
+
+            comboBox_Km.Items.Add(new Material() { Km = -1, dispNameKm = "직접 입력" });
+
+            foreach (Material mat in MaterialItems)
+            {
+                comboBox_Km.Items.Add(mat);
+                
+            }
         }
 
         private void setGrayColorBar()
@@ -137,15 +336,20 @@ namespace PTW_Load
         {
             teeChartPanel_h.GetCursor(out start, out end);
             teeChartPanel.Clear();
-
-            DebugInfo.Content = "start: " + start.ToString() + " end: " + end.ToString();
+              
+            //km값 설정하는 곳, combobox랑 매치시키자, play thread 내부에서 말이지
+            //mpa = double.Parse(textBox_mpa.Text);
 
             
-            mpa = double.Parse(textBox_mpa.Text);
 
-            if (start != end){
-                Thread play = new Thread(Play);
-                play.Start();
+            if (textBox_mpa.Text != null)
+            {
+                mpa = double.Parse(textBox_mpa.Text);
+                if (start != end)
+                {
+                    Thread play = new Thread(Play);
+                    play.Start();
+                }
             }
         }
 
@@ -194,7 +398,7 @@ namespace PTW_Load
                 image_rev_RGB.Source = null;
             }
 
-            textBox_mpa.IsEnabled = state;
+            comboBox_Km.IsEnabled = state;            
             button_play.IsEnabled = state;
             textBox_repeat.IsEnabled = state;
             button_analysis.IsEnabled = state;
@@ -213,6 +417,7 @@ namespace PTW_Load
         {
             teeChartPanel.AddItem(items);
         }
+        
 
         private void Play()
         {
@@ -222,6 +427,10 @@ namespace PTW_Load
             IntPtr pMax = Marshal.AllocHGlobal(327680 * 2);
             IntPtr pMin = Marshal.AllocHGlobal(327680 * 2);
             IntPtr pDelta = Marshal.AllocHGlobal(327680 * 2);
+
+            //comboBox_Km.sel
+
+            
 
             //모든 frame을 그리는듯
             for (int i = start; i < end; i++)
@@ -323,24 +532,7 @@ namespace PTW_Load
                     this.Dispatcher.Invoke(new OnChangeSpotValue(ChangeSpotValue), new Object[] {spot, (double)(StressImage[spot.Y*640 + spot.X])/100.0 });
                 }
             }
-
-
-
-            /*
-            foreach (Spot spot in SpotItems)
-                {
-                    if (spot.Visibility == Visibility.Visible)
-                    {
-                        spotData.Add(ConvertTemp(body[spot.Y * 640 + spot.X]));
-                        
-                        //LHW DEBUG
-                        
-                    }
-                    else
-                        spotData.Add(-1);
-                }
-            */
-
+            
             Marshal.Copy(StressImage, 0, pRet, 327680);
 
             DrawImageFromData(pRet, image_stress_gray);
@@ -868,15 +1060,27 @@ namespace PTW_Load
 
         private void Grid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            System.Windows.Point p = e.GetPosition(grid_edit);
+
             foreach (Spot spot in SpotItems)
-            {
-                System.Windows.Point p = e.GetPosition(grid_edit);
+            { 
                 if (spot.MouseDownEvent(p.X, p.Y))
                 {
                     PressedSpot = spot;
                     return;
                 }
             }
+
+            foreach (PolySpot spot in polySpotAll.polyPt)
+            {
+                if (spot.MouseDownEvent(p.X, p.Y))
+                {
+                    PressedPoly = spot;
+                    return;
+                }
+            }
+
+
 
             Mouse.OverrideCursor = null;
         }
@@ -891,7 +1095,19 @@ namespace PTW_Load
                 return;
             }
 
+            if (PressedPoly != null)
+            {
+                PressedPoly.MouseMoveEvent(p.X, p.Y);
+                return;
+            }
+
             foreach (Spot spot in SpotItems)
+            {
+                if (spot.MouseMoveEvent(p.X, p.Y))
+                    return;
+            }
+
+            foreach (PolySpot spot in polySpotAll.polyPt)
             {
                 if (spot.MouseMoveEvent(p.X, p.Y))
                     return;
@@ -904,9 +1120,16 @@ namespace PTW_Load
         {
             PressedSpot = null;
 
+            System.Windows.Point p = e.GetPosition(grid_edit);
+
             foreach (Spot spot in SpotItems)
             {
-                System.Windows.Point p = e.GetPosition(grid_edit);
+                
+                spot.MouseUpEvent(p.X, p.Y);
+            }
+
+            foreach (PolySpot spot in polySpotAll.polyPt)
+            {
                 spot.MouseUpEvent(p.X, p.Y);
             }
         }
@@ -928,6 +1151,15 @@ namespace PTW_Load
                 SpotItems.Add(spot);
                 grid_edit.Children.Add(spot);
             }
+
+            initialize();
+
+
+
+
+
+
+
         }
 
         private void grid_edit_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -938,6 +1170,53 @@ namespace PTW_Load
                 spot.RealHeight = grid_edit.ActualHeight;
                 spot.Position();
             }
+            if (polySpotAll != null)
+            {
+                foreach (PolySpot spot in polySpotAll.polyPt)
+                {
+                    spot.realWidth = grid_edit.ActualWidth;
+                    spot.realHeight = grid_edit.ActualHeight;
+                    spot.Position();
+                }
+            }
+
+        }
+
+        private void comboBox_Select(object sender,  SelectionChangedEventArgs e)
+        {
+            ComboBox cb = sender as ComboBox;
+
+            if ((double)(cb.SelectedValue) == -1)//for 직접 입력
+            {
+                textBox_mpa.IsEnabled = true;
+            }
+            else
+            {
+                textBox_mpa.IsEnabled = false;
+                textBox_mpa.Text = ((double)cb.SelectedValue).ToString();
+            }
+        }
+
+        
+
+        private void combo_Polygon(object sender, SelectionChangedEventArgs e)
+        {
+            
+            ComboBox cb = sender as ComboBox;
+
+            ComboBoxItem cbitem = (ComboBoxItem)cb.SelectedItem;
+
+            String val = cbitem.Content.ToString();
+
+            int p = int.Parse(val);
+
+            if (polySpotAll != null)
+                polySpotAll.addPt(int.Parse(val));    
+            
+
+//            this.Dispatcher.Invoke(new OnData(Data), new object[] { spotData });
+                        
+            
         }
 
         private void checkBox_Checked(object sender, RoutedEventArgs e)
@@ -983,7 +1262,10 @@ namespace PTW_Load
 
                 imageGrayBarGrid.Visibility = Visibility.Hidden;
                 imageColorBarGrid.Visibility = Visibility.Visible;
-
+            }
+            else if(cb.Name.Equals("checkPoly"))
+            {
+                polySpotAll.setVisible(true);
             }
         }
 
@@ -1030,6 +1312,10 @@ namespace PTW_Load
 
                 imageGrayBarGrid.Visibility = Visibility.Visible;
                 imageColorBarGrid.Visibility = Visibility.Hidden;
+            }
+            else if (cb.Name.Equals("checkPoly"))
+            {
+                polySpotAll.setVisible(false);
             }
         }
 

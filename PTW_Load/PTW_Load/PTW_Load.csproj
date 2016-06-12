@@ -88,6 +88,13 @@
     <Compile Include="Chart\TeeChartPanel.xaml.cs">
       <DependentUpon>TeeChartPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Materials.cs" />
+    <Compile Include="MeasureItem\PolySpot.xaml.cs">
+      <DependentUpon>PolySpot.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MeasureItem\PolySpotAll.xaml.cs">
+      <DependentUpon>PolySpotAll.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MeasureItem\Spot.xaml.cs">
       <DependentUpon>Spot.xaml</DependentUpon>
     </Compile>
@@ -108,6 +115,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MeasureItem\PolySpot.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MeasureItem\PolySpotAll.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MeasureItem\Spot.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

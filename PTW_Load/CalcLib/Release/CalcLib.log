@@ -1,20 +1,16 @@
-﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(368,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
-  Stdafx.cpp
-  AssemblyInfo.cpp
-AssemblyInfo.cpp(40): warning C4947: 'System::Security::Permissions::SecurityAction::RequestMinimum': marked as obsolete
-  AssemblyInfo.cpp(40): note: Message: 'Assembly level declarative security is obsolete and is no longer enforced by the CLR by default. See http://go.microsoft.com/fwlink/?LinkID=155570 for more information.'
-  CalcLib.cpp
-CalcLib.cpp(75): warning C4018: '<': signed/unsigned mismatch
-CalcLib.cpp(79): warning C4018: '<': signed/unsigned mismatch
-CalcLib.cpp(83): warning C4018: '>': signed/unsigned mismatch
-CalcLib.cpp(87): warning C4018: '>': signed/unsigned mismatch
-CalcLib.cpp(110): warning C4018: '<': signed/unsigned mismatch
-CalcLib.cpp(114): warning C4018: '<': signed/unsigned mismatch
-CalcLib.cpp(118): warning C4018: '>': signed/unsigned mismatch
-CalcLib.cpp(122): warning C4018: '>': signed/unsigned mismatch
-CalcLib.cpp(196): warning C4244: 'initializing': conversion from 'double' to 'byte', possible loss of data
-CalcLib.cpp(261): warning C4244: 'initializing': conversion from 'double' to 'byte', possible loss of data
-  Generating Code...
-  .NETFramework,Version=v4.5.2.AssemblyAttributes.cpp
-     Creating library ../PTW_LOAD_bin_Release\CalcLib.lib and object ../PTW_LOAD_bin_Release\CalcLib.exp
-  CalcLib.vcxproj -> Y:\lhw\parttime\Heat image program\heat_image_program\PTW_Load\CalcLib\../PTW_LOAD_bin_Release\CalcLib.dll
+﻿빌드 시작: 2016-05-09 오후 1:36:22
+     1>2 노드의 "D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\CalcLib\CalcLib.vcxproj" 프로젝트(Build 대상)입니다.
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V110\Microsoft.CppBuild.targets(346,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+     1>Link:
+         D:\Program Files\vs2012\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"../PTW_LOAD/bin/Release\CalcLib.dll" /INCREMENTAL:NO /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"../PTW_LOAD/bin/Release\CalcLib.pdb" /TLBID:1 /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X86 /SAFESEH /DLL Release\app.res
+         Release\AssemblyInfo.obj
+         Release\CalcLib.obj
+         Release\Stdafx.obj
+         "Release\.NETFramework,Version=v4.5.2.AssemblyAttributes.obj"
+            ../PTW_LOAD/bin/Release\CalcLib.lib 라이브러리 및 ../PTW_LOAD/bin/Release\CalcLib.exp 개체를 생성하고 있습니다.
+         CalcLib.vcxproj -> D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\CalcLib\../PTW_LOAD/bin/Release\CalcLib.dll
+     1>"D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\CalcLib\CalcLib.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
+
+빌드했습니다.
+
+경과 시간: 00:00:00.29
