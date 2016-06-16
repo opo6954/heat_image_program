@@ -18,36 +18,57 @@ namespace PTW_Load.MeasureItem
     {
         public List<PolySpot> polyPt = new List<PolySpot>();
         public List<Line> polyLine = new List<Line>();
+        public Label polyVal = new Label();
 
-        private const int maxPt = 6;
-        private const int minPt = 3;
+        public int maxPt = 6;
+        public int minPt = 3;
         public double realWidth;
         public double realHeight;
+
+        public int currIdx = 3;
 
 
 
         public void addPt(int numPt)
         {
-            if (polyPt.Count < maxPt)
+            //point가 추가되는 경우
+            if (currIdx < numPt)
             {
-                PolySpot newPt = new PolySpot();
-                newPt.polyLayer = this;
+                polyLine[currIdx - 1].X2 = polyPt[currIdx].Margin.Left + 7;
+                polyLine[currIdx - 1].Y2 = polyPt[currIdx].Margin.Top + 7;
+                
 
-                newPt.realHeight = realHeight;
-                newPt.realWidth = realWidth;
+                for (int i = currIdx; i < numPt; i++)
+                {
+                    polyPt[i].isShown = true;
 
-                newPt.Position();
+                    if (i == numPt - 1)
+                    {
+                        polyLine[i].X2 = polyPt[0].Margin.Left + 7;
+                        polyLine[i].Y2 = polyPt[0].Margin.Top + 7;
+                    }
+                    else
+                    {
+                        polyLine[i].X2 = polyPt[i + 1].Margin.Left + 7;
+                        polyLine[i].Y2 = polyPt[i + 1].Margin.Top + 7;
+                    }
 
-                polyPt.Add(newPt);
+                }
+                currIdx = numPt;
+                
+            }
 
-                Line l = new Line();
-                l.X1 = polyPt[polyPt.Count - 1].X;
-                l.Y1 = polyPt[polyPt.Count - 1].Y;
+            else if (currIdx > numPt)
+            {
+                polyLine[numPt - 1].X2 = polyPt[0].Margin.Left + 7;
+                polyLine[numPt - 1].Y2 = polyPt[0].Margin.Top + 7;
+                
 
-                l.X2 = polyPt[0].X;
-                l.Y2 = polyPt[0].Y;
-
-                polyLine.Add(l);
+                for (int i = currIdx; i > numPt; i--)
+                {
+                    polyPt[i - 1].isShown = false;
+                }
+                currIdx = numPt;
             }
         }
 
@@ -61,10 +82,14 @@ namespace PTW_Load.MeasureItem
                 polyLine[polyLine.Count - 1].X2 = polyPt[polyPt.Count - 1].X;
                 polyLine[polyLine.Count - 1].Y2 = polyPt[polyPt.Count - 1].Y;
 
-            }
-            
+            }            
         }
 
+        public void setPolySpotValue(double value)
+        {
+            polyVal.Content = value.ToString();
+        }
+        
         public void setVisible(bool isVisible)
         {
             Visibility v;
@@ -73,29 +98,55 @@ namespace PTW_Load.MeasureItem
             else
                 v = Visibility.Collapsed;
 
+            polyVal.Visibility = v;
+
+
             foreach (PolySpot ps in polyPt)
             {
-                ps.Visibility = v;
+                if(isVisible == false)
+                    ps.Visibility = v;
+                else if (isVisible == true)
+                {
+                    if (ps.isShown == true)
+                        ps.Visibility = v;
+                    else
+                        ps.Visibility = Visibility.Collapsed;
+                }
             }
-            foreach (Line l in polyLine)
+            if (isVisible == false)
+                foreach (Line l in polyLine)
+                    l.Visibility = v;
+            else
             {
-                l.Visibility = v;
+                for (int i = 0; i < currIdx; i++)
+                {
+                    polyLine[i].Visibility = v;
+                }
+                for (int i = currIdx; i < maxPt; i++)
+                {
+                    polyLine[i].Visibility = Visibility.Collapsed;
+                }
+                
             }
+            
         }
 
         public void initialize(double width, double height)
         {
             realWidth = width;
             realHeight = height;
+            
             initPt();
             initLine();
+
+            drawLabel();
         }
         public void initPt()
         {
-            int[] initX = new int[3]{100,200,300};
-            int[] initY = new int[3]{100,150,100};
+            int[] initX = new int[6]{150,200,300,350,300,200};
+            int[] initY = new int[6]{150,100,100,150,200,200};
             
-            for (int i = 0; i < minPt; i++)
+            for (int i = 0; i < maxPt; i++)
             {
                 PolySpot ps = new PolySpot(initX[i], initY[i], i, this);
 
@@ -104,13 +155,18 @@ namespace PTW_Load.MeasureItem
 
                 ps.Position();
 
+                if (i >= minPt)
+                {
+                    ps.isShown = false;
+                }
+
                 polyPt.Add(ps);
             }
 
         }
         public void initLine()
         {
-            for (int i = 0; i < polyPt.Count; i++)
+            for (int i = 0; i < maxPt; i++)
             {
                 Line l = new Line();
 
@@ -120,7 +176,7 @@ namespace PTW_Load.MeasureItem
                 l.Stroke = System.Windows.Media.Brushes.Red;
                 l.StrokeDashArray = System.Windows.Media.DoubleCollection.Parse("1,4");
 
-                if (i == polyPt.Count - 1)
+                if (i == maxPt - 1)
                 {
                     l.X2 = polyPt[0].Margin.Left+7;
                     l.Y2 = polyPt[0].Margin.Top+7;
@@ -130,10 +186,45 @@ namespace PTW_Load.MeasureItem
                     l.X2 = polyPt[i + 1].Margin.Left+7;
                     l.Y2 = polyPt[i + 1].Margin.Top+7;
                 }
-
+                
                 polyLine.Add(l);
             }
+
+            polyLine[minPt - 1].X2 = polyPt[0].Margin.Left+7;
+            polyLine[minPt - 1].Y2 = polyPt[0].Margin.Top+7;
         }
+
+
+        public void drawLabel()
+        {
+            polyVal.Content = "power";
+            
+
+            double avgPosX = 0;
+            double avgPosY = 0;
+
+            for (int i = 0; i < currIdx; i++)
+            {
+                avgPosX += polyPt[i].Margin.Left;
+                avgPosY += polyPt[i].Margin.Top;
+            }
+
+
+            avgPosX /= (currIdx);
+            avgPosY /= (currIdx);
+
+            Thickness th = new Thickness(0,0,0,0);
+
+            //th.Left = avgPosX;
+            th.Left = avgPosX;
+            th.Top = avgPosY;
+
+            polyVal.Margin = th;
+
+
+        }
+
+
 
         public void drawLine(int x, int y, int ptId)
         {
@@ -141,7 +232,7 @@ namespace PTW_Load.MeasureItem
             int prevId = ptId - 1;
 
             if (prevId < 0)
-                prevId = polyLine.Count - 1;
+                prevId = currIdx - 1;
 
             
             polyLine[nextId].X1 = x;

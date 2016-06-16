@@ -73,8 +73,10 @@ namespace PTW_Load
 
         private PolySpotAll polySpotAll;
         private PolySpot PressedPoly = null;
-
         private List<Material> MaterialItems = new List<Material>();
+
+        
+
 
         int start;
         int end;
@@ -108,15 +110,21 @@ namespace PTW_Load
             polySpotAll.initialize( grid_edit.ActualWidth, grid_edit.ActualHeight);
 
             polySpotAll.setVisible(false);
-            
-            grid_edit.Children.Add(polySpotAll.polyPt[0]);
 
-            grid_edit.Children.Add(polySpotAll.polyPt[1]);
-            grid_edit.Children.Add(polySpotAll.polyPt[2]);
-            
-            grid_edit.Children.Add(polySpotAll.polyLine[0]);
-            grid_edit.Children.Add(polySpotAll.polyLine[1]);
-            grid_edit.Children.Add(polySpotAll.polyLine[2]);
+            for (int i = 0; i < polySpotAll.maxPt; i++)
+            {
+                grid_edit.Children.Add(polySpotAll.polyPt[i]);
+            }
+
+            for (int i = 0; i < polySpotAll.maxPt; i++)
+            {
+                grid_edit.Children.Add(polySpotAll.polyLine[i]);
+            }
+
+            grid_edit.Children.Add(polySpotAll.polyVal);
+
+
+            comboBox_Poly.IsEnabled = false;
 
             
             
@@ -375,6 +383,12 @@ namespace PTW_Load
         {
             spot.setSpotValue(value);
         }
+
+        delegate void OnChangePolySpotValue(PolySpotAll psAll, double value);
+        private void ChangePolySpotValue(PolySpotAll psAll, double value)
+        {
+            psAll.setPolySpotValue(value);
+        }
         
 
 
@@ -408,6 +422,7 @@ namespace PTW_Load
             checkBox3.IsEnabled = state;
             checkBox4.IsEnabled = state;
             checkColorPallete.IsEnabled = state;
+            
             
             button_export.IsEnabled = state;
         }
@@ -446,6 +461,7 @@ namespace PTW_Load
                 Marshal.Copy(body, 0, p, 327680);
 
                 List<double> spotData = new List<double>();
+                
 
                 //spot을 spot 온도에 추가하는 부분임
                 foreach (Spot spot in SpotItems)
@@ -453,7 +469,6 @@ namespace PTW_Load
                     if (spot.Visibility == Visibility.Visible)
                     {
                         spotData.Add(ConvertTemp(body[spot.Y * 640 + spot.X]));
-                        
                         //LHW DEBUG
                         
                     }
@@ -532,6 +547,21 @@ namespace PTW_Load
                     this.Dispatcher.Invoke(new OnChangeSpotValue(ChangeSpotValue), new Object[] {spot, (double)(StressImage[spot.Y*640 + spot.X])/100.0 });
                 }
             }
+
+            double avgStress = 0;
+
+            for(int i=0; i<polySpotAll.currIdx; i++)
+            {
+                PolySpot ps = polySpotAll.polyPt[i];
+                avgStress += (double)(StressImage[ps.Y*640 + ps.X]) / 100.0;
+            }
+
+            avgStress = avgStress / polySpotAll.currIdx;
+
+            this.Dispatcher.Invoke(new OnChangePolySpotValue(ChangePolySpotValue), new Object[] {polySpotAll, avgStress});
+
+            //이 부분으로 short에서bitmap 생성후 파일 저장하장
+
             
             Marshal.Copy(StressImage, 0, pRet, 327680);
 
@@ -677,7 +707,10 @@ namespace PTW_Load
 
             deltabmp.UnlockBits(deltaData);
 
-            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { deltabmp, image });        
+            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { deltabmp, image });
+
+            
+
         }
 
         private void Load()
@@ -854,7 +887,14 @@ namespace PTW_Load
                 DrawImageRGB(bmpDataRGB.Scan0, p, 640, 512, Min, Max, Max - Min, 16);
                 bmpRGB.UnlockBits(bmpDataRGB);
 
+                
+
+
                 this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmpRGB, image_display_RGB });
+
+                
+
+
 
                 this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new Object[] { Min, Max });
 
@@ -870,6 +910,7 @@ namespace PTW_Load
             Marshal.FreeHGlobal(pMin);
             Marshal.FreeHGlobal(pDelta);
         }
+    
 
         delegate void OnDraw(Bitmap bit, System.Windows.Controls.Image image);
         private void Draw(Bitmap bit, System.Windows.Controls.Image image)
@@ -885,6 +926,7 @@ namespace PTW_Load
                 bitmapImage.EndInit();
 
                 image.Source = bitmapImage;
+                
             }
 
             bit.Dispose();
@@ -1153,13 +1195,6 @@ namespace PTW_Load
             }
 
             initialize();
-
-
-
-
-
-
-
         }
 
         private void grid_edit_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -1211,12 +1246,12 @@ namespace PTW_Load
             int p = int.Parse(val);
 
             if (polySpotAll != null)
-                polySpotAll.addPt(int.Parse(val));    
-            
-
-//            this.Dispatcher.Invoke(new OnData(Data), new object[] { spotData });
-                        
-            
+            {
+                
+                polySpotAll.addPt(int.Parse(val));
+                polySpotAll.drawLabel();
+                polySpotAll.setVisible(true);                
+            }
         }
 
         private void checkBox_Checked(object sender, RoutedEventArgs e)
@@ -1266,6 +1301,7 @@ namespace PTW_Load
             else if(cb.Name.Equals("checkPoly"))
             {
                 polySpotAll.setVisible(true);
+                comboBox_Poly.IsEnabled = true;
             }
         }
 
@@ -1316,8 +1352,23 @@ namespace PTW_Load
             else if (cb.Name.Equals("checkPoly"))
             {
                 polySpotAll.setVisible(false);
+                comboBox_Poly.IsEnabled = false;
+
             }
         }
+
+        private void save_image(short [] image, string name)
+        {
+            var encoder = new PngBitmapEncoder();
+
+            RenderTargetBitmap bitmap = new RenderTargetBitmap(
+                640, 480, 96, 96, PixelFormats.Pbgra32);
+
+            
+
+
+        }
+
 
         private void button_export_Click(object sender, RoutedEventArgs e)
         {

@@ -25,6 +25,8 @@ namespace PTW_Load.MeasureItem
 
         public int ptID;
 
+        public bool isShown = true;
+
         
 
         public PolySpotAll polyLayer;
@@ -132,7 +134,7 @@ namespace PTW_Load.MeasureItem
                     Y = (int)((margin.Top + 16) * imageHeight / realHeight);
 
 
-
+                    polyLayer.drawLabel();
                     polyLayer.drawLine((int)margin.Left + 7, (int)margin.Top+7, ptID);
 
                     prePosition.X = x;

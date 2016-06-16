@@ -21,6 +21,7 @@ namespace PTW_Load.MeasureItem
     {
         private Point prePosition = new Point();
         private bool IsPress = false;
+        
 
         private readonly int ImageWidth = 640;
         private readonly int ImageHeight = 512;
