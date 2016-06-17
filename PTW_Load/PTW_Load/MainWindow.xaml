@@ -68,10 +68,10 @@
             </Grid>
             
             <Grid Grid.Column="5" Name="grid_label">
-                <Label Content="25.05" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4" VerticalAlignment="Top" Width="38"/>
-                <Label Content="200" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3" VerticalAlignment="Top" Width="38"/>
-                <Label Content="150" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2" VerticalAlignment="Top" Width="368"/>
-                <Label Content="100" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1" VerticalAlignment="Top" Width="38"/>
+                <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4" VerticalAlignment="Top" Width="38"/>
+                <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3" VerticalAlignment="Top" Width="38"/>
+                <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2" VerticalAlignment="Top" Width="368"/>
+                <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1" VerticalAlignment="Top" Width="38"/>
                 <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,170,0,0" Name="colorValue0" VerticalAlignment="Top" Width="38"/>
                 <Image Width="50"  Visibility="Visible" Name="imageGrayBarGrid" VerticalAlignment="Top" />
                 <Image Width="50" Visibility="Hidden" Name="imageColorBarGrid" VerticalAlignment="Top" />
@@ -96,13 +96,13 @@
                 </Grid>
                 <Grid Grid.Column="1">
                     <Grid Name="grid_label_avg">
-                        <Label Content="25.05" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_avg" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="200" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_avg" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="150" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_avg" VerticalAlignment="Top" Width="368"/>
-                        <Label Content="100" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_avg" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_avg" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_avg" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_avg" VerticalAlignment="Top" Width="368"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_avg" VerticalAlignment="Top" Width="38"/>
                         <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,170,0,0" Name="colorValue0_avg" VerticalAlignment="Top" Width="38"/>
-                        <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_avg"  />
-                        <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_avg" />
+                        <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_avg" VerticalAlignment="Top"  />
+                        <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_avg" VerticalAlignment="Top" />
                     </Grid>
                 </Grid>
             </Grid>
@@ -119,13 +119,13 @@
                 </Grid>
                 <Grid Grid.Column="1">
                     <Grid Name="grid_label_delta">
-                        <Label Content="25.05" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_delta" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="200" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_delta" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="150" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_delta" VerticalAlignment="Top" Width="368"/>
-                        <Label Content="100" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_delta" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_delta" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_delta" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_delta" VerticalAlignment="Top" Width="368"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_delta" VerticalAlignment="Top" Width="38"/>
                         <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,170,0,0" Name="colorValue0_delta" VerticalAlignment="Top" Width="38"/>
-                        <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_delta" />
-                        <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_delta"/>
+                        <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_delta" VerticalAlignment="Top" />
+                        <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_delta" VerticalAlignment="Top"/>
                     </Grid>
                     
                 </Grid>
@@ -150,19 +150,19 @@
                     <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_loss_gray" Stretch="Fill" VerticalAlignment="Stretch" />
                     <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_loss_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
                     <Label Content="Stress Data" Name="stressLabel" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="GhostWhite" ></Label>
-                    <Button Click="StressButton_Click_1" Content="Stress Analysis" Name="StressButton" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" Width="100" Height="30"> </Button>
-                    <Button Click="LossButton_Click_1" Content="Loss Analysis" Name="LossButton" HorizontalContentAlignment="Center"  VerticalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" Height="30"></Button>
+                    <Button Click="StressButton_Click_1" FontSize="10" Content="Stress" Name="StressButton" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Right" Width="40" Height="20" Margin="0,0,40,0"> </Button>
+                    <Button Click="LossButton_Click_1" FontSize="10" Content="Loss" Name="LossButton" HorizontalContentAlignment="Center"  VerticalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Right" Width="40" Height="20"></Button>
 
                 </Grid>
                 <Grid Grid.Column="1">
                     <Grid Name="grid_label_stress">
-                        <Label Content="25.05" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_stress" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="200" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_stress" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="150" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_stress" VerticalAlignment="Top" Width="368"/>
-                        <Label Content="100" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_stress" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_stress" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_stress" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_stress" VerticalAlignment="Top" Width="368"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_stress" VerticalAlignment="Top" Width="38"/>
                         <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,170,0,0" Name="colorValue0_stress" VerticalAlignment="Top" Width="38"/>
-                        <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_stress" />
-                        <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_stress"  />
+                        <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_stress" VerticalAlignment="Top" />
+                        <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_stress" VerticalAlignment="Top"  />
                     </Grid>
                 </Grid>
             </Grid>
@@ -179,13 +179,13 @@
                 </Grid>
                 <Grid Grid.Column="1">
                     <Grid Name="grid_label_amp">
-                        <Label Content="25.05" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_amp" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="200" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_amp" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="150" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_amp" VerticalAlignment="Top" Width="368"/>
-                        <Label Content="100" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_amp" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_amp" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_amp" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_amp" VerticalAlignment="Top" Width="368"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_amp" VerticalAlignment="Top" Width="38"/>
                         <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,170,0,0" Name="colorValue0_amp" VerticalAlignment="Top" Width="38"/>
-                        <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_amp"  />
-                        <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_amp" />
+                        <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_amp" VerticalAlignment="Top"  />
+                        <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_amp" VerticalAlignment="Top" />
                     </Grid>
                     
                 </Grid>

@@ -728,6 +728,8 @@ namespace PTW_Load
 
             this.Dispatcher.Invoke(new OnChangePolySpotValue(ChangePolySpotValue), new Object[] {polySpotAll, avgStress});
 
+            this.Dispatcher.Invoke(new OnchangeContentsLabel(ChangeContentsLabel), new object[] { stressLabel,"Stress Data"});
+
             //이 부분으로 short에서bitmap 생성후 파일 저장하장
 
             
@@ -749,8 +751,7 @@ namespace PTW_Load
 
             this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 3, min_stress, max_stress });
 
-            
-            //lhwlhwlhw
+
             
             Marshal.FreeHGlobal(pRet);
             
@@ -1572,12 +1573,12 @@ namespace PTW_Load
                 image_delta_gray.Visibility = Visibility.Visible;
                 image_delta_RGB.Visibility = Visibility.Hidden;
 
-                if (stressLabel.Content == "Stress Data")
+                if (stressLabel.Content.Equals("Stress Data"))
                 {
                     image_stress_gray.Visibility = Visibility.Visible;
                     image_stress_RGB.Visibility = Visibility.Hidden;
                 }
-                else if (stressLabel.Content == "Loss Data")
+                else if (stressLabel.Content.Equals("Loss Data"))
                 {
                     image_loss_gray.Visibility = Visibility.Visible;
                     image_loss_RGB.Visibility = Visibility.Hidden;
@@ -1635,7 +1636,7 @@ namespace PTW_Load
                 dialog.Title = "AverageFile";
                 if (dialog.ShowDialog().Value)
                 {
-                    Save(AvgImage, dialog.FileName, 100.0);
+                    Save(AvgImage, dialog.FileName + ".csv", 100.0);
 
                     avgGrayBmp.Save(dialog.FileName + "_gray.png", ImageFormat.Png);
                     avgColorBmp.Save(dialog.FileName+"_color.png", ImageFormat.Png);
@@ -1652,7 +1653,7 @@ namespace PTW_Load
                 dialog.Title = "DeltaFile";
                 if (dialog.ShowDialog().Value)
                 {
-                    Save(DeltaImage, dialog.FileName, 100.0);
+                    Save(DeltaImage, dialog.FileName + ".csv", 100.0);
                     deltaGrayBmp.Save(dialog.FileName + "_gray.png", ImageFormat.Png);
                     deltaColorBmp.Save(dialog.FileName + "_color.png", ImageFormat.Png);
 
@@ -1667,7 +1668,7 @@ namespace PTW_Load
                 dialog.Title = "StressFile";
                 if (dialog.ShowDialog().Value)
                 {
-                    Save(StressImage, dialog.FileName, 100.0);
+                    Save(StressImage, dialog.FileName + ".csv", 100.0);
                     stressGrayBmp.Save(dialog.FileName + "_gray.png", ImageFormat.Png);
                     stressColorBmp.Save(dialog.FileName + "_color.png", ImageFormat.Png);
 
@@ -1683,7 +1684,7 @@ namespace PTW_Load
                 dialog.Title = "AmplitudeFile";
                 if (dialog.ShowDialog().Value)
                 {
-                    Save(AmplitudeImage, dialog.FileName, 100000);
+                    Save(AmplitudeImage, dialog.FileName + ".csv", 100000);
                     ampGrayBmp.Save(dialog.FileName + "_gray.png", ImageFormat.Png);
                     ampColorBmp.Save(dialog.FileName + "_color.png", ImageFormat.Png);
 
@@ -1716,46 +1717,58 @@ namespace PTW_Load
 
         private void StressButton_Click_1(object sender, RoutedEventArgs e)
         {
-           image_loss_gray.Visibility = Visibility.Hidden;
-           image_loss_RGB.Visibility = Visibility.Hidden;
+            if (StressImage != null)
+            {
+                this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 3, min_stress, max_stress });
+            }
+                image_loss_gray.Visibility = Visibility.Hidden;
+                image_loss_RGB.Visibility = Visibility.Hidden;
 
-           this.Dispatcher.Invoke(new OnchangeContentsLabel(ChangeContentsLabel), new object[] {stressLabel, "Stress Data"});
+                this.Dispatcher.Invoke(new OnchangeContentsLabel(ChangeContentsLabel), new object[] { stressLabel, "Stress Data" });
 
+                
+                //lhwlhwlhw
 
-           if(checkColorPallete.IsChecked == true)
-           {
-               image_stress_RGB.Visibility = Visibility.Visible;
-               image_stress_gray.Visibility = Visibility.Hidden;
-           }
-            else
-           {
-               image_stress_gray.Visibility = Visibility.Visible;
-               image_stress_RGB.Visibility = Visibility.Hidden;
-           }
+                if (checkColorPallete.IsChecked == true)
+                {
+                    image_stress_RGB.Visibility = Visibility.Visible;
+                    image_stress_gray.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    image_stress_gray.Visibility = Visibility.Visible;
+                    image_stress_RGB.Visibility = Visibility.Hidden;
+                }
+            
         }
 
         private void LossButton_Click_1(object sender, RoutedEventArgs e)
         {
-            image_stress_gray.Visibility = Visibility.Hidden;
-            image_stress_RGB.Visibility = Visibility.Hidden;
-
-            this.Dispatcher.Invoke(new OnchangeContentsLabel(ChangeContentsLabel), new object[] { stressLabel, "Loss Data" });
-
-            if (checkColorPallete.IsChecked == true)
+            if (LossImage != null)
             {
-                image_loss_gray.Visibility = Visibility.Hidden;
-                image_loss_RGB.Visibility = Visibility.Visible;
+                this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 3, min_loss, max_loss });
             }
-            else
-            {
-                image_loss_RGB.Visibility = Visibility.Hidden;
-                image_loss_gray.Visibility = Visibility.Visible;
+                image_stress_gray.Visibility = Visibility.Hidden;
+                image_stress_RGB.Visibility = Visibility.Hidden;
+
+                this.Dispatcher.Invoke(new OnchangeContentsLabel(ChangeContentsLabel), new object[] { stressLabel, "Loss Data" });
+
+                
+
+                if (checkColorPallete.IsChecked == true)
+                {
+                    image_loss_gray.Visibility = Visibility.Hidden;
+                    image_loss_RGB.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    image_loss_RGB.Visibility = Visibility.Hidden;
+                    image_loss_gray.Visibility = Visibility.Visible;
+                }
             }
             /*
              * loss 버튼이 눌릴 경우 loss 이미지를 보여주기, 그리고 오른쪽의 단위 값만 바꿔주기
-             * */
-        }
-        
+             * */        
     }
 
     public unsafe struct MainHeader
