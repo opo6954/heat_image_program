@@ -153,7 +153,10 @@ namespace PTW_Load.MeasureItem
 
         public void MouseUpEvent(double x, double y)
         {
-            isPress = false;            
+            isPress = false;
+            polyLayer.updatePolySpotValue();
+            
+
         }      
 
         private bool CheckMouseCursor(double x, double y)

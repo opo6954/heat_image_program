@@ -1,7 +1,7 @@
 ﻿<Window x:Class="PTW_Load.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="1000" Width="1000" Loaded="Window_Loaded" xmlns:my="clr-namespace:PTW_Load.Chart">
+        Title="MainWindow" ResizeMode="CanResizeWithGrip" WindowState="Maximized" Height="1000" Width="1000" Loaded="Window_Loaded" xmlns:my="clr-namespace:PTW_Load.Chart">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1.1*" />
@@ -10,9 +10,8 @@
             <RowDefinition Height="5" />
             <RowDefinition Height="1*" />
             <RowDefinition Height="5" />
+            <RowDefinition Height="30" />
             <RowDefinition Height="1*" />
-            <RowDefinition Height="5"/>
-            <RowDefinition Height="0.3*" />
             <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
@@ -23,46 +22,49 @@
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="1.5*" />
                 <ColumnDefinition Width="0.5*" />
+                <ColumnDefinition Width="5"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">                
-                <Button Content="Load" Height="29" HorizontalAlignment="Left" Margin="12,4,0,0" Name="button_load" VerticalAlignment="Top" Width="75" Click="button_load_Click" />
-                <Button Content="Play" Height="29" HorizontalAlignment="Left" Margin="6,197,0,0" Name="button_play" VerticalAlignment="Top" Width="75" Click="button_play_Click" IsEnabled="false" RenderTransformOrigin="-0.653,0.862"/>
-                <Button Content="Analysis" Height="28" HorizontalAlignment="Left" Margin="86,198,0,0" Name="button_analysis" VerticalAlignment="Top" Width="75" Click="button_analysis_Click" IsEnabled="false" />
-                <ComboBox Height="25" HorizontalAlignment="Left" DisplayMemberPath="dispNameKm" SelectionChanged="comboBox_Select"  SelectedValuePath="Km"  IsSynchronizedWithCurrentItem="True" IsEnabled="False" Margin="118,45,0,0" Name="comboBox_Km" VerticalAlignment="Top" Width="120" />
-                <TextBox Height="25" HorizontalAlignment="Left" Margin="46,45,0,0" Name="textBox_mpa" VerticalAlignment="Top" Width="67" IsEnabled="False" />
-                <TextBox Height="25" HorizontalAlignment="Left" Margin="46,73,0,0" Name="textBox_repeat" VerticalAlignment="Top" Width="67" IsEnabled="false" />
-                <CheckBox Content="Spot 0" Height="16" HorizontalAlignment="Left" Margin="12,106,0,0" Name="checkBox0" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
-                <CheckBox Content="Spot 1" Height="16" HorizontalAlignment="Left" Margin="71,106,0,0" Name="checkBox1" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
-                <CheckBox Content="Spot 2" Height="16" HorizontalAlignment="Left" Margin="130,106,0,0" Name="checkBox2" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
-                <CheckBox Content="Spot 3" Height="16" HorizontalAlignment="Left" Margin="12,126,0,0" Name="checkBox3" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
-                <CheckBox Content="Spot 4" Height="16" HorizontalAlignment="Left" Margin="71,126,0,0" Name="checkBox4" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
-                <CheckBox Content="Polygon" Height="16" HorizontalAlignment="Left" Margin="130,127,0,0" Name="checkPoly" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="True"/>
-                <ComboBox SelectionChanged="combo_Polygon" Height="20" SelectedIndex="0"  HorizontalAlignment="Left" IsEnabled="True" Margin="199,127,0,0" Name="comboBox_Poly" VerticalAlignment="Top" Width="39">
+                <Button Content="Load" Height="20" HorizontalAlignment="Left" Margin="12,4,0,0" Name="button_load" VerticalAlignment="Top" Width="75" Click="button_load_Click" />
+                <Button Content="Play" Height="20" HorizontalAlignment="Left" Margin="6,140,0,0" Name="button_play" VerticalAlignment="Top" Width="75" Click="button_play_Click" IsEnabled="false" RenderTransformOrigin="-0.653,0.862"/>
+                <Button Content="Analysis" Height="20" HorizontalAlignment="Left" Margin="86,140,0,0" Name="button_analysis" VerticalAlignment="Top" Width="75" Click="button_analysis_Click" IsEnabled="false" />
+                <Button Content="Export" Height="20" HorizontalAlignment="Left" Margin="166,140,0,0" Name="button_export" VerticalAlignment="Top" Width="75" Click="button_export_Click" IsEnabled="false" RenderTransformOrigin="-0.013,0.069"/>
+                <ComboBox Height="25" HorizontalAlignment="Left" DisplayMemberPath="dispNameKm" SelectionChanged="comboBox_Select"  SelectedValuePath="Km"  IsSynchronizedWithCurrentItem="True" IsEnabled="False" Margin="118,35,0,0" Name="comboBox_Km" VerticalAlignment="Top" Width="116" />
+                <TextBox Height="25" HorizontalAlignment="Left" Margin="46,35,0,0" Name="textBox_mpa" VerticalAlignment="Top" Width="67" IsEnabled="False" />
+                <TextBox Height="25" HorizontalAlignment="Left" Margin="46,63,0,0" Name="textBox_repeat" VerticalAlignment="Top" Width="67" IsEnabled="false" />
+                <CheckBox Content="Spot 0" Height="16" HorizontalAlignment="Left" Margin="12,96,0,0" Name="checkBox0" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                <CheckBox Content="Spot 1" Height="16" HorizontalAlignment="Left" Margin="71,96,0,0" Name="checkBox1" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                <CheckBox Content="Spot 2" Height="16" HorizontalAlignment="Left" Margin="130,96,0,0" Name="checkBox2" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                <CheckBox Content="Spot 3" Height="16" HorizontalAlignment="Left" Margin="12,116,0,0" Name="checkBox3" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                <CheckBox Content="Spot 4" Height="16" HorizontalAlignment="Left" Margin="71,116,0,0" Name="checkBox4" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                <CheckBox Content="Polygon" Height="16" HorizontalAlignment="Left" Margin="130,117,0,0" Name="checkPoly" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="True"/>
+                <ComboBox SelectionChanged="combo_Polygon" Height="20" SelectedIndex="0"  HorizontalAlignment="Left" IsEnabled="True" Margin="199,114,0,0" Name="comboBox_Poly" VerticalAlignment="Top" Width="39">
                     <ComboBoxItem Tag="3" Content="3"/>
                     <ComboBoxItem Tag="4" Content="4"/>
                     <ComboBoxItem Tag="5" Content="5"/>
                     <ComboBoxItem Tag="6" Content="6"/>
                 </ComboBox>
-                <Button Content="Export" Height="29" HorizontalAlignment="Left" Margin="166,197,0,0" Name="button_export" VerticalAlignment="Top" Width="75" Click="button_export_Click" IsEnabled="false" RenderTransformOrigin="-0.013,0.069"/>
-                <Label Content="Km" Height="28" HorizontalAlignment="Left" Margin="6,39,0,0" Name="label1" VerticalAlignment="Top" />                
-                <Label Content="Cycle" Height="28" HorizontalAlignment="Left" Margin="6,71,0,0" Name="label2" VerticalAlignment="Top" />
+                
+                <Label Content="Km" Height="28" HorizontalAlignment="Left" Margin="6,29,0,0" Name="label1" VerticalAlignment="Top" />                
+                <Label Content="Cycle" Height="28" HorizontalAlignment="Left" Margin="6,61,0,0" Name="label2" VerticalAlignment="Top" />
             </Grid>
             <GridSplitter Grid.Column="1"  Width ="5" HorizontalAlignment="Stretch"/>
             <Grid Grid.Column="2" Grid.ColumnSpan="3" Margin="0,0,0,0">
                 <Label Content="File load name" Height="29" HorizontalAlignment="Left" Margin="12,3,0,0" Name="file_load_name_dir" VerticalAlignment="Top" Width="91"/>
-                <TextBox Height="20" HorizontalAlignment="Left" IsEnabled="false" Margin="108,8,0,0" Name="file_load_name" VerticalAlignment="Top" Width="71" />
+                <TextBox Height="20" HorizontalAlignment="Left" IsReadOnly="True" IsEnabled="True" Margin="108,8,0,0" Name="file_load_name" VerticalAlignment="Top" Width="100" />
                 <Label Content="Frame number" Height="29" HorizontalAlignment="Left" Margin="12,35,0,0" Name="frame_load_name_dir" VerticalAlignment="Top" Width="91"/>
-                <TextBox Height="20" HorizontalAlignment="Left" IsEnabled="false" Margin="108,40,0,0" Name="frame_load_name" VerticalAlignment="Top" Width="71" />
-                <Label Content="temporal info" Height="29" HorizontalAlignment="Left" Margin="12,65,0,0" Name="tmp_load_name_dir" VerticalAlignment="Top" Width="91"/>
-                <TextBox Height="20" HorizontalAlignment="Left" IsEnabled="false" Margin="108,70,0,0" Name="tmp_load_name" VerticalAlignment="Top" Width="71" />
+                <TextBox Height="20" HorizontalAlignment="Left" IsReadOnly="True" IsEnabled="True" Margin="108,40,0,0" Name="frame_load_name" VerticalAlignment="Top" Width="100" />
                 <CheckBox Content="Color Pallete" Height="16" HorizontalAlignment="Left" Margin="20,100,0,0" Name="checkColorPallete" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+               
             </Grid>
 
             <GridSplitter Grid.Column="3"  Width ="5" HorizontalAlignment="Stretch"/>
             
             <Grid Grid.Column="4" Name="grid_edit" PreviewMouseDown="Grid_PreviewMouseDown" PreviewMouseMove="Grid_PreviewMouseMove" PreviewMouseUp="Grid_PreviewMouseUp" SizeChanged="grid_edit_SizeChanged">
-                <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_display_gray" Stretch="Fill" VerticalAlignment="Stretch"/>
+                
+                <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_display_gray" Stretch="Fill" VerticalAlignment="Stretch" Margin="0,0,-0.333,-0.333"/>
                 <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_display_RGB" Stretch="Fill" VerticalAlignment="Stretch"/>
+                <Label Content="First Frame Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="GhostWhite" ></Label>
             </Grid>
             
             <Grid Grid.Column="5" Name="grid_label">
@@ -71,8 +73,8 @@
                 <Label Content="150" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2" VerticalAlignment="Top" Width="368"/>
                 <Label Content="100" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1" VerticalAlignment="Top" Width="38"/>
                 <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,170,0,0" Name="colorValue0" VerticalAlignment="Top" Width="38"/>
-                <Image Width="50" Visibility="Visible" HorizontalAlignment="Stretch" Name="imageGrayBarGrid" Stretch="Fill" VerticalAlignment="Stretch" Margin="0,0,0,31" RenderTransformOrigin="3.291,0.602" />
-                <Image Width="50" Visibility="Hidden"  HorizontalAlignment="Stretch" Name="imageColorBarGrid" Stretch="Fill" VerticalAlignment="Stretch" Margin="0,0,0,31" RenderTransformOrigin="3.291,0.602" />
+                <Image Width="50"  Visibility="Visible" Name="imageGrayBarGrid" VerticalAlignment="Top" />
+                <Image Width="50" Visibility="Hidden" Name="imageColorBarGrid" VerticalAlignment="Top" />
             </Grid>
         </Grid>
         <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
@@ -83,14 +85,50 @@
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition Width="0.5*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
                 <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_avg_gray" Stretch="Fill" VerticalAlignment="Stretch" />
                 <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_avg_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
-                
+                <Label Content="Average Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="GhostWhite" ></Label>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Grid Name="grid_label_avg">
+                        <Label Content="25.05" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_avg" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="200" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_avg" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="150" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_avg" VerticalAlignment="Top" Width="368"/>
+                        <Label Content="100" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_avg" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,170,0,0" Name="colorValue0_avg" VerticalAlignment="Top" Width="38"/>
+                        <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_avg"  />
+                        <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_avg" />
+                    </Grid>
+                </Grid>
             </Grid>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
             <Grid Grid.Column="2">
-                <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_delta_gray" Stretch="Fill" VerticalAlignment="Stretch" />
-                <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_delta_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition Width="0.5*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_delta_gray" Stretch="Fill" VerticalAlignment="Stretch" />
+                    <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_delta_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
+                    <Label Content="Delta Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="GhostWhite" ></Label>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Grid Name="grid_label_delta">
+                        <Label Content="25.05" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_delta" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="200" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_delta" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="150" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_delta" VerticalAlignment="Top" Width="368"/>
+                        <Label Content="100" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_delta" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,170,0,0" Name="colorValue0_delta" VerticalAlignment="Top" Width="38"/>
+                        <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_delta" />
+                        <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_delta"/>
+                    </Grid>
+                    
+                </Grid>
             </Grid>
         </Grid>
         <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch" />
@@ -101,13 +139,57 @@
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
-                <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_stress_gray" Stretch="Fill" VerticalAlignment="Stretch" />
-                <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_stress_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition Width="0.5*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_stress_gray" Stretch="Fill" VerticalAlignment="Stretch" />
+                    <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_stress_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
+
+                    <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_loss_gray" Stretch="Fill" VerticalAlignment="Stretch" />
+                    <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_loss_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
+                    <Label Content="Stress Data" Name="stressLabel" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="GhostWhite" ></Label>
+                    <Button Click="StressButton_Click_1" Content="Stress Analysis" Name="StressButton" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Center" Width="100" Height="30"> </Button>
+                    <Button Click="LossButton_Click_1" Content="Loss Analysis" Name="LossButton" HorizontalContentAlignment="Center"  VerticalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" Height="30"></Button>
+
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Grid Name="grid_label_stress">
+                        <Label Content="25.05" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_stress" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="200" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_stress" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="150" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_stress" VerticalAlignment="Top" Width="368"/>
+                        <Label Content="100" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_stress" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,170,0,0" Name="colorValue0_stress" VerticalAlignment="Top" Width="38"/>
+                        <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_stress" />
+                        <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_stress"  />
+                    </Grid>
+                </Grid>
             </Grid>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
             <Grid Grid.Column="2">
-                <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_rev_gray" Stretch="Fill" VerticalAlignment="Stretch" />
-                <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_rev_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition Width="0.5*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_rev_gray" Stretch="Fill" VerticalAlignment="Stretch" />
+                    <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_rev_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
+                    <Label Content="Amplitude Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="GhostWhite" ></Label>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Grid Name="grid_label_amp">
+                        <Label Content="25.05" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_amp" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="200" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_amp" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="150" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_amp" VerticalAlignment="Top" Width="368"/>
+                        <Label Content="100" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_amp" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,170,0,0" Name="colorValue0_amp" VerticalAlignment="Top" Width="38"/>
+                        <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_amp"  />
+                        <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_amp" />
+                    </Grid>
+                    
+                </Grid>
+
             </Grid>
         </Grid>
         <GridSplitter Grid.Row="5" Height="5" HorizontalAlignment="Stretch" />
@@ -117,14 +199,24 @@
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="Spot Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="GhostWhite" ></Label>
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"></GridSplitter>
+            <Label Grid.Column="2" Content="Frame Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="GhostWhite" ></Label>
+            
+            
+            
+        </Grid>
+        <Grid Grid.Row="7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            
             <my:TeeChartPanel x:Name="teeChartPanel" Grid.Column="0"/>
+            <Label Content="Spot Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="LightGray" ></Label>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
             <my:TeeChartPanel x:Name="teeChartPanel_h" Grid.Column="2"/>
-        </Grid>
-
-        <Grid Grid.Row="7">            
-            <Label Content="Debug Windows" Height="28" HorizontalAlignment="Left" Margin="10,10,0,0" Name="DebugTitle" VerticalAlignment="Top" />
-            <Label Content="Debug power" Height="59" HorizontalAlignment="Left" Margin="10,10,0,-64" Name="DebugInfo" VerticalAlignment="Top" Width="761" />
         </Grid>
 
     </Grid>

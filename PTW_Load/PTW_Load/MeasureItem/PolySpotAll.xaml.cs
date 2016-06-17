@@ -84,6 +84,24 @@ namespace PTW_Load.MeasureItem
 
             }            
         }
+        public void updatePolySpotValue()
+        {
+            
+            MainWindow myWin = (MainWindow)System.Windows.Application.Current.MainWindow;
+            if (myWin.StressImage != null)
+            {
+                double avgStress = 0;
+
+                for (int i = 0; i < currIdx; i++)
+                {
+                    PolySpot ps = polyPt[i];
+                    avgStress += (double)(myWin.StressImage[ps.Y * 640 + ps.X]) / 100.0;
+                }
+
+                avgStress = avgStress / currIdx;
+                setPolySpotValue(avgStress);
+            }
+        }
 
         public void setPolySpotValue(double value)
         {
@@ -138,6 +156,10 @@ namespace PTW_Load.MeasureItem
             
             initPt();
             initLine();
+
+            polyVal.Content = (0).ToString();
+            polyVal.Background = Brushes.LightGray;
+            polyVal.Opacity = 0.5;
 
             drawLabel();
         }
@@ -197,7 +219,7 @@ namespace PTW_Load.MeasureItem
 
         public void drawLabel()
         {
-            polyVal.Content = "power";
+            
             
 
             double avgPosX = 0;
@@ -213,13 +235,16 @@ namespace PTW_Load.MeasureItem
             avgPosX /= (currIdx);
             avgPosY /= (currIdx);
 
+
             Thickness th = new Thickness(0,0,0,0);
 
-            //th.Left = avgPosX;
-            th.Left = avgPosX;
-            th.Top = avgPosY;
+            th.Left = avgPosX - 250;
+            th.Top = avgPosY - 130;
 
             polyVal.Margin = th;
+            polyVal.Width = 50;
+            polyVal.Height = 30;
+
 
 
         }

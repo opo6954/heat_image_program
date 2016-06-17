@@ -18,6 +18,10 @@ using System.Drawing.Imaging;
 using System.Drawing;
 using System.IO;
 using System.Threading;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
+
+
 using IRNDT_System.LockIn;
 using Microsoft.Win32;
 using PTW_Load.MeasureItem;
@@ -60,6 +64,23 @@ namespace PTW_Load
 
         MemoryMappedFile mmf;
 
+        Bitmap avgGrayBmp;
+        Bitmap avgColorBmp;
+        
+        Bitmap ampGrayBmp;
+        Bitmap ampColorBmp;
+
+        Bitmap deltaGrayBmp;
+        Bitmap deltaColorBmp;
+
+        Bitmap stressGrayBmp;
+        Bitmap stressColorBmp;
+
+        Bitmap lossGrayBmp;
+        Bitmap lossColorBmp;
+
+
+
         int MainHeaderSize;
         int FrameHeaderSize;
         int FrameBodySize;
@@ -84,6 +105,13 @@ namespace PTW_Load
         short[] AvgImage;
         short[] DeltaImage;
         public short[] StressImage;
+        public short[] LossImage;
+
+        short max_stress;
+        short min_stress;
+
+        short max_loss;
+        short min_loss;
 
 
         short[] AmplitudeImage;
@@ -94,13 +122,15 @@ namespace PTW_Load
         public MainWindow()
         {
             InitializeComponent();
-            
         }
 
         private void initialize()
         {
             setGrayColorBar();
             setMaterials();
+
+           
+
 
 
             polySpotAll = new PolySpotAll();
@@ -325,8 +355,27 @@ namespace PTW_Load
             BitmapFrame imgGray = BitmapFrame.Create(imgStreamGray);
             BitmapFrame imgColor = BitmapFrame.Create(imgStreamColor);
 
+           
+
+
             imageGrayBarGrid.Source = imgGray;
             imageColorBarGrid.Source = imgColor;
+
+            imageGrayBarGrid_avg.Source = imgGray;
+            imageColorBarGrid_avg.Source = imgColor;
+
+            imageGrayBarGrid_delta.Source = imgGray;
+            imageColorBarGrid_delta.Source = imgColor;
+
+            imageGrayBarGrid_stress.Source = imgGray;
+            imageColorBarGrid_stress.Source = imgColor;
+
+            imageGrayBarGrid_amp.Source = imgGray;
+            imageColorBarGrid_amp.Source = imgColor;
+
+            grayImgRrc.Dispose();
+            colorImgRrc.Dispose();
+
         }
 
 
@@ -358,24 +407,89 @@ namespace PTW_Load
                     Thread play = new Thread(Play);
                     play.Start();
                 }
+                else
+                {
+                    MessageBox.Show("조사할 frame의 범위가 설정되지 않았습니다. 검은색 선을 눌러 범위를 설정하세요");
+                }
             }
         }
-
-        delegate void OnChangeLabelBar(float min, float max);
-        private void ChangeLabelBar(float min, float max)
+        delegate void OnchangeContentsLabel(Label l, string value);
+        private void ChangeContentsLabel(Label l, string value)
         {
+            l.Content = value;
+        }
+
+        delegate void OnChangeContentsTextBox(TextBox l, string value);
+        private void ChangeContentsTextBox(TextBox l, string value)
+        {
+            l.Text = value;
+        }
+
+
+        delegate void OnChangeLabelBar(int labelOrder, float min, float max);
+        private void ChangeLabelBar(int labelOrder, float min, float max)
+        {
+            /*
+             * label order:
+             * 0: first frame
+             * 1: avg
+             * 2: delta
+             * 3: stress
+             * 4: amplitude
+            */
             float divider = 5;
             max = max / 100;
             min = min / 100;
 
             float diff = (max - min) / divider;
 
-            colorValue0.Content = min.ToString();
-            colorValue1.Content = (min + diff).ToString();
-            colorValue2.Content = (min + 2*diff).ToString();
-            colorValue3.Content = (min + 3*diff).ToString();
+            List<Label> listLabel = new List<Label>();
 
-            colorValue4.Content = max.ToString();
+            switch (labelOrder)
+            {
+                case 0:
+                    listLabel.Add(colorValue0);
+                    listLabel.Add(colorValue1);
+                    listLabel.Add(colorValue2);
+                    listLabel.Add(colorValue3);
+                    listLabel.Add(colorValue4);
+                    break;
+                case 1:
+                    listLabel.Add(colorValue0_avg);
+                    listLabel.Add(colorValue1_avg);
+                    listLabel.Add(colorValue2_avg);
+                    listLabel.Add(colorValue3_avg);
+                    listLabel.Add(colorValue4_avg);
+                    break;
+                case 2:
+                    listLabel.Add(colorValue0_delta);
+                    listLabel.Add(colorValue1_delta);
+                    listLabel.Add(colorValue2_delta);
+                    listLabel.Add(colorValue3_delta);
+                    listLabel.Add(colorValue4_delta);
+                    break;
+                case 3:
+                    listLabel.Add(colorValue0_stress);
+                    listLabel.Add(colorValue1_stress);
+                    listLabel.Add(colorValue2_stress);
+                    listLabel.Add(colorValue3_stress);
+                    listLabel.Add(colorValue4_stress);
+                    break;
+                case 4:
+                    listLabel.Add(colorValue0_amp);
+                    listLabel.Add(colorValue1_amp);
+                    listLabel.Add(colorValue2_amp);
+                    listLabel.Add(colorValue3_amp);
+                    listLabel.Add(colorValue4_amp);
+                    break;
+            }
+
+
+            listLabel[0].Content = min.ToString();
+            listLabel[1].Content = (min + diff).ToString();
+            listLabel[2].Content = (min + 2 * diff).ToString();
+            listLabel[3].Content = (min + 3*diff).ToString();
+            listLabel[4].Content = max.ToString();
         }
 
         delegate void OnChangeSpotValue(Spot spot, double value);
@@ -475,6 +589,25 @@ namespace PTW_Load
                     else
                         spotData.Add(-1);
                 }
+                /*
+                for polygon data plot... 
+                double avg = 0;
+                foreach (PolySpot ps in polySpotAll.polyPt)
+                {
+                    if (ps.Visibility == Visibility.Visible)
+                    {
+                        avg += ConvertTemp(body[ps.Y * 640 + ps.X]);
+                    }
+                }
+
+                avg /= polySpotAll.currIdx;
+
+                if (avg == 0)
+                    spotData.Add(-1);
+                else
+                    spotData.Add(avg);
+                */
+
 
                 this.Dispatcher.Invoke(new OnData(Data), new object[] { spotData });
                  
@@ -518,25 +651,60 @@ namespace PTW_Load
             GetAvgData(pSum, pAvg, end - start, 327680);
             GetDeltaData(pDelta, pMax, pMin, 327680);
 
-            DrawImageFromData(pAvg, image_avg_gray);
-            DrawImageFromDataRGB(pAvg, image_avg_RGB); 
+            DrawImageFromData(pAvg, image_avg_gray,ref avgGrayBmp);
+            DrawImageFromDataRGB(pAvg, image_avg_RGB, ref avgColorBmp); 
 
-            DrawImageFromData(pDelta, image_delta_gray);
-            DrawImageFromDataRGB(pDelta, image_delta_RGB);
+            DrawImageFromData(pDelta, image_delta_gray, ref deltaGrayBmp);
+            DrawImageFromDataRGB(pDelta, image_delta_RGB, ref deltaColorBmp);
 
             short[] firstFrame = GetFrame(start);
             AvgImage = new short[327680];
             DeltaImage = new short[327680];
             StressImage = new short[327680];
+            LossImage = new short[327680];
 
             Marshal.Copy(pAvg, AvgImage, 0, 327680);
             Marshal.Copy(pDelta, DeltaImage, 0, 327680);
 
             IntPtr pRet = Marshal.AllocHGlobal(327680 * 2);
 
+            short max_avg = (short)(-0x7fff);
+            short min_avg = (short)(0x7fff);
+
+            short max_delta = max_avg;
+            short min_delta = min_avg;
+
+            max_stress = max_delta;
+            min_stress = min_delta;
+
+
+
             for (int i = 0; i < 327680; i++)
             {
-                StressImage[i] = (short)(DeltaImage[i] / (mpa * ConvertTemp(firstFrame[i])) * 100000);
+                //StressImage[i] = (short)(DeltaImage[i] / (mpa * ConvertTemp(firstFrame[i])) * 100000);
+                StressImage[i] = (short)(DeltaImage[i] / (mpa * ConvertTemp(firstFrame[i])));
+                LossImage[i] = (short)AvgImage[i];
+
+                if (max_avg < AvgImage[i])
+                    max_avg = AvgImage[i];
+                if (min_avg > AvgImage[i])
+                    min_avg = AvgImage[i];
+
+                if (max_delta < DeltaImage[i])
+                    max_delta = DeltaImage[i];
+                if (min_delta > DeltaImage[i])
+                    min_delta = DeltaImage[i];
+
+                if (max_stress < StressImage[i])
+                    max_stress = StressImage[i];
+                if (min_stress > StressImage[i])
+                    min_stress = StressImage[i];
+
+                if (max_loss < LossImage[i])
+                    max_loss = LossImage[i];
+                if (min_loss > LossImage[i])
+                    min_loss = LossImage[i];
+
             }
 
 
@@ -565,9 +733,24 @@ namespace PTW_Load
             
             Marshal.Copy(StressImage, 0, pRet, 327680);
 
-            DrawImageFromData(pRet, image_stress_gray);
-            DrawImageFromDataRGB(pRet, image_stress_RGB);
+            DrawImageFromData(pRet, image_stress_gray, ref stressGrayBmp);
+            DrawImageFromDataRGB(pRet, image_stress_RGB, ref stressColorBmp);
 
+            Marshal.Copy(LossImage, 0, pRet, 327680);
+
+
+            DrawImageFromData(pRet, image_loss_gray, ref lossGrayBmp);
+            DrawImageFromDataRGB(pRet, image_loss_RGB, ref lossColorBmp);
+
+
+            this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 1,min_avg,max_avg});
+
+            this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 2, min_delta, max_delta });
+
+            this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 3, min_stress, max_stress });
+
+            
+            //lhwlhwlhw
             
             Marshal.FreeHGlobal(pRet);
             
@@ -671,7 +854,7 @@ namespace PTW_Load
             return body;
         }
 
-        private void DrawImageFromData(IntPtr data, System.Windows.Controls.Image image)
+        private void DrawImageFromData(IntPtr data, System.Windows.Controls.Image image, ref Bitmap bmp)
         {
             int max;
             int min;
@@ -687,11 +870,13 @@ namespace PTW_Load
 
             deltabmp.UnlockBits(deltaData);
 
+            bmp = deltabmp.Clone() as Bitmap;
+
             this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { deltabmp, image });        
 
         }
 
-        private void DrawImageFromDataRGB(IntPtr data, System.Windows.Controls.Image image)
+        private void DrawImageFromDataRGB(IntPtr data, System.Windows.Controls.Image image, ref Bitmap bmp)
         {
             int max;
             int min;
@@ -706,6 +891,9 @@ namespace PTW_Load
             DrawImage2RGB(deltaData.Scan0, data, 640, 512, min, max, max - min, 16);
 
             deltabmp.UnlockBits(deltaData);
+
+            bmp = deltabmp.Clone() as Bitmap;
+
 
             this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { deltabmp, image });
 
@@ -788,6 +976,9 @@ namespace PTW_Load
             IntPtr pMin = Marshal.AllocHGlobal(327680 * 2);
             IntPtr pDelta = Marshal.AllocHGlobal(327680 * 2);
 
+
+            this.Dispatcher.Invoke(new OnChangeContentsTextBox(ChangeContentsTextBox), new object[]{file_load_name, dialog.FileName});
+            this.Dispatcher.Invoke(new OnChangeContentsTextBox(ChangeContentsTextBox), new object[] { frame_load_name, FrameCount.ToString() });
             
 
             for (int i = 0; i < FrameCount; i++)
@@ -866,7 +1057,6 @@ namespace PTW_Load
 
 
 
-
                 Bitmap bmp = new Bitmap(640, 512, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
                 System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, 640, 512);
                 BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -876,6 +1066,8 @@ namespace PTW_Load
                 
                 bmp.UnlockBits(bmpData);
 
+
+                //LHWLHW
                 this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image_display_gray });
 
 
@@ -896,9 +1088,12 @@ namespace PTW_Load
 
 
 
-                this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new Object[] { Min, Max });
+                this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new Object[] {0, Min, Max });
 
                 Marshal.FreeHGlobal(p);
+
+
+
             }
 
 
@@ -909,6 +1104,9 @@ namespace PTW_Load
             Marshal.FreeHGlobal(pMax);
             Marshal.FreeHGlobal(pMin);
             Marshal.FreeHGlobal(pDelta);
+
+
+
         }
     
 
@@ -942,11 +1140,11 @@ namespace PTW_Load
             AnalysisMax = end;
             AnalysisMin = start;
             AnalysisRepeat = int.Parse(textBox_repeat.Text);
-            Thread load = new Thread(Aanlysis);
+            Thread load = new Thread(Analysis);
             load.Start();
         }
 
-        private void Aanlysis()
+        private void Analysis()
         {
             int MainHeaderSize;
             int FrameHeaderSize;
@@ -1045,9 +1243,11 @@ namespace PTW_Load
             Bitmap bmp = new Bitmap(640, 512, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, 640, 512);
             BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            //LHW DEBUG
+            
             DrawImage(bmpData.Scan0, p, 640, 512, Min, Max, Max - Min, 16);
             bmp.UnlockBits(bmpData);
+
+            ampGrayBmp = bmp.Clone() as Bitmap;
 
             this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image_rev_gray});
 
@@ -1059,6 +1259,11 @@ namespace PTW_Load
             DrawImageRGB(bmpDataRGB.Scan0, p, 640, 512, Min, Max, Max - Min, 16);
             bmpRGB.UnlockBits(bmpDataRGB);
 
+            ampColorBmp = bmpRGB.Clone() as Bitmap;
+
+
+
+            this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new Object[] {4, Min,Max});
             this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmpRGB, image_rev_RGB });
 
 
@@ -1289,14 +1494,41 @@ namespace PTW_Load
                 image_delta_gray.Visibility = Visibility.Hidden;
                 image_delta_RGB.Visibility = Visibility.Visible;
 
+                if (stressLabel.Content == "Stress Data")
+                {
+                    image_stress_gray.Visibility = Visibility.Hidden;
+                    image_stress_RGB.Visibility = Visibility.Visible;
+                }
+                else if (stressLabel.Content == "Loss Data")
+                {
+                    image_loss_gray.Visibility = Visibility.Hidden;
+                    image_loss_RGB.Visibility = Visibility.Visible;
+                }
+
+
+                /*
                 image_stress_gray.Visibility = Visibility.Hidden;
                 image_stress_RGB.Visibility = Visibility.Visible;
-
+                */
                 image_rev_gray.Visibility = Visibility.Hidden;
                 image_rev_RGB.Visibility = Visibility.Visible;
 
                 imageGrayBarGrid.Visibility = Visibility.Hidden;
                 imageColorBarGrid.Visibility = Visibility.Visible;
+
+                imageGrayBarGrid_avg.Visibility = Visibility.Hidden;
+                imageColorBarGrid_avg.Visibility = Visibility.Visible;
+
+                imageGrayBarGrid_delta.Visibility = Visibility.Hidden;
+                imageColorBarGrid_delta.Visibility = Visibility.Visible;
+
+                imageGrayBarGrid_stress.Visibility = Visibility.Hidden;
+                imageColorBarGrid_stress.Visibility = Visibility.Visible;
+
+                imageGrayBarGrid_amp.Visibility = Visibility.Hidden;
+                imageColorBarGrid_amp.Visibility = Visibility.Visible;
+
+
             }
             else if(cb.Name.Equals("checkPoly"))
             {
@@ -1340,14 +1572,39 @@ namespace PTW_Load
                 image_delta_gray.Visibility = Visibility.Visible;
                 image_delta_RGB.Visibility = Visibility.Hidden;
 
+                if (stressLabel.Content == "Stress Data")
+                {
+                    image_stress_gray.Visibility = Visibility.Visible;
+                    image_stress_RGB.Visibility = Visibility.Hidden;
+                }
+                else if (stressLabel.Content == "Loss Data")
+                {
+                    image_loss_gray.Visibility = Visibility.Visible;
+                    image_loss_RGB.Visibility = Visibility.Hidden;
+                }
+               
+                /*
                 image_stress_gray.Visibility = Visibility.Visible;
                 image_stress_RGB.Visibility = Visibility.Hidden;
-
+                */
+                  
                 image_rev_gray.Visibility = Visibility.Visible;
                 image_rev_RGB.Visibility = Visibility.Hidden;
 
                 imageGrayBarGrid.Visibility = Visibility.Visible;
                 imageColorBarGrid.Visibility = Visibility.Hidden;
+
+                imageGrayBarGrid_avg.Visibility = Visibility.Visible;
+                imageColorBarGrid_avg.Visibility = Visibility.Hidden;
+
+                imageGrayBarGrid_delta.Visibility = Visibility.Visible;
+                imageColorBarGrid_delta.Visibility = Visibility.Hidden;
+
+                imageGrayBarGrid_stress.Visibility = Visibility.Visible;
+                imageColorBarGrid_stress.Visibility = Visibility.Hidden;
+
+                imageGrayBarGrid_amp.Visibility = Visibility.Visible;
+                imageColorBarGrid_amp.Visibility = Visibility.Hidden;
             }
             else if (cb.Name.Equals("checkPoly"))
             {
@@ -1379,6 +1636,13 @@ namespace PTW_Load
                 if (dialog.ShowDialog().Value)
                 {
                     Save(AvgImage, dialog.FileName, 100.0);
+
+                    avgGrayBmp.Save(dialog.FileName + "_gray.png", ImageFormat.Png);
+                    avgColorBmp.Save(dialog.FileName+"_color.png", ImageFormat.Png);
+
+                    avgGrayBmp.Dispose();
+                    avgColorBmp.Dispose();
+
                 }
             }
 
@@ -1389,6 +1653,11 @@ namespace PTW_Load
                 if (dialog.ShowDialog().Value)
                 {
                     Save(DeltaImage, dialog.FileName, 100.0);
+                    deltaGrayBmp.Save(dialog.FileName + "_gray.png", ImageFormat.Png);
+                    deltaColorBmp.Save(dialog.FileName + "_color.png", ImageFormat.Png);
+
+                    deltaGrayBmp.Dispose();
+                    deltaColorBmp.Dispose();
                 }
             }
 
@@ -1399,6 +1668,12 @@ namespace PTW_Load
                 if (dialog.ShowDialog().Value)
                 {
                     Save(StressImage, dialog.FileName, 100.0);
+                    stressGrayBmp.Save(dialog.FileName + "_gray.png", ImageFormat.Png);
+                    stressColorBmp.Save(dialog.FileName + "_color.png", ImageFormat.Png);
+
+                    stressGrayBmp.Dispose();
+                    stressColorBmp.Dispose();
+
                 }
             }
 
@@ -1409,6 +1684,13 @@ namespace PTW_Load
                 if (dialog.ShowDialog().Value)
                 {
                     Save(AmplitudeImage, dialog.FileName, 100000);
+                    ampGrayBmp.Save(dialog.FileName + "_gray.png", ImageFormat.Png);
+                    ampColorBmp.Save(dialog.FileName + "_color.png", ImageFormat.Png);
+
+                    ampGrayBmp.Dispose();
+                    ampColorBmp.Dispose();
+
+
                 }
             }
         }
@@ -1430,6 +1712,48 @@ namespace PTW_Load
 //csv.Append(String.Format("{0},{1},{2},{3},{4},{5},{6}{7}", data.WriteTime.ToString("yyyyMMddHHmmss"), data.Max_0, data.Avg_0, data.Min_0, data.Max_1, data.Avg_1, data.Min_1, Environment.NewLine));
 
             File.WriteAllText(fileName, csv.ToString());
+        }
+
+        private void StressButton_Click_1(object sender, RoutedEventArgs e)
+        {
+           image_loss_gray.Visibility = Visibility.Hidden;
+           image_loss_RGB.Visibility = Visibility.Hidden;
+
+           this.Dispatcher.Invoke(new OnchangeContentsLabel(ChangeContentsLabel), new object[] {stressLabel, "Stress Data"});
+
+
+           if(checkColorPallete.IsChecked == true)
+           {
+               image_stress_RGB.Visibility = Visibility.Visible;
+               image_stress_gray.Visibility = Visibility.Hidden;
+           }
+            else
+           {
+               image_stress_gray.Visibility = Visibility.Visible;
+               image_stress_RGB.Visibility = Visibility.Hidden;
+           }
+        }
+
+        private void LossButton_Click_1(object sender, RoutedEventArgs e)
+        {
+            image_stress_gray.Visibility = Visibility.Hidden;
+            image_stress_RGB.Visibility = Visibility.Hidden;
+
+            this.Dispatcher.Invoke(new OnchangeContentsLabel(ChangeContentsLabel), new object[] { stressLabel, "Loss Data" });
+
+            if (checkColorPallete.IsChecked == true)
+            {
+                image_loss_gray.Visibility = Visibility.Hidden;
+                image_loss_RGB.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                image_loss_RGB.Visibility = Visibility.Hidden;
+                image_loss_gray.Visibility = Visibility.Visible;
+            }
+            /*
+             * loss 버튼이 눌릴 경우 loss 이미지를 보여주기, 그리고 오른쪽의 단위 값만 바꿔주기
+             * */
         }
         
     }

@@ -133,6 +133,7 @@ namespace PTW_Load.MeasureItem
 
         public void setStressValue()
         {
+            
             MainWindow myWin = (MainWindow)System.Windows.Application.Current.MainWindow;
 
             if (myWin.StressImage != null)

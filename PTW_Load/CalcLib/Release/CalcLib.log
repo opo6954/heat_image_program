@@ -1,16 +1,38 @@
-﻿빌드 시작: 2016-05-09 오후 1:36:22
-     1>2 노드의 "D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\CalcLib\CalcLib.vcxproj" 프로젝트(Build 대상)입니다.
+﻿빌드 시작: 2016-06-16 오후 4:20:20
+     1>2 노드의 "D:\lhw\parttime\heat_image_program\PTW_Load\CalcLib\CalcLib.vcxproj" 프로젝트(Rebuild 대상)입니다.
+       프로젝트 파일에 ToolsVersion="12.0"이(가) 들어 있습니다. 이 도구 집합은 알 수 없거나 누락되었을 수 있습니다. 이 경우 적절한 버전의 MSBuild를 설치하여 이 문제를 해결할 수 있습니다. 그렇지 않으면 빌드가 정책상의 이유로 특정 ToolsVersion이 될 수 있습니다. 프로젝트에 ToolsVersion="4.0"이 들어 있는 것으로 간주합니다. 자세한 내용은 http://go.microsoft.com/fwlink/?LinkId=291333을 참조하십시오.
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V110\Microsoft.CppBuild.targets(346,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
-     1>Link:
-         D:\Program Files\vs2012\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"../PTW_LOAD/bin/Release\CalcLib.dll" /INCREMENTAL:NO /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"../PTW_LOAD/bin/Release\CalcLib.pdb" /TLBID:1 /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X86 /SAFESEH /DLL Release\app.res
+     1>ClCompile:
+         D:\programs\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\\" /AI"C:\Program Files (x86)\Windows Kits\8.0\References\CommonConfiguration\Neutral" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\\" /Zi /clr /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _WINDLL /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Release\CalcLib.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\mscorlib.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Xml.dll" /analyze- /errorReport:prompt Stdafx.cpp
+         Stdafx.cpp
+         D:\programs\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\\" /AI"C:\Program Files (x86)\Windows Kits\8.0\References\CommonConfiguration\Neutral" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\\" /Zi /clr /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _WINDLL /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\CalcLib.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\mscorlib.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Xml.dll" /analyze- /errorReport:prompt AssemblyInfo.cpp CalcLib.cpp
+         AssemblyInfo.cpp
+         CalcLib.cpp
+     1>CalcLib.cpp(75): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
+     1>CalcLib.cpp(79): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
+     1>CalcLib.cpp(83): warning C4018: '>' : signed 또는 unsigned가 일치하지 않습니다.
+     1>CalcLib.cpp(87): warning C4018: '>' : signed 또는 unsigned가 일치하지 않습니다.
+     1>CalcLib.cpp(110): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
+     1>CalcLib.cpp(114): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
+     1>CalcLib.cpp(118): warning C4018: '>' : signed 또는 unsigned가 일치하지 않습니다.
+     1>CalcLib.cpp(122): warning C4018: '>' : signed 또는 unsigned가 일치하지 않습니다.
+     1>CalcLib.cpp(196): warning C4244: '초기화 중' : 'double'에서 'byte'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>CalcLib.cpp(261): warning C4244: '초기화 중' : 'double'에서 'byte'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         코드를 생성하고 있습니다...
+         D:\programs\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Zi /clr /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _WINDLL /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /TP /analyze- /errorReport:prompt "C:\Users\narrain\AppData\Local\Temp\.NETFramework,Version=v4.5.2.AssemblyAttributes.cpp"
+         .NETFramework,Version=v4.5.2.AssemblyAttributes.cpp
+       ResourceCompile:
+         C:\Program Files (x86)\Windows Kits\8.0\bin\x86\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"Release\app.res" app.rc 
+       Link:
+         D:\programs\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"../PTW_LOAD/bin/Release\CalcLib.dll" /INCREMENTAL:NO /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"../PTW_LOAD/bin/Release\CalcLib.pdb" /TLBID:1 /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X86 /SAFESEH /DLL Release\app.res
          Release\AssemblyInfo.obj
          Release\CalcLib.obj
          Release\Stdafx.obj
          "Release\.NETFramework,Version=v4.5.2.AssemblyAttributes.obj"
             ../PTW_LOAD/bin/Release\CalcLib.lib 라이브러리 및 ../PTW_LOAD/bin/Release\CalcLib.exp 개체를 생성하고 있습니다.
-         CalcLib.vcxproj -> D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\CalcLib\../PTW_LOAD/bin/Release\CalcLib.dll
-     1>"D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\CalcLib\CalcLib.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
+         CalcLib.vcxproj -> D:\lhw\parttime\heat_image_program\PTW_Load\CalcLib\../PTW_LOAD/bin/Release\CalcLib.dll
+     1>"D:\lhw\parttime\heat_image_program\PTW_Load\CalcLib\CalcLib.vcxproj" 프로젝트를 빌드했습니다(Rebuild 대상).
 
 빌드했습니다.
 
-경과 시간: 00:00:00.29
+경과 시간: 00:00:04.22
