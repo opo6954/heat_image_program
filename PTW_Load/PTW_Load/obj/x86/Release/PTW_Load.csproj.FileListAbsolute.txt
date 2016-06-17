@@ -117,3 +117,7 @@ D:\lhw\parttime\heat_image_program\PTW_Load\PTW_Load\obj\x86\Release\PTW_Load.Ch
 D:\lhw\parttime\heat_image_program\PTW_Load\PTW_Load\obj\x86\Release\PTW_Load.Properties.Resources.resources
 D:\lhw\parttime\heat_image_program\PTW_Load\PTW_Load\obj\x86\Release\PTW_Load.csproj.GenerateResource.Cache
 D:\lhw\parttime\heat_image_program\PTW_Load\PTW_Load\obj\x86\Release\PTW_Load.exe.licenses
+D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Release\MeasureItem\PolySpot.baml
+D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Release\MeasureItem\PolySpotAll.baml
+D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Release\MeasureItem\PolySpot.g.cs
+D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Release\MeasureItem\PolySpotAll.g.cs

@@ -1494,12 +1494,12 @@ namespace PTW_Load
                 image_delta_gray.Visibility = Visibility.Hidden;
                 image_delta_RGB.Visibility = Visibility.Visible;
 
-                if (stressLabel.Content == "Stress Data")
+                if (stressLabel.Content.Equals("Stress Data"))
                 {
                     image_stress_gray.Visibility = Visibility.Hidden;
                     image_stress_RGB.Visibility = Visibility.Visible;
                 }
-                else if (stressLabel.Content == "Loss Data")
+                else if ( stressLabel.Content.Equals("Loss Data"))
                 {
                     image_loss_gray.Visibility = Visibility.Hidden;
                     image_loss_RGB.Visibility = Visibility.Visible;
