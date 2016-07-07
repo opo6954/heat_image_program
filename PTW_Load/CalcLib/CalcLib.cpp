@@ -37,6 +37,17 @@ int ConvertTemp(int pixel)
 	return 0;
 }
 
+void setIntZeros(int *array, int size)
+{
+	for(int i=0; i<size; i++)
+		array[i] = 0;
+}
+void setShortZeros(short *array, int size)
+{
+	for(int i=0; i<size; i++)
+		array[i] = 0;
+}
+
 void CalcurateMinMax(int *img, int *sum, int *pmax, int *pmin, int size, int *min, int *max, int bit)
 {
 	//병렬처리를 통해 속도 개선(OPEN MP)
@@ -93,7 +104,40 @@ void CalcurateMinMax(int *img, int *sum, int *pmax, int *pmin, int size, int *mi
 	*min = minVal;
 	*max = maxVal;
 }
+void CalcurateMinMax_Double(int *img, int size, double *min, double *max)
+{
+	double minVal = 99999999;
+	double maxVal = -99999999;
 
+	double* buf = (double*)img;
+
+//#pragma omp parallel for
+	for(int i = 0; i < size; i++)
+	{
+		double pixel = buf[i];
+
+		if (pixel < minVal)
+		{
+//#pragma omp critical (MIN)
+			{
+				if (pixel < minVal)
+					minVal = pixel;
+			}
+		}
+		else if (pixel > maxVal)
+		{
+//#pragma omp critical (MAX)
+			{
+				if (pixel > maxVal)
+					maxVal = pixel;
+			}
+		}
+	}
+
+	*min = minVal;
+	*max = maxVal;
+
+}
 void CalcurateMinMax2(int *img, int size, int *min, int *max)
 {
 	//병렬처리를 통해 속도 개선(OPEN MP)
@@ -294,7 +338,81 @@ void DrawImage2RGB(int *hBit, int *img, int width, int height, int min, int max,
 		}
 	}
 }
+void DrawImage2RGB_Double(int *hBit, int *img, int width, int height, double min, double max, double span, int bit)
+{
+	double* buf = (double*)img;
 
+	int i = 0;
+	
+	for(int w = 0; w < width; w++)
+	{
+		for(int h = 0; h < height; h++)
+		{
+			double pixel = buf[i];
+
+			
+			byte pix = (byte)(((pixel - min) * 255) / span);
+
+			int constStage=4;
+
+			unsigned int widthValue = (int)(255.0/constStage);
+
+			int state = (int)pix / widthValue;
+			byte pixValue = (((byte)pix - state * (double)widthValue) / widthValue) * 255;
+			byte r;
+			byte g;
+			byte b;
+
+			switch (state)
+			{
+			case 0:
+				b=0;
+				g = pixValue;
+				r = 255;
+				break;
+			case 1:
+				b=0;
+				g = 255;
+				r = 255-pixValue;
+				break;
+			case 2:
+				b=pixValue;
+				g = 255;
+				r = 0;
+				break;
+			case 3:
+				b=255;
+				g = 255-pixValue;
+				r = 0;
+				break;
+			default:
+				break;
+			}
+
+			hBit[i] = 0xff000000 + RGB(b, g, r);
+			i++;
+		}
+	}
+}
+
+void DrawImage2_Double(int *hBit, int *img, int width, int height, double min, double max, double span, int bit)
+{
+	double* buf = (double*)img;
+
+	int i=0;
+
+	for(int w=0; w<width; w++)
+	{
+		for(int h=0; h<height; h++)
+		{
+			double pixel = buf[i];
+
+			byte pix = (byte)(((pixel - min) * 255) / span);
+			hBit[i] = 0xff000000 + RGB(pix,pix,pix);
+			i++;
+		}
+	}
+}
 
 
 void DrawImage2(int *hBit, int *img, int width, int height, int min, int max, int span, int bit)

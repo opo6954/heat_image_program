@@ -20,8 +20,8 @@ namespace PTW_Load.MeasureItem
         
         private bool isPress = false;
         
-        private int imageWidth = 640;
-        private int imageHeight = 512;
+        private int imageWidth;
+        private int imageHeight;
 
         public int ptID;
 
@@ -33,9 +33,12 @@ namespace PTW_Load.MeasureItem
 
         List<Point> polyPoint = new List<Point>();
 
-        public PolySpot(int x, int y, int _ptId, PolySpotAll _polyLayer)
+        public PolySpot(int x, int y, int _ptId, PolySpotAll _polyLayer, int width, int height)
         {
             InitializeComponent();
+
+            imageWidth = width;
+            imageHeight = height;
 
             VerticalAlignment = VerticalAlignment.Top;
             HorizontalAlignment = HorizontalAlignment.Left;

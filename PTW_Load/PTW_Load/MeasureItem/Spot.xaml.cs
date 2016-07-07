@@ -23,8 +23,8 @@ namespace PTW_Load.MeasureItem
         private bool IsPress = false;
         
 
-        private readonly int ImageWidth = 640;
-        private readonly int ImageHeight = 512;
+        private int ImageWidth;
+        private int ImageHeight;
 
         public String ID
         {
@@ -40,6 +40,12 @@ namespace PTW_Load.MeasureItem
         public void setSpotValue(double spotValue)
         {
             value.Text = spotValue.ToString();           
+        }
+
+        public void setImageSize(int _imageWidth, int _imageHeight)
+        {
+            ImageWidth = _imageWidth;
+            ImageHeight = _imageHeight;
         }
 
         public int X
@@ -66,14 +72,15 @@ namespace PTW_Load.MeasureItem
             get;
         }
 
-        public Spot()
+        public Spot(int _imageWidth, int _imageHeight)
         {
             InitializeComponent();
 
+            ImageWidth = _imageWidth;
+            ImageHeight = _imageHeight;
+
             VerticalAlignment = VerticalAlignment.Top;
             HorizontalAlignment = HorizontalAlignment.Left;
-
-
 
         }
 
@@ -137,7 +144,7 @@ namespace PTW_Load.MeasureItem
             MainWindow myWin = (MainWindow)System.Windows.Application.Current.MainWindow;
 
             if (myWin.StressImage != null)
-                value.Text = ((myWin.StressImage[Y * 640 + X]) / 100.0).ToString();
+                value.Text = ((myWin.StressImage[Y * ImageHeight + X])).ToString();
         }
 
         public void MouseUpEvent(double x, double y)
@@ -145,22 +152,7 @@ namespace PTW_Load.MeasureItem
             IsPress = false;
 
             setStressValue();
-            
 
-            /*
-            foreach (Spot spot in SpotItems)
-            {
-                if (spot.Visibility == Visibility.Visible)
-                {
-                    spotData.Add(ConvertTemp(body[spot.Y * 640 + spot.X]));
-
-                    //LHW DEBUG
-
-                }
-                else
-                    spotData.Add(-1);
-            }
-            */
         }
 
         private bool CheckMouseCursor(double x, double y)

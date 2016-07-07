@@ -25,6 +25,9 @@ namespace PTW_Load.MeasureItem
         public double realWidth;
         public double realHeight;
 
+        public int imageWidth;
+        public int imageHeight;
+
         public int currIdx = 3;
 
 
@@ -95,7 +98,7 @@ namespace PTW_Load.MeasureItem
                 for (int i = 0; i < currIdx; i++)
                 {
                     PolySpot ps = polyPt[i];
-                    avgStress += (double)(myWin.StressImage[ps.Y * 640 + ps.X]) / 100.0;
+                    avgStress += (double)(myWin.StressImage[ps.Y * imageHeight + ps.X]);
                 }
 
                 avgStress = avgStress / currIdx;
@@ -149,10 +152,17 @@ namespace PTW_Load.MeasureItem
             
         }
 
+        public void setImageSize(int _imageWidth, int _imageHeight)
+        {
+            imageWidth = _imageWidth;
+            imageHeight = _imageHeight;
+        }
+
         public void initialize(double width, double height)
         {
             realWidth = width;
             realHeight = height;
+
             
             initPt();
             initLine();
@@ -170,7 +180,7 @@ namespace PTW_Load.MeasureItem
             
             for (int i = 0; i < maxPt; i++)
             {
-                PolySpot ps = new PolySpot(initX[i], initY[i], i, this);
+                PolySpot ps = new PolySpot(initX[i], initY[i], i, this,imageWidth,imageHeight);
 
                 ps.realWidth = realWidth;
                 ps.realHeight = realHeight;

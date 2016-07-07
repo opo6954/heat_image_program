@@ -60,7 +60,23 @@ namespace PTW_Load
         extern public static unsafe void DrawImage2(IntPtr hBit, IntPtr img, int width, int height, int min, int max, int span, int bit);
 
         [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static unsafe void DrawImage2_Double(IntPtr hBit, IntPtr img, int width, int height, double min, double max, double span, int bit);
+
+        [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static unsafe void DrawImage2RGB(IntPtr hBit, IntPtr img, int width, int height, int min, int max, int span, int bit);
+
+        [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static unsafe void DrawImage2RGB_Double(IntPtr hBit, IntPtr img, int width, int height, double min, double max, double span, int bit);
+
+        [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static unsafe void setIntZeros(IntPtr sum, int size);
+
+        [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static unsafe void setShortZeros(IntPtr sum, int size);
+
+        [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static unsafe void CalcurateMinMax_Double(IntPtr img, int size, out double min,out double max);
+
 
         MemoryMappedFile mmf;
 
@@ -88,6 +104,24 @@ namespace PTW_Load
         int FrameCount;
         long StartPosition;
 
+        //resolution 지원 부분, 지금은 640 512랑 320 256 사이즈만 지원
+
+
+
+        enum FRAMERESOULTION {SIZE640512=0, SIZE320256=1}
+
+        FrameResolutionInfo[] frameSizeInfo = new FrameResolutionInfo[2] {new FrameResolutionInfo(640,512), new FrameResolutionInfo(320,256)};
+
+        FRAMERESOULTION fr;
+        
+        int frameTotSize;
+        public int frameWidth;
+        public int frameHeight;
+
+        //List<string> mylist = new List<string>(new string[] { "element1", "element2", "element3" });
+        
+
+
         private List<Spot> SpotItems = new List<Spot>();
         private Spot PressedSpot = null;
 
@@ -104,11 +138,11 @@ namespace PTW_Load
 
         short[] AvgImage;
         short[] DeltaImage;
-        public short[] StressImage;
+        public double[] StressImage;
         public short[] LossImage;
 
-        short max_stress;
-        short min_stress;
+        double max_stress;
+        double min_stress;
 
         short max_loss;
         short min_loss;
@@ -123,21 +157,47 @@ namespace PTW_Load
         {
             InitializeComponent();
         }
-
-        private void initialize()
+        delegate void OnInitSpot();
+        private void InitSpot()
         {
-            setGrayColorBar();
-            setMaterials();
+             for (int i = 0; i < 5; i++)
+            {
+                
+                Spot spot = new Spot(frameWidth, frameHeight);
 
-           
+                spot.Visibility = Visibility.Collapsed;
+
+                if (fr == FRAMERESOULTION.SIZE640512)
+                {
+                    spot.X = 320;
+                    spot.Y = 256;
+                }
+                else
+                {
+                    spot.X = 160;
+                    spot.Y = 128;
+                }
+
+
+
+                spot.RealWidth = grid_edit.ActualWidth;
+                spot.RealHeight = grid_edit.ActualHeight;
+                spot.ID = String.Format("{0}", i);
+                spot.Position();
+                SpotItems.Add(spot);
+                grid_edit.Children.Add(spot);
+            }
+
+
 
 
 
             polySpotAll = new PolySpotAll();
 
+
+            polySpotAll.setImageSize(frameWidth, frameHeight);
+            polySpotAll.initialize(grid_edit.ActualWidth, grid_edit.ActualHeight);
             
-            
-            polySpotAll.initialize( grid_edit.ActualWidth, grid_edit.ActualHeight);
 
             polySpotAll.setVisible(false);
 
@@ -152,29 +212,22 @@ namespace PTW_Load
             }
 
             grid_edit.Children.Add(polySpotAll.polyVal);
+        }
+           
+        private void initSpotInfo()
+        {
+            this.Dispatcher.Invoke(new OnInitSpot(InitSpot));
+        }
+
+        private void initialize()
+        {
+            setGrayColorBar();
+            setMaterials();
+
+
 
 
             comboBox_Poly.IsEnabled = false;
-
-            
-            
-
-            /*
-            Spot spot = new Spot();
-
-            spot.Visibility = Visibility.Visible;
-
-            spot.X = 0;
-            spot.Y = 250;
-            spot.RealWidth = grid_edit.ActualWidth;
-            spot.RealHeight = grid_edit.ActualHeight;
-            spot.ID = "po";
-            spot.Position();
-            SpotItems.Add(spot);
-            grid_edit.Children.Add(spot);
-            */
-
-            
 
         }
 
@@ -438,8 +491,8 @@ namespace PTW_Load
              * 4: amplitude
             */
             float divider = 5;
-            max = max / 100;
-            min = min / 100;
+            max = max;
+            min = min;
 
             float diff = (max - min) / divider;
 
@@ -551,15 +604,18 @@ namespace PTW_Load
         private void Play()
         {
             
-            IntPtr pSum = Marshal.AllocHGlobal(327680 * 4);
-            IntPtr pAvg = Marshal.AllocHGlobal(327680 * 2);
-            IntPtr pMax = Marshal.AllocHGlobal(327680 * 2);
-            IntPtr pMin = Marshal.AllocHGlobal(327680 * 2);
-            IntPtr pDelta = Marshal.AllocHGlobal(327680 * 2);
+            IntPtr pSum = Marshal.AllocHGlobal(frameTotSize * 4);
+            IntPtr pAvg = Marshal.AllocHGlobal(frameTotSize * 2);
+            IntPtr pMax = Marshal.AllocHGlobal(frameTotSize * 2);
+            IntPtr pMin = Marshal.AllocHGlobal(frameTotSize * 2);
+            IntPtr pDelta = Marshal.AllocHGlobal(frameTotSize * 2);
 
             //comboBox_Km.sel
-
             
+            setIntZeros(pSum, frameTotSize);
+            setShortZeros(pMax, frameTotSize);
+            setShortZeros(pMin, frameTotSize);
+
 
             //모든 frame을 그리는듯
             for (int i = start; i < end; i++)
@@ -571,8 +627,8 @@ namespace PTW_Load
 
                 int Min;
                 int Max;
-                IntPtr p = Marshal.AllocHGlobal(327680 * 2);
-                Marshal.Copy(body, 0, p, 327680);
+                IntPtr p = Marshal.AllocHGlobal(frameTotSize * 2);
+                Marshal.Copy(body, 0, p, frameTotSize);
 
                 List<double> spotData = new List<double>();
                 
@@ -582,44 +638,27 @@ namespace PTW_Load
                 {
                     if (spot.Visibility == Visibility.Visible)
                     {
-                        spotData.Add(ConvertTemp(body[spot.Y * 640 + spot.X]));
-                        //LHW DEBUG
+                        spotData.Add(ConvertTemp(body[spot.Y *frameHeight + spot.X]));
+                        
                         
                     }
                     else
                         spotData.Add(-1);
                 }
-                /*
-                for polygon data plot... 
-                double avg = 0;
-                foreach (PolySpot ps in polySpotAll.polyPt)
-                {
-                    if (ps.Visibility == Visibility.Visible)
-                    {
-                        avg += ConvertTemp(body[ps.Y * 640 + ps.X]);
-                    }
-                }
-
-                avg /= polySpotAll.currIdx;
-
-                if (avg == 0)
-                    spotData.Add(-1);
-                else
-                    spotData.Add(avg);
-                */
-
 
                 this.Dispatcher.Invoke(new OnData(Data), new object[] { spotData });
-                 
 
-                CalcurateMinMax(p, pSum, pMax, pMin, 327680 * 2, out Min, out Max, 16);
-
-                Bitmap bmp = new Bitmap(640, 512, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, 640, 512);
+                
+                CalcurateMinMax(p, pSum, pMax, pMin, frameTotSize * 2, out Min, out Max, 16);
+                
+                Bitmap bmp = new Bitmap(frameWidth,frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0,frameWidth,frameHeight);
                 BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                //LHW DEBUG
+                
 
-                DrawImage(bmpData.Scan0, p, 640, 512, Min, Max, Max - Min, 16);
+                
+                
+                DrawImage(bmpData.Scan0, p, frameWidth,frameHeight, Min, Max, Max - Min, 16);
                 
 
                 bmp.UnlockBits(bmpData);
@@ -629,11 +668,11 @@ namespace PTW_Load
                 this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image_display_gray });
 
 
-                Bitmap bmpRGB = new Bitmap(640, 512, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                Bitmap bmpRGB = new Bitmap(frameWidth,frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
                 
                 BitmapData bmpDataRGB = bmpRGB.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                //LHW DEBUG
-                DrawImageRGB(bmpDataRGB.Scan0, p, 640, 512, Min, Max, Max - Min, 16);
+                
+                DrawImageRGB(bmpDataRGB.Scan0, p,frameWidth,frameHeight, Min, Max, Max - Min, 16);
 
                 bmpRGB.UnlockBits(bmpDataRGB);
 
@@ -648,8 +687,16 @@ namespace PTW_Load
 
             }
             
-            GetAvgData(pSum, pAvg, end - start, 327680);
-            GetDeltaData(pDelta, pMax, pMin, 327680);
+            GetAvgData(pSum, pAvg, end - start, frameTotSize);
+
+            short[] tmp = new short[frameTotSize];
+            short[] tmp2 = new short[frameTotSize];
+            Marshal.Copy(pMax, tmp, 0, frameTotSize);
+            Marshal.Copy(pMin, tmp2, 0, frameTotSize);
+
+            GetDeltaData(pDelta, pMax, pMin,frameTotSize);
+
+            
 
             DrawImageFromData(pAvg, image_avg_gray,ref avgGrayBmp);
             DrawImageFromDataRGB(pAvg, image_avg_RGB, ref avgColorBmp); 
@@ -658,15 +705,17 @@ namespace PTW_Load
             DrawImageFromDataRGB(pDelta, image_delta_RGB, ref deltaColorBmp);
 
             short[] firstFrame = GetFrame(start);
-            AvgImage = new short[327680];
-            DeltaImage = new short[327680];
-            StressImage = new short[327680];
-            LossImage = new short[327680];
+            AvgImage = new short[frameTotSize];
+            DeltaImage = new short[frameTotSize];
+            StressImage = new double[frameTotSize];
+            LossImage = new short[frameTotSize];
 
-            Marshal.Copy(pAvg, AvgImage, 0, 327680);
-            Marshal.Copy(pDelta, DeltaImage, 0, 327680);
+            
+            Marshal.Copy(pAvg, AvgImage, 0, frameTotSize);
+            Marshal.Copy(pDelta, DeltaImage, 0, frameTotSize);
 
-            IntPtr pRet = Marshal.AllocHGlobal(327680 * 2);
+            IntPtr pRet = Marshal.AllocHGlobal(frameTotSize * 8);
+            IntPtr pLoss = Marshal.AllocHGlobal(frameTotSize * 2);
 
             short max_avg = (short)(-0x7fff);
             short min_avg = (short)(0x7fff);
@@ -679,10 +728,10 @@ namespace PTW_Load
 
 
 
-            for (int i = 0; i < 327680; i++)
+            for (int i = 0; i < frameTotSize; i++)
             {
-                //StressImage[i] = (short)(DeltaImage[i] / (mpa * ConvertTemp(firstFrame[i])) * 100000);
-                StressImage[i] = (short)(DeltaImage[i] / (mpa * ConvertTemp(firstFrame[i])));
+                StressImage[i] = (double)(DeltaImage[i] / (mpa * ConvertTemp(firstFrame[i])));
+                //StressImage[i] = (short)(DeltaImage[i] / (mpa * ConvertTemp(firstFrame[i])/100.0));
                 LossImage[i] = (short)AvgImage[i];
 
                 if (max_avg < AvgImage[i])
@@ -707,12 +756,13 @@ namespace PTW_Load
 
             }
 
+            
 
             foreach (Spot spot in SpotItems)
             {
                 if (spot.Visibility == Visibility.Visible)
                 {
-                    this.Dispatcher.Invoke(new OnChangeSpotValue(ChangeSpotValue), new Object[] {spot, (double)(StressImage[spot.Y*640 + spot.X])/100.0 });
+                    this.Dispatcher.Invoke(new OnChangeSpotValue(ChangeSpotValue), new Object[] {spot, (double)(StressImage[spot.Y*frameHeight + spot.X])});
                 }
             }
 
@@ -721,7 +771,7 @@ namespace PTW_Load
             for(int i=0; i<polySpotAll.currIdx; i++)
             {
                 PolySpot ps = polySpotAll.polyPt[i];
-                avgStress += (double)(StressImage[ps.Y*640 + ps.X]) / 100.0;
+                avgStress += (double)(StressImage[ps.Y*frameHeight + ps.X]);
             }
 
             avgStress = avgStress / polySpotAll.currIdx;
@@ -733,27 +783,28 @@ namespace PTW_Load
             //이 부분으로 short에서bitmap 생성후 파일 저장하장
 
             
-            Marshal.Copy(StressImage, 0, pRet, 327680);
+            Marshal.Copy(StressImage, 0, pRet, frameTotSize);
 
-            DrawImageFromData(pRet, image_stress_gray, ref stressGrayBmp);
-            DrawImageFromDataRGB(pRet, image_stress_RGB, ref stressColorBmp);
+            DrawImageFromData_Double(pRet, image_stress_gray, ref stressGrayBmp);
+            DrawImageFromDataRGB_Double(pRet, image_stress_RGB, ref stressColorBmp);
 
-            Marshal.Copy(LossImage, 0, pRet, 327680);
+            Marshal.Copy(LossImage, 0, pLoss, frameTotSize);
 
 
-            DrawImageFromData(pRet, image_loss_gray, ref lossGrayBmp);
-            DrawImageFromDataRGB(pRet, image_loss_RGB, ref lossColorBmp);
+            DrawImageFromData(pLoss, image_loss_gray, ref lossGrayBmp);
+            DrawImageFromDataRGB(pLoss, image_loss_RGB, ref lossColorBmp);
 
 
             this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 1,min_avg,max_avg});
 
             this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 2, min_delta, max_delta });
 
-            this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 3, min_stress, max_stress });
+            this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 3, (float)min_stress, (float)max_stress });
 
 
             
             Marshal.FreeHGlobal(pRet);
+            Marshal.FreeHGlobal(pLoss);
             
             Marshal.FreeHGlobal(pSum);
             Marshal.FreeHGlobal(pAvg);
@@ -835,38 +886,78 @@ namespace PTW_Load
 
         private short [] GetFrame(int index)
         {
-            short[] body = new short[327680];
+            short[] body = new short[ frameTotSize];
             int StartPosition = MainHeaderSize + FrameFullSize * index;
 
             using (MemoryMappedViewAccessor accessor = mmf.CreateViewAccessor(StartPosition + FrameHeaderSize, FrameBodySize))
             {
-                FrameBody fbody;
-
-                for (int h = 0; h < 512; h++)
+                if (fr == FRAMERESOULTION.SIZE640512)
                 {
-                    accessor.Read(640 * h * 2, out fbody);
-                    unsafe
+                    FrameBody_640 fbody;
+
+                    for (int h = 0; h < frameHeight; h++)
                     {
-                        Marshal.Copy((IntPtr)fbody.Frame, body, 640 * h, 640);
+                        accessor.Read(frameWidth * h * 2, out fbody);
+                        unsafe
+                        {
+                            Marshal.Copy((IntPtr)fbody.Frame, body, frameWidth * h, frameWidth);
+                        }
                     }
                 }
+                else if (fr == FRAMERESOULTION.SIZE320256)
+                {
+                    FrameBody_320 fbody;
+
+                    for (int h = 0; h < frameHeight; h++)
+                    {
+                        accessor.Read(frameWidth * h * 2, out fbody);
+                        unsafe
+                        {
+                            Marshal.Copy((IntPtr)fbody.Frame, body, frameWidth * h, frameWidth);
+                        }
+                    }
+                }
+
             }
 
             return body;
+        }
+
+        private void DrawImageFromData_Double(IntPtr data, System.Windows.Controls.Image image, ref Bitmap bmp)
+        {
+
+            
+            double max;
+            double min;
+            CalcurateMinMax_Double(data, frameTotSize, out min, out max);
+
+            Bitmap deltabmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            System.Drawing.Rectangle deltarect = new System.Drawing.Rectangle(0, 0, frameWidth, frameHeight);
+            BitmapData deltaData = deltabmp.LockBits(deltarect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            
+            //LHW DEBUG
+            DrawImage2_Double(deltaData.Scan0, data, frameWidth, frameHeight, min, max, max - min, 16);
+            //DrawImage2RGB(deltaData.Scan0, data, 640, 512, min, max, max - min, 16);
+
+            deltabmp.UnlockBits(deltaData);
+
+            bmp = deltabmp.Clone() as Bitmap;
+
+            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { deltabmp, image });        
         }
 
         private void DrawImageFromData(IntPtr data, System.Windows.Controls.Image image, ref Bitmap bmp)
         {
             int max;
             int min;
-            CalcurateMinMax2(data, 327680, out min, out max);
+            CalcurateMinMax2(data, frameTotSize, out min, out max);
 
-            Bitmap deltabmp = new Bitmap(640, 512, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            System.Drawing.Rectangle deltarect = new System.Drawing.Rectangle(0, 0, 640, 512);
+            Bitmap deltabmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            System.Drawing.Rectangle deltarect = new System.Drawing.Rectangle(0, 0, frameWidth, frameHeight);
             BitmapData deltaData = deltabmp.LockBits(deltarect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             //LHW DEBUG
-            DrawImage2(deltaData.Scan0, data, 640, 512, min, max, max - min, 16);
+            DrawImage2(deltaData.Scan0, data, frameWidth, frameHeight, min, max, max - min, 16);
             //DrawImage2RGB(deltaData.Scan0, data, 640, 512, min, max, max - min, 16);
 
             deltabmp.UnlockBits(deltaData);
@@ -877,19 +968,19 @@ namespace PTW_Load
 
         }
 
-        private void DrawImageFromDataRGB(IntPtr data, System.Windows.Controls.Image image, ref Bitmap bmp)
+        private void DrawImageFromDataRGB_Double(IntPtr data, System.Windows.Controls.Image image, ref Bitmap bmp)
         {
-            int max;
-            int min;
-            CalcurateMinMax2(data, 327680, out min, out max);
+            double max;
+            double min;
+            CalcurateMinMax_Double(data, frameTotSize, out min, out max);
 
-            Bitmap deltabmp = new Bitmap(640, 512, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            System.Drawing.Rectangle deltarect = new System.Drawing.Rectangle(0, 0, 640, 512);
+            Bitmap deltabmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            System.Drawing.Rectangle deltarect = new System.Drawing.Rectangle(0, 0, frameWidth, frameHeight);
             BitmapData deltaData = deltabmp.LockBits(deltarect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             //LHW DEBUG
 
-            DrawImage2RGB(deltaData.Scan0, data, 640, 512, min, max, max - min, 16);
+            DrawImage2RGB_Double(deltaData.Scan0, data, frameWidth, frameHeight, min, max, max - min, 16);
 
             deltabmp.UnlockBits(deltaData);
 
@@ -897,9 +988,29 @@ namespace PTW_Load
 
 
             this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { deltabmp, image });
+        }
 
-            
 
+        private void DrawImageFromDataRGB(IntPtr data, System.Windows.Controls.Image image, ref Bitmap bmp)
+        {
+            int max;
+            int min;
+            CalcurateMinMax2(data,frameTotSize, out min, out max);
+
+            Bitmap deltabmp = new Bitmap(frameWidth,frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            System.Drawing.Rectangle deltarect = new System.Drawing.Rectangle(0, 0,frameWidth,frameHeight);
+            BitmapData deltaData = deltabmp.LockBits(deltarect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            //LHW DEBUG
+
+            DrawImage2RGB(deltaData.Scan0, data,frameWidth,frameHeight, min, max, max - min, 16);
+
+            deltabmp.UnlockBits(deltaData);
+
+            bmp = deltabmp.Clone() as Bitmap;
+
+
+            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { deltabmp, image });
         }
 
         private void Load()
@@ -925,7 +1036,7 @@ namespace PTW_Load
             {
                 MainHeader header;
 
-                accessor.Read(0, out header);
+                 accessor.Read(0, out header);
 
                 byte[] tmp = new byte[5];
                 byte[] dword = new byte[4];
@@ -970,19 +1081,42 @@ namespace PTW_Load
                     short add = header.ADDynamic;
                 }
             }
+            
+            for(int i=0; i< frameSizeInfo.Length; i++)
+            {
+                if(FrameBodySize == frameSizeInfo[i].totSize * 2)
+                {
+                    fr = (FRAMERESOULTION)i;
+                    frameWidth = frameSizeInfo[i].width;
+                    frameHeight = frameSizeInfo[i].height;
+                    frameTotSize = frameSizeInfo[i].totSize;
+                }
+            }
 
-            IntPtr pSum = Marshal.AllocHGlobal(327680 * 4);
-            IntPtr pAvg = Marshal.AllocHGlobal(327680 * 2);
-            IntPtr pMax = Marshal.AllocHGlobal(327680 * 2);
-            IntPtr pMin = Marshal.AllocHGlobal(327680 * 2);
-            IntPtr pDelta = Marshal.AllocHGlobal(327680 * 2);
 
+            //set the size of frame to polyspot and spot
+
+            IntPtr pSum = Marshal.AllocHGlobal(frameTotSize * 4);
+            IntPtr pAvg = Marshal.AllocHGlobal(frameTotSize * 2);
+            IntPtr pMax = Marshal.AllocHGlobal(frameTotSize * 2);
+            IntPtr pMin = Marshal.AllocHGlobal(frameTotSize * 2);
+            IntPtr pDelta = Marshal.AllocHGlobal(frameTotSize * 2);
+
+
+            setIntZeros(pSum, frameTotSize);
+            setShortZeros(pAvg, frameTotSize);
+            setShortZeros(pMax, frameTotSize);
+            setShortZeros(pMin, frameTotSize);
+            setShortZeros(pDelta, frameTotSize);
+            
 
             this.Dispatcher.Invoke(new OnChangeContentsTextBox(ChangeContentsTextBox), new object[]{file_load_name, dialog.FileName});
             this.Dispatcher.Invoke(new OnChangeContentsTextBox(ChangeContentsTextBox), new object[] { frame_load_name, FrameCount.ToString() });
-            
 
+
+            
             for (int i = 0; i < FrameCount; i++)
+            //for (int i = 0; i < 20; i++)
             {
                 StartPosition = MainHeaderSize + FrameFullSize * i;
                 using (MemoryMappedViewAccessor accessor = mmf.CreateViewAccessor(StartPosition, FrameHeaderSize))
@@ -1037,33 +1171,53 @@ namespace PTW_Load
             //첫 frame만 그리는듯
             using (MemoryMappedViewAccessor accessor = mmf.CreateViewAccessor(MainHeaderSize + FrameHeaderSize, FrameBodySize))
             {
-                FrameBody fbody;
-                short[] body = new short[327680];
+                short[] body = new short[frameTotSize];
 
-                for (int h = 0; h < 512; h++)
+                if (fr == FRAMERESOULTION.SIZE640512)
                 {
-                    accessor.Read(640 * h * 2, out fbody);
-                    unsafe
+                    FrameBody_640 fbody;
+                    
+                    //640 512 320 256
+                    for (int h = 0; h < frameHeight; h++)
                     {
-                        Marshal.Copy((IntPtr)fbody.Frame, body, 640 * h, 640);
+
+                        accessor.Read((long)(frameWidth * h * 2), out fbody);
+                        unsafe
+                        {
+                            Marshal.Copy((IntPtr)fbody.Frame, body, frameWidth * h, frameWidth);
+                        }
+                    }
+                }
+                else if (fr == FRAMERESOULTION.SIZE320256)
+                {
+                    FrameBody_320 fbody;
+                    
+                    //640 512 320 256
+                    for (int h = 0; h < frameHeight; h++)
+                    {
+
+                        accessor.Read((long)(frameWidth * h * 2), out fbody);
+                        unsafe
+                        {
+                            Marshal.Copy((IntPtr)fbody.Frame, body, frameWidth * h, frameWidth);
+                        }
                     }
                 }
 
+
                 int Min;
                 int Max;
-                IntPtr p = Marshal.AllocHGlobal(327680 * 2);
-                Marshal.Copy(body, 0, p, 327680);
+                IntPtr p = Marshal.AllocHGlobal(frameTotSize * 2);
+                Marshal.Copy(body, 0, p, frameTotSize);
+                
+                CalcurateMinMax(p, pSum, pMax, pMin, frameTotSize * 2, out Min, out Max, 16);
 
-                CalcurateMinMax(p, pSum, pMax, pMin, 327680 * 2, out Min, out Max, 16);
-
-
-
-                Bitmap bmp = new Bitmap(640, 512, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, 640, 512);
+                Bitmap bmp = new Bitmap( frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, frameWidth, frameHeight);
                 BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
                 //LHW DEBUG
-                DrawImage(bmpData.Scan0, p, 640, 512, Min, Max, Max - Min, 16);
+                DrawImage(bmpData.Scan0, p, frameWidth, frameHeight, Min, Max, Max - Min, 16);
                 
                 bmp.UnlockBits(bmpData);
 
@@ -1072,12 +1226,12 @@ namespace PTW_Load
                 this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image_display_gray });
 
 
-                Bitmap bmpRGB = new Bitmap(640, 512, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                Bitmap bmpRGB = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
                 
                 BitmapData bmpDataRGB = bmpRGB.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
 
-                DrawImageRGB(bmpDataRGB.Scan0, p, 640, 512, Min, Max, Max - Min, 16);
+                DrawImageRGB(bmpDataRGB.Scan0, p, frameWidth, frameHeight, Min, Max, Max - Min, 16);
                 bmpRGB.UnlockBits(bmpDataRGB);
 
                 
@@ -1105,6 +1259,13 @@ namespace PTW_Load
             Marshal.FreeHGlobal(pMax);
             Marshal.FreeHGlobal(pMin);
             Marshal.FreeHGlobal(pDelta);
+
+            //initialize();
+
+            initSpotInfo();
+            
+
+            
 
 
 
@@ -1207,19 +1368,38 @@ namespace PTW_Load
 
                 using (MemoryMappedViewAccessor accessor = mmf.CreateViewAccessor(StartPosition + FrameHeaderSize, FrameBodySize))
                 {
-                    FrameBody fbody;
-                    short[] body = new short[327680];
-
-                    for (int h = 0; h < 512; h++)
+                    if (fr == FRAMERESOULTION.SIZE640512)
                     {
-                        accessor.Read(640 * h * 2, out fbody);
-                        unsafe
-                        {
-                            Marshal.Copy((IntPtr)fbody.Frame, body, 640 * h, 640);
-                        }
-                    }
+                        FrameBody_640 fbody;
+                        short[] body = new short[frameTotSize];
 
-                    raw.AddFrame(640, 512, body);
+                        for (int h = 0; h < frameHeight; h++)
+                        {
+                            accessor.Read(frameWidth * h * 2, out fbody);
+                            unsafe
+                            {
+                                Marshal.Copy((IntPtr)fbody.Frame, body, frameWidth * h, frameWidth);
+                            }
+                        }
+
+                        raw.AddFrame(frameWidth, frameHeight, body);
+                    }
+                    else if (fr == FRAMERESOULTION.SIZE320256)
+                    {
+                        FrameBody_320 fbody;
+                        short[] body = new short[frameTotSize];
+
+                        for (int h = 0; h < frameHeight; h++)
+                        {
+                            accessor.Read(frameWidth * h * 2, out fbody);
+                            unsafe
+                            {
+                                Marshal.Copy((IntPtr)fbody.Frame, body, frameWidth * h, frameWidth);
+                            }
+                        }
+
+                        raw.AddFrame(frameWidth, frameHeight, body);
+                    }
                 }
             }
 
@@ -1234,18 +1414,18 @@ namespace PTW_Load
 
             AmplitudeImage = image;
 
-            IntPtr p = Marshal.AllocHGlobal(327680 * 2);
-            Marshal.Copy(image, 0, p, 327680);
+            IntPtr p = Marshal.AllocHGlobal( frameTotSize * 2);
+            Marshal.Copy(image, 0, p, frameTotSize);
 
-            CalcurateMinMax2(p, 327680, out Min, out Max);
+            CalcurateMinMax2(p,frameTotSize, out Min, out Max);
 
             Max = 35;
 
-            Bitmap bmp = new Bitmap(640, 512, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, 640, 512);
+            Bitmap bmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, frameWidth, frameHeight);
             BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             
-            DrawImage(bmpData.Scan0, p, 640, 512, Min, Max, Max - Min, 16);
+            DrawImage(bmpData.Scan0, p,frameWidth,frameHeight, Min, Max, Max - Min, 16);
             bmp.UnlockBits(bmpData);
 
             ampGrayBmp = bmp.Clone() as Bitmap;
@@ -1253,11 +1433,11 @@ namespace PTW_Load
             this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image_rev_gray});
 
 
-            Bitmap bmpRGB = new Bitmap(640, 512, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            Bitmap bmpRGB = new Bitmap(frameWidth,frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             
             BitmapData bmpDataRGB = bmpRGB.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             //LHW DEBUG
-            DrawImageRGB(bmpDataRGB.Scan0, p, 640, 512, Min, Max, Max - Min, 16);
+            DrawImageRGB(bmpDataRGB.Scan0, p, frameWidth, frameHeight, Min, Max, Max - Min, 16);
             bmpRGB.UnlockBits(bmpDataRGB);
 
             ampColorBmp = bmpRGB.Clone() as Bitmap;
@@ -1279,24 +1459,24 @@ namespace PTW_Load
             int Min;
             int Max;
 
-            IntPtr p = Marshal.AllocHGlobal(327680 * 2);
-            Marshal.Copy(image, 0, p, 327680);
+            IntPtr p = Marshal.AllocHGlobal(frameTotSize * 2);
+            Marshal.Copy(image, 0, p, frameTotSize);
 
-            CalcurateMinMax2(p, 327680, out Min, out Max);
+            CalcurateMinMax2(p,frameTotSize, out Min, out Max);
 
-            Bitmap bmp = new Bitmap(640, 512, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, 640, 512);
+            Bitmap bmp = new Bitmap(frameWidth,frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0,frameWidth, frameHeight);
             BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            DrawImage(bmpData.Scan0, p, 640, 512, Min, Max, Max - Min, 16);
+            DrawImage(bmpData.Scan0, p,frameWidth,frameHeight, Min, Max, Max - Min, 16);
             bmp.UnlockBits(bmpData);
 
             this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image_delta_gray});
 
 
-            Bitmap bmpRGB = new Bitmap(640, 512, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            Bitmap bmpRGB = new Bitmap(frameWidth,frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             
             BitmapData bmpDataRGB = bmpRGB.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            DrawImageRGB(bmpDataRGB.Scan0, p, 640, 512, Min, Max, Max - Min, 16);
+            DrawImageRGB(bmpDataRGB.Scan0, p,frameWidth,frameHeight, Min, Max, Max - Min, 16);
             bmpRGB.UnlockBits(bmpDataRGB);
 
             this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmpRGB, image_delta_RGB });
@@ -1384,23 +1564,9 @@ namespace PTW_Load
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < 5; i++)
-            {
-                Spot spot = new Spot();
-
-                spot.Visibility = Visibility.Collapsed;
-                
-                spot.X = 320;
-                spot.Y = 250;
-                spot.RealWidth = grid_edit.ActualWidth;
-                spot.RealHeight = grid_edit.ActualHeight;
-                spot.ID = String.Format("{0}", i);
-                spot.Position();
-                SpotItems.Add(spot);
-                grid_edit.Children.Add(spot);
-            }
-
             initialize();
+
+            
         }
 
         private void grid_edit_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -1620,7 +1786,7 @@ namespace PTW_Load
             var encoder = new PngBitmapEncoder();
 
             RenderTargetBitmap bitmap = new RenderTargetBitmap(
-                640, 480, 96, 96, PixelFormats.Pbgra32);
+                frameWidth ,frameHeight, 96, 96, PixelFormats.Pbgra32);
 
             
 
@@ -1695,17 +1861,33 @@ namespace PTW_Load
                 }
             }
         }
+        private void Save(double[] data, string fileName, double divide = 1.0)
+        {
+            StringBuilder csv = new StringBuilder();
 
+            for (int h = 0; h < frameHeight; h++)
+            {
+                for (int w = 0; w < frameWidth; w++)
+                {
+                    csv.Append(String.Format("{0},", data[h * frameHeight + w] / divide));
+                }
+                csv.Remove(csv.Length - 1, 1);
+                csv.Append(Environment.NewLine);
+            }
+            //csv.Append(String.Format("{0},{1},{2},{3},{4},{5},{6}{7}", data.WriteTime.ToString("yyyyMMddHHmmss"), data.Max_0, data.Avg_0, data.Min_0, data.Max_1, data.Avg_1, data.Min_1, Environment.NewLine));
+
+            File.WriteAllText(fileName, csv.ToString());
+        }
 
         private void Save(short[] data, string fileName, double divide = 1.0)
         {
             StringBuilder csv = new StringBuilder();
 
-            for (int h = 0; h < 512; h++)
+            for (int h = 0; h < frameHeight; h++)
             {
-                for (int w = 0; w < 640; w++)    
+                for (int w = 0; w < frameWidth; w++)    
                 {
-                    csv.Append(String.Format("{0},", data[h * 640 + w] / divide));
+                    csv.Append(String.Format("{0},", data[h *frameHeight + w] / divide));
                 }
                 csv.Remove(csv.Length - 1, 1);
                 csv.Append(Environment.NewLine);
@@ -1719,7 +1901,7 @@ namespace PTW_Load
         {
             if (StressImage != null)
             {
-                this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 3, min_stress, max_stress });
+                this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 3, (float)min_stress, (float)max_stress });
             }
                 image_loss_gray.Visibility = Visibility.Hidden;
                 image_loss_RGB.Visibility = Visibility.Hidden;
@@ -1727,7 +1909,6 @@ namespace PTW_Load
                 this.Dispatcher.Invoke(new OnchangeContentsLabel(ChangeContentsLabel), new object[] { stressLabel, "Stress Data" });
 
                 
-                //lhwlhwlhw
 
                 if (checkColorPallete.IsChecked == true)
                 {
@@ -1826,8 +2007,29 @@ namespace PTW_Load
         public fixed byte Signal4[2];
     }
 
-    public unsafe struct FrameBody
+    public unsafe struct FrameBody_640
     {
         public fixed short Frame[640];
+    }
+
+    public unsafe struct FrameBody_320
+    {
+        public fixed short Frame[320];
+    }
+
+    public struct FrameResolutionInfo
+    {
+        public int width;
+        public int height;
+
+        public int totSize;
+
+        public FrameResolutionInfo(int _width, int _height)
+        {
+            width = _width;
+            height = _height;
+
+            totSize = _width * _height;
+        }
     }
 }

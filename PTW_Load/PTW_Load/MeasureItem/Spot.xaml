@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d">
     <Grid Width="100" Height="52">
-        <Rectangle Height="7" HorizontalAlignment="Left" Margin="0,13,0,0" Stroke="White" Fill="White" VerticalAlignment="Top" Width="33" />
+        <Rectangle Height="7" HorizontalAlignment="Left" Margin="0,13,0,0" Stroke="White" Fill="White" VerticalAlignment="Top" Width="15" />
         <Rectangle Height="33" HorizontalAlignment="Left" Margin="13,0,0,0" Stroke="White" Fill="White" VerticalAlignment="Top" Width="7" />
-        <Rectangle Height="3" HorizontalAlignment="Left" Margin="2,15,0,0" Stroke="Black" Fill="Black" VerticalAlignment="Top" Width="29" />
+        <Rectangle Height="3" HorizontalAlignment="Left" Margin="2,15,0,0" Stroke="Black" Fill="Black" VerticalAlignment="Top" Width="30" />
         <Rectangle Height="29" HorizontalAlignment="Left" Margin="15,2,0,0" Stroke="Black" Fill="Black" VerticalAlignment="Top" Width="3" />
         <Label Content="1" Height="18" HorizontalAlignment="Left" Margin="0,34,0,0" Name="label" VerticalAlignment="Top" Background="#83FFFFFF" Padding="0,0,0,0" VerticalContentAlignment="Stretch" FontSize="15"/>
         <TextBox Text="" Width="60" Height="33" HorizontalAlignment="Right" Margin="0,0,0,0" Name="value" VerticalAlignment="Top"  Background="#83FFFFFF" Padding="0,0,0,0" VerticalContentAlignment="Stretch"  FontSize="20"/>
