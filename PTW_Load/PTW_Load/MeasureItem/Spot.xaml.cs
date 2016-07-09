@@ -72,7 +72,7 @@ namespace PTW_Load.MeasureItem
             get;
         }
 
-        public Spot(int _imageWidth, int _imageHeight)
+        public Spot(int _imageWidth, int _imageHeight, String unitName)
         {
             InitializeComponent();
 
@@ -81,6 +81,16 @@ namespace PTW_Load.MeasureItem
 
             VerticalAlignment = VerticalAlignment.Top;
             HorizontalAlignment = HorizontalAlignment.Left;
+
+            unit.Content = unitName;
+
+            FormattedText t = new FormattedText(unit.Content.ToString(), System.Globalization.CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight, new Typeface(unit.FontFamily, unit.FontStyle, unit.FontWeight, unit.FontStretch), unit.FontSize, Brushes.Black);
+
+            unit.Width = t.Width + 5;
+            unit.Height = t.Height;
+
+
 
         }
 

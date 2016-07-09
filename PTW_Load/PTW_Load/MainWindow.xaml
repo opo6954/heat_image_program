@@ -55,7 +55,9 @@
                 <Label Content="Frame number" Height="29" HorizontalAlignment="Left" Margin="12,35,0,0" Name="frame_load_name_dir" VerticalAlignment="Top" Width="91"/>
                 <TextBox Height="20" HorizontalAlignment="Left" IsReadOnly="True" IsEnabled="True" Margin="108,40,0,0" Name="frame_load_name" VerticalAlignment="Top" Width="100" />
                 <CheckBox Content="Color Pallete" Height="16" HorizontalAlignment="Left" Margin="20,100,0,0" Name="checkColorPallete" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
-               
+                <CheckBox Content="Reverse Color" Height="16" HorizontalAlignment="Left" Margin="20,120,0,0" Name="checkReverceColorPallete" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                
+                
             </Grid>
 
             <GridSplitter Grid.Column="3"  Width ="5" HorizontalAlignment="Stretch"/>
@@ -64,17 +66,38 @@
                 
                 <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_display_gray" Stretch="Fill" VerticalAlignment="Stretch" Margin="0,0,-0.333,-0.333"/>
                 <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_display_RGB" Stretch="Fill" VerticalAlignment="Stretch"/>
-                <Label Content="First Frame Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="GhostWhite" ></Label>
+                <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_display_gray_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
+                <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_display_RGB_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
+                <Label Content="First Frame Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30">
+                    <Label.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="LightGray" Offset="0.1"/>
+                            <GradientStop Color="GhostWhite" Offset="0.8"/>
+                        </LinearGradientBrush>
+                    </Label.Background>
+                </Label>
             </Grid>
             
             <Grid Grid.Column="5" Name="grid_label">
                 <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4" VerticalAlignment="Top" Width="38"/>
-                <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3" VerticalAlignment="Top" Width="38"/>
-                <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2" VerticalAlignment="Top" Width="368"/>
-                <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1" VerticalAlignment="Top" Width="38"/>
-                <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,170,0,0" Name="colorValue0" VerticalAlignment="Top" Width="38"/>
+                <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,40,0,0" Name="colorValue3" VerticalAlignment="Top" Width="38"/>
+                <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,70,0,0" Name="colorValue2" VerticalAlignment="Top" Width="368"/>
+                <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,100,0,0" Name="colorValue1" VerticalAlignment="Top" Width="38"/>
+                <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue0" VerticalAlignment="Top" Width="38"/>
+                
                 <Image Width="50"  Visibility="Visible" Name="imageGrayBarGrid" VerticalAlignment="Top" />
                 <Image Width="50" Visibility="Hidden" Name="imageColorBarGrid" VerticalAlignment="Top" />
+
+
+                <Label Content="℃" Height="29" HorizontalAlignment="Right" Margin="0,10,-4,0"  VerticalAlignment="Top" Width="40">
+                    <Label.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="LightGray" Offset="0.1"/>
+                            <GradientStop Color="GhostWhite" Offset="0.8"/>
+                        </LinearGradientBrush>
+                    </Label.Background>
+                </Label>
+                    
             </Grid>
         </Grid>
         <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
@@ -92,17 +115,35 @@
                 <Grid Grid.Column="0">
                 <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_avg_gray" Stretch="Fill" VerticalAlignment="Stretch" />
                 <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_avg_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
-                <Label Content="Average Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="GhostWhite" ></Label>
+                <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_avg_gray_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
+                <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_avg_RGB_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
+                    <Label Content="Average Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" >
+                        <Label.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="LightGray" Offset="0.1"/>
+                                <GradientStop Color="GhostWhite" Offset="0.8"/>
+                            </LinearGradientBrush>
+                        </Label.Background>
+
+                    </Label>
                 </Grid>
                 <Grid Grid.Column="1">
                     <Grid Name="grid_label_avg">
                         <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_avg" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_avg" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_avg" VerticalAlignment="Top" Width="368"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_avg" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,170,0,0" Name="colorValue0_avg" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,40,0,0" Name="colorValue3_avg" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,70,0,0" Name="colorValue2_avg" VerticalAlignment="Top" Width="368"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,100,0,0" Name="colorValue1_avg" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue0_avg" VerticalAlignment="Top" Width="38"/>
                         <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_avg" VerticalAlignment="Top"  />
                         <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_avg" VerticalAlignment="Top" />
+                        <Label Content="℃" Height="29" HorizontalAlignment="Right"  Margin="0,10,0,0"  VerticalAlignment="Top" Width="40">
+                            <Label.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="LightGray" Offset="0.1"/>
+                                    <GradientStop Color="GhostWhite" Offset="0.8"/>
+                                </LinearGradientBrush>
+                            </Label.Background>
+                        </Label>
                     </Grid>
                 </Grid>
             </Grid>
@@ -115,17 +156,34 @@
                 <Grid Grid.Column="0">
                     <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_delta_gray" Stretch="Fill" VerticalAlignment="Stretch" />
                     <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_delta_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
-                    <Label Content="Delta Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="GhostWhite" ></Label>
+                    <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_delta_gray_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
+                    <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_delta_RGB_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
+                    <Label Content="Delta Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" >
+                        <Label.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="LightGray" Offset="0.1"/>
+                                <GradientStop Color="GhostWhite" Offset="0.8"/>
+                            </LinearGradientBrush>
+                        </Label.Background>
+                    </Label>
                 </Grid>
                 <Grid Grid.Column="1">
                     <Grid Name="grid_label_delta">
                         <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_delta" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_delta" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_delta" VerticalAlignment="Top" Width="368"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_delta" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,170,0,0" Name="colorValue0_delta" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,40,0,0" Name="colorValue3_delta" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,70,0,0" Name="colorValue2_delta" VerticalAlignment="Top" Width="368"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,100,0,0" Name="colorValue1_delta" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue0_delta" VerticalAlignment="Top" Width="38"/>
                         <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_delta" VerticalAlignment="Top" />
                         <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_delta" VerticalAlignment="Top"/>
+                        <Label Content="℃" Height="29" HorizontalAlignment="Right"  Margin="0,10,-2,0"  VerticalAlignment="Top" Width="40">
+                            <Label.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="LightGray" Offset="0.1"/>
+                                    <GradientStop Color="GhostWhite" Offset="0.8"/>
+                                </LinearGradientBrush>
+                            </Label.Background>
+                        </Label>
                     </Grid>
                     
                 </Grid>
@@ -146,10 +204,22 @@
                 <Grid Grid.Column="0">
                     <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_stress_gray" Stretch="Fill" VerticalAlignment="Stretch" />
                     <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_stress_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
+                    <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_stress_gray_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
+                    <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_stress_RGB_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
 
                     <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_loss_gray" Stretch="Fill" VerticalAlignment="Stretch" />
                     <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_loss_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
-                    <Label Content="Stress Data" Name="stressLabel" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="GhostWhite" ></Label>
+                    <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_loss_gray_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
+                    <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_loss_RGB_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
+                    
+                    <Label Content="Stress Data" Name="stressLabel" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" >
+                        <Label.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="LightGray" Offset="0.1"/>
+                                <GradientStop Color="GhostWhite" Offset="0.8"/>
+                            </LinearGradientBrush>
+                        </Label.Background>
+                    </Label>
                     <Button Click="StressButton_Click_1" FontSize="10" Content="Stress" Name="StressButton" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Right" Width="40" Height="20" Margin="0,0,40,0"> </Button>
                     <Button Click="LossButton_Click_1" FontSize="10" Content="Loss" Name="LossButton" HorizontalContentAlignment="Center"  VerticalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Right" Width="40" Height="20"></Button>
 
@@ -157,12 +227,20 @@
                 <Grid Grid.Column="1">
                     <Grid Name="grid_label_stress">
                         <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_stress" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_stress" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_stress" VerticalAlignment="Top" Width="368"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_stress" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,170,0,0" Name="colorValue0_stress" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,40,0,0" Name="colorValue3_stress" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,70,0,0" Name="colorValue2_stress" VerticalAlignment="Top" Width="368"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,100,0,0" Name="colorValue1_stress" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue0_stress" VerticalAlignment="Top" Width="38"/>
                         <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_stress" VerticalAlignment="Top" />
                         <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_stress" VerticalAlignment="Top"  />
+                        <Label Content="MPa" Height="29" HorizontalAlignment="Right" Margin="0,10,0,0"  VerticalAlignment="Top" Width="40">
+                            <Label.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="LightGray" Offset="0.1"/>
+                                    <GradientStop Color="GhostWhite" Offset="0.8"/>
+                                </LinearGradientBrush>
+                            </Label.Background>
+                        </Label>
                     </Grid>
                 </Grid>
             </Grid>
@@ -173,19 +251,37 @@
                     <ColumnDefinition Width="0.5*" />
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0">
-                    <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_rev_gray" Stretch="Fill" VerticalAlignment="Stretch" />
-                    <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_rev_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
-                    <Label Content="Amplitude Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="GhostWhite" ></Label>
+                    <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_amp_gray" Stretch="Fill" VerticalAlignment="Stretch" />
+                    <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_amp_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
+                    <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_amp_gray_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
+                    <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_amp_RGB_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
+                    
+                    <Label Content="Amplitude Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" >
+                        <Label.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="LightGray" Offset="0.1"/>
+                                <GradientStop Color="GhostWhite" Offset="0.8"/>
+                            </LinearGradientBrush>
+                        </Label.Background>
+                    </Label>
                 </Grid>
                 <Grid Grid.Column="1">
                     <Grid Name="grid_label_amp">
                         <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,10,0,0" Name="colorValue4_amp" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,50,0,0" Name="colorValue3_amp" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,90,0,0" Name="colorValue2_amp" VerticalAlignment="Top" Width="368"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue1_amp" VerticalAlignment="Top" Width="38"/>
-                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,170,0,0" Name="colorValue0_amp" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,40,0,0" Name="colorValue3_amp" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,70,0,0" Name="colorValue2_amp" VerticalAlignment="Top" Width="368"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,100,0,0" Name="colorValue1_amp" VerticalAlignment="Top" Width="38"/>
+                        <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue0_amp" VerticalAlignment="Top" Width="38"/>
                         <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_amp" VerticalAlignment="Top"  />
                         <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_amp" VerticalAlignment="Top" />
+                        <Label Content="DL" Height="29" HorizontalAlignment="Right" Margin="0,10,0,0"  VerticalAlignment="Top" Width="40">
+                            <Label.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="LightGray" Offset="0.1"/>
+                                    <GradientStop Color="GhostWhite" Offset="0.8"/>
+                                </LinearGradientBrush>
+                            </Label.Background>
+                        </Label>
                     </Grid>
                     
                 </Grid>
@@ -199,9 +295,40 @@
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Spot Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="GhostWhite" ></Label>
+            <Label Grid.Column="0" Content="Spot Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" >
+                <Label.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="LightGray" Offset="0.1"/>
+                        <GradientStop Color="GhostWhite" Offset="0.8"/>
+                    </LinearGradientBrush>
+                </Label.Background>
+            </Label>
+            <Label Content="℃" Height="29" HorizontalAlignment="Right" VerticalAlignment="Top" Width="40">
+                <Label.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="LightGray" Offset="0.1"/>
+                        <GradientStop Color="GhostWhite" Offset="0.8"/>
+                    </LinearGradientBrush>
+                </Label.Background>
+            </Label>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"></GridSplitter>
-            <Label Grid.Column="2" Content="Frame Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30" Background="GhostWhite" ></Label>
+            <Label Grid.Column="2" Content="Frame Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30">
+                <Label.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="LightGray" Offset="0.1"/>
+                        <GradientStop Color="GhostWhite" Offset="0.8"/>
+                    </LinearGradientBrush>
+                </Label.Background>
+            </Label>
+            <Label Grid.Column="2" Content="DL" Height="29" HorizontalAlignment="Right" VerticalAlignment="Top" Width="40">
+                <Label.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="LightGray" Offset="0.1"/>
+                        <GradientStop Color="GhostWhite" Offset="0.8"/>
+                    </LinearGradientBrush>
+                </Label.Background>
+            </Label>
+
             
             
             

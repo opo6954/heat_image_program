@@ -12,13 +12,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
+
 namespace PTW_Load.MeasureItem
 {
     public partial class  PolySpotAll : UserControl
     {
         public List<PolySpot> polyPt = new List<PolySpot>();
         public List<Line> polyLine = new List<Line>();
-        public Label polyVal = new Label();
+        public TextBox polyVal = new TextBox();
+        public Label polyUnit = new Label();
 
         public int maxPt = 6;
         public int minPt = 3;
@@ -108,7 +111,7 @@ namespace PTW_Load.MeasureItem
 
         public void setPolySpotValue(double value)
         {
-            polyVal.Content = value.ToString();
+            polyVal.Text = value.ToString();
         }
         
         public void setVisible(bool isVisible)
@@ -120,6 +123,7 @@ namespace PTW_Load.MeasureItem
                 v = Visibility.Collapsed;
 
             polyVal.Visibility = v;
+            polyUnit.Visibility = v;
 
 
             foreach (PolySpot ps in polyPt)
@@ -158,7 +162,7 @@ namespace PTW_Load.MeasureItem
             imageHeight = _imageHeight;
         }
 
-        public void initialize(double width, double height)
+        public void initialize(double width, double height, String unitName)
         {
             realWidth = width;
             realHeight = height;
@@ -167,10 +171,39 @@ namespace PTW_Load.MeasureItem
             initPt();
             initLine();
 
-            polyVal.Content = (0).ToString();
-            polyVal.Background = Brushes.LightGray;
-            polyVal.Opacity = 0.5;
+            polyVal.Text = (0).ToString();
+            polyVal.VerticalContentAlignment = VerticalAlignment.Top;
+            polyVal.Padding = new Thickness(0, 0, 0, 0);
+            polyVal.FontSize = 15;
+            polyVal.Width = 40;
+            polyVal.Height = 20;
 
+            
+
+            polyUnit.Content = unitName;
+
+
+
+            polyUnit.VerticalContentAlignment = VerticalAlignment.Top;
+            polyUnit.Padding = new Thickness(0, 0, 0, 0);
+            polyUnit.FontSize = 10;
+
+
+
+            polyVal.Background = System.Windows.Media.Brushes.AliceBlue;
+            polyUnit.Background = System.Windows.Media.Brushes.AntiqueWhite;
+            polyUnit.Foreground = System.Windows.Media.Brushes.Black;
+
+
+
+            FormattedText t = new FormattedText(polyUnit.Content.ToString(), System.Globalization.CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight, new Typeface(polyUnit.FontFamily, polyUnit.FontStyle, polyUnit.FontWeight, polyUnit.FontStretch), polyUnit.FontSize, Brushes.Black);
+
+            polyUnit.Width = t.Width + 5;
+            polyUnit.Height = t.Height;
+            
+            
+                
             drawLabel();
         }
         public void initPt()
@@ -250,13 +283,19 @@ namespace PTW_Load.MeasureItem
 
             th.Left = avgPosX - 250;
             th.Top = avgPosY - 130;
-
+            
+            
             polyVal.Margin = th;
-            polyVal.Width = 50;
-            polyVal.Height = 30;
+            
 
+            
+            th.Left = th.Left + 60;
+            polyUnit.Margin = th;
+            
 
-
+            
+            
+            
         }
 
 

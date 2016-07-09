@@ -6,6 +6,6 @@
              mc:Ignorable="d" 
              >
     <Grid Width="15" Height="15">
-        <Ellipse Height="15" Width="15" Stroke ="Red" Fill="Red" />        
+        <Ellipse Height="7" Width="7" Stroke ="Red" Fill="Red" />        
     </Grid>
 </UserControl>

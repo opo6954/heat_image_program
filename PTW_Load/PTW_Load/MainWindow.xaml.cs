@@ -95,8 +95,19 @@ namespace PTW_Load
         Bitmap lossGrayBmp;
         Bitmap lossColorBmp;
 
+        //UI control
+        List<System.Windows.Controls.Image> imageList = new List<System.Windows.Controls.Image>();
+        List<System.Windows.Controls.Image> imageBarList = new List<System.Windows.Controls.Image>();
 
+        enum ImageIdx { IMAGE_GRAY=0, IMAGE_GRAY_REVERSE, IMAGE_COLOR, IMAGE_COLOR_REVERSE };
+        enum ImageBarIdx { IMAGE_BAR_GRAY = 0, IMAGE_BAR_COLOR };
 
+        /*
+         순서는 display, avg, delta, stress, loss, amplitude순서
+         내부의 순서는 gray, gray_reverse, RGB, RGB_reverse로 되어 있음
+         */
+
+        
         int MainHeaderSize;
         int FrameHeaderSize;
         int FrameBodySize;
@@ -132,6 +143,8 @@ namespace PTW_Load
 
         
 
+        
+
 
         int start;
         int end;
@@ -163,7 +176,7 @@ namespace PTW_Load
              for (int i = 0; i < 5; i++)
             {
                 
-                Spot spot = new Spot(frameWidth, frameHeight);
+                Spot spot = new Spot(frameWidth, frameHeight,"℃");
 
                 spot.Visibility = Visibility.Collapsed;
 
@@ -178,7 +191,7 @@ namespace PTW_Load
                     spot.Y = 128;
                 }
 
-
+                 
 
                 spot.RealWidth = grid_edit.ActualWidth;
                 spot.RealHeight = grid_edit.ActualHeight;
@@ -196,7 +209,7 @@ namespace PTW_Load
 
 
             polySpotAll.setImageSize(frameWidth, frameHeight);
-            polySpotAll.initialize(grid_edit.ActualWidth, grid_edit.ActualHeight);
+            polySpotAll.initialize(grid_edit.ActualWidth, grid_edit.ActualHeight,"℃");
             
 
             polySpotAll.setVisible(false);
@@ -212,6 +225,7 @@ namespace PTW_Load
             }
 
             grid_edit.Children.Add(polySpotAll.polyVal);
+            grid_edit.Children.Add(polySpotAll.polyUnit);
         }
            
         private void initSpotInfo()
@@ -219,17 +233,77 @@ namespace PTW_Load
             this.Dispatcher.Invoke(new OnInitSpot(InitSpot));
         }
 
+        private void setImageBinding()
+        {
+            imageList.Clear();
+            imageBarList.Clear();
+
+            imageList.Add(image_display_gray);
+            imageList.Add(image_display_gray_reverse);
+            imageList.Add(image_display_RGB);
+            imageList.Add(image_display_RGB_reverse);
+
+            imageList.Add(image_avg_gray);
+            imageList.Add(image_avg_gray_reverse);
+            imageList.Add(image_avg_RGB);
+            imageList.Add(image_avg_RGB_reverse);
+
+            imageList.Add(image_delta_gray);
+            imageList.Add(image_delta_gray_reverse);
+            imageList.Add(image_delta_RGB);
+            imageList.Add(image_delta_RGB_reverse);
+
+            imageList.Add(image_stress_gray);
+            imageList.Add(image_stress_gray_reverse);
+            imageList.Add(image_stress_RGB);
+            imageList.Add(image_stress_RGB_reverse);
+
+            imageList.Add(image_loss_gray);
+            imageList.Add(image_loss_gray_reverse);
+            imageList.Add(image_loss_RGB);
+            imageList.Add(image_loss_RGB_reverse);
+
+            imageList.Add(image_amp_gray);
+            imageList.Add(image_amp_gray_reverse);
+            imageList.Add(image_amp_RGB);
+            imageList.Add(image_amp_RGB_reverse);
+
+            imageBarList.Add(imageGrayBarGrid);
+            imageBarList.Add(imageColorBarGrid);
+
+            imageBarList.Add(imageGrayBarGrid_avg);
+            imageBarList.Add(imageColorBarGrid_avg);
+
+            imageBarList.Add(imageGrayBarGrid_delta);
+            imageBarList.Add(imageColorBarGrid_delta);
+
+            imageBarList.Add(imageGrayBarGrid_stress);
+            imageBarList.Add(imageColorBarGrid_stress);
+
+            imageBarList.Add(imageGrayBarGrid_amp);
+            imageBarList.Add(imageColorBarGrid_amp);
+            
+
+
+            
+
+
+        }
+
         private void initialize()
         {
             setGrayColorBar();
             setMaterials();
-
+            setImageBinding();
 
 
 
             comboBox_Poly.IsEnabled = false;
 
         }
+
+        
+
 
         private double findValueWithPt(string valStr)
         {
@@ -409,9 +483,17 @@ namespace PTW_Load
             BitmapFrame imgColor = BitmapFrame.Create(imgStreamColor);
 
            
-
+            
 
             imageGrayBarGrid.Source = imgGray;
+            /*
+             * LHWLHW
+             * //bar 그림의 y축을 바꾸는 곳
+            imageGrayBarGrid.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+            ScaleTransform flipTrans = new ScaleTransform();
+            flipTrans.ScaleY = -1;
+            imageGrayBarGrid.RenderTransform = flipTrans;
+            */
             imageColorBarGrid.Source = imgColor;
 
             imageGrayBarGrid_avg.Source = imgGray;
@@ -491,9 +573,7 @@ namespace PTW_Load
              * 4: amplitude
             */
             float divider = 5;
-            max = max;
-            min = min;
-
+            
             float diff = (max - min) / divider;
 
             List<Label> listLabel = new List<Label>();
@@ -567,16 +647,8 @@ namespace PTW_Load
                 teeChartPanel_h.Clear();
                 teeChartPanel.Clear();
 
-                image_display_gray.Source = null;
-                image_display_RGB.Source = null;                
-                image_avg_gray.Source = null;
-                image_avg_RGB.Source = null;
-                image_delta_gray.Source = null;
-                image_delta_RGB.Source = null;
-                image_stress_gray.Source = null;
-                image_stress_RGB.Source = null;
-                image_rev_gray.Source = null;
-                image_rev_RGB.Source = null;
+                for (int i = 0; i < imageList.Count; i++)
+                    imageList[i].Source = null;
             }
 
             comboBox_Km.IsEnabled = state;            
@@ -589,6 +661,7 @@ namespace PTW_Load
             checkBox3.IsEnabled = state;
             checkBox4.IsEnabled = state;
             checkColorPallete.IsEnabled = state;
+            checkReverceColorPallete.IsEnabled = state;
             
             
             button_export.IsEnabled = state;
@@ -1115,8 +1188,8 @@ namespace PTW_Load
 
 
             
-            for (int i = 0; i < FrameCount; i++)
-            //for (int i = 0; i < 20; i++)
+            //for (int i = 0; i < FrameCount; i++)
+            for (int i = 0; i < 20; i++)
             {
                 StartPosition = MainHeaderSize + FrameFullSize * i;
                 using (MemoryMappedViewAccessor accessor = mmf.CreateViewAccessor(StartPosition, FrameHeaderSize))
@@ -1430,7 +1503,7 @@ namespace PTW_Load
 
             ampGrayBmp = bmp.Clone() as Bitmap;
 
-            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image_rev_gray});
+            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image_amp_gray});
 
 
             Bitmap bmpRGB = new Bitmap(frameWidth,frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
@@ -1445,7 +1518,7 @@ namespace PTW_Load
 
 
             this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new Object[] {4, Min,Max});
-            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmpRGB, image_rev_RGB });
+            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmpRGB, image_amp_RGB });
 
 
 
@@ -1484,6 +1557,77 @@ namespace PTW_Load
 
 
             Marshal.FreeHGlobal(p);
+        }
+
+
+        private void changeReverseBar(ImageBarIdx flags, int flip)
+        {
+            int idx = (int)flags;
+            int totImageBar = imageBarList.Count / 2;
+
+            for (int i = 0; i < totImageBar; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    if (j == idx)
+                    {
+                        imageBarList[i * 2 + j].RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+                        ScaleTransform flipTrans = new ScaleTransform();
+                        flipTrans.ScaleY = flip;
+                        imageBarList[i * 2 + j].RenderTransform = flipTrans;
+                    }
+                }
+            }
+        }
+        private void changeReverseBarContent()
+        {
+           
+            List<Label> listLabel = new List<Label>();
+
+            
+            listLabel.Add(colorValue0);
+            listLabel.Add(colorValue1);
+            listLabel.Add(colorValue2);
+            listLabel.Add(colorValue3);
+            listLabel.Add(colorValue4);
+            
+            listLabel.Add(colorValue0_avg);
+            listLabel.Add(colorValue1_avg);
+            listLabel.Add(colorValue2_avg);
+            listLabel.Add(colorValue3_avg);
+            listLabel.Add(colorValue4_avg);
+            
+            listLabel.Add(colorValue0_delta);
+            listLabel.Add(colorValue1_delta);
+            listLabel.Add(colorValue2_delta);
+            listLabel.Add(colorValue3_delta);
+            listLabel.Add(colorValue4_delta);
+            
+            listLabel.Add(colorValue0_stress);
+            listLabel.Add(colorValue1_stress);
+            listLabel.Add(colorValue2_stress);
+            listLabel.Add(colorValue3_stress);
+            listLabel.Add(colorValue4_stress);
+            
+            listLabel.Add(colorValue0_amp);
+            listLabel.Add(colorValue1_amp);
+            listLabel.Add(colorValue2_amp);
+            listLabel.Add(colorValue3_amp);
+            listLabel.Add(colorValue4_amp);
+
+            for (int i = 0; i < 5; i++)
+            {
+                List<String> flipString = new List<String>();
+                for (int j = 0; j < 5; j++)
+                {
+                    flipString.Add(listLabel[i * 5 + j].Content.ToString());
+                }
+                flipString.Reverse();
+                for (int j = 0; j < 5; j++)
+                {
+                    listLabel[i*5+j].Content = flipString[j];
+                }
+            }
         }
 
         private void Grid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -1566,6 +1710,7 @@ namespace PTW_Load
         {
             initialize();
 
+
             
         }
 
@@ -1601,6 +1746,47 @@ namespace PTW_Load
             {
                 textBox_mpa.IsEnabled = false;
                 textBox_mpa.Text = ((double)cb.SelectedValue).ToString();
+            }
+        }
+        private void turnImageBar(ImageBarIdx flags)
+        {
+            int totImageBar = imageBarList.Count / 2;
+            int idx = (int)flags;
+
+            for (int i = 0; i < totImageBar; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    if (j == idx)
+                        imageBarList[i * 2 + j].Visibility = Visibility.Visible;
+                    else
+                        imageBarList[i * 2 + j].Visibility = Visibility.Hidden;
+                }
+            }
+        }
+        private void turnImage(ImageIdx flags)
+        {
+            int idx = (int)flags;
+
+            int totImage = imageList.Count / 4;
+            for (int i = 0; i < totImage; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    if (j == idx)
+                        imageList[i * 4 + j].Visibility = Visibility.Visible;
+                    else
+                        imageList[i * 4 + j].Visibility = Visibility.Hidden;
+                }
+            }
+
+            if (stressLabel.Content.Equals("Stress Data"))
+            {
+                imageList[4 * 4 + idx].Visibility = Visibility.Hidden;
+            }
+            else if (stressLabel.Content.Equals("Loss Data"))
+            {
+                imageList[3 * 4 + idx].Visibility = Visibility.Hidden;
             }
         }
 
@@ -1652,57 +1838,44 @@ namespace PTW_Load
             }
             else if (cb.Name.Equals("checkColorPallete"))
             {
-                image_display_gray.Visibility = Visibility.Hidden;
-                image_display_RGB.Visibility = Visibility.Visible;
+                //만일 reverse가 체크된 경우 RGB reverse image를 보인다
 
-                image_avg_gray.Visibility = Visibility.Hidden;
-                image_avg_RGB.Visibility = Visibility.Visible;
+                turnImageBar(ImageBarIdx.IMAGE_BAR_COLOR);
 
-                image_delta_gray.Visibility = Visibility.Hidden;
-                image_delta_RGB.Visibility = Visibility.Visible;
-
-                if (stressLabel.Content.Equals("Stress Data"))
+                if (checkReverceColorPallete.IsChecked == true)
                 {
-                    image_stress_gray.Visibility = Visibility.Hidden;
-                    image_stress_RGB.Visibility = Visibility.Visible;
+                    turnImage(ImageIdx.IMAGE_COLOR_REVERSE);
                 }
-                else if ( stressLabel.Content.Equals("Loss Data"))
+                else
                 {
-                    image_loss_gray.Visibility = Visibility.Hidden;
-                    image_loss_RGB.Visibility = Visibility.Visible;
+                    turnImage(ImageIdx.IMAGE_COLOR);  
                 }
+            }
 
-
-                /*
-                image_stress_gray.Visibility = Visibility.Hidden;
-                image_stress_RGB.Visibility = Visibility.Visible;
-                */
-                image_rev_gray.Visibility = Visibility.Hidden;
-                image_rev_RGB.Visibility = Visibility.Visible;
-
-                imageGrayBarGrid.Visibility = Visibility.Hidden;
-                imageColorBarGrid.Visibility = Visibility.Visible;
-
-                imageGrayBarGrid_avg.Visibility = Visibility.Hidden;
-                imageColorBarGrid_avg.Visibility = Visibility.Visible;
-
-                imageGrayBarGrid_delta.Visibility = Visibility.Hidden;
-                imageColorBarGrid_delta.Visibility = Visibility.Visible;
-
-                imageGrayBarGrid_stress.Visibility = Visibility.Hidden;
-                imageColorBarGrid_stress.Visibility = Visibility.Visible;
-
-                imageGrayBarGrid_amp.Visibility = Visibility.Hidden;
-                imageColorBarGrid_amp.Visibility = Visibility.Visible;
-
+            else if (cb.Name.Equals("checkReverceColorPallete"))
+            {
+                //만일 reverse가 체크된 경우 RGB reverse image를 보인다
+                
+                if (checkColorPallete.IsChecked == true)
+                    turnImage(ImageIdx.IMAGE_COLOR_REVERSE);   
+                else
+                    turnImage(ImageIdx.IMAGE_GRAY_REVERSE);
+                
+                int flip = -1;
+                changeReverseBar(ImageBarIdx.IMAGE_BAR_COLOR, flip);
+                changeReverseBar(ImageBarIdx.IMAGE_BAR_GRAY, flip);
+                
+                changeReverseBarContent();
 
             }
-            else if(cb.Name.Equals("checkPoly"))
+                
+            else if (cb.Name.Equals("checkPoly"))
             {
                 polySpotAll.setVisible(true);
                 comboBox_Poly.IsEnabled = true;
             }
         }
+
 
         private void checkBox_Unchecked(object sender, RoutedEventArgs e)
         {
@@ -1730,48 +1903,30 @@ namespace PTW_Load
             }
             else if (cb.Name.Equals("checkColorPallete"))
             {
-                image_display_gray.Visibility = Visibility.Visible;
-                image_display_RGB.Visibility = Visibility.Hidden;
+                turnImageBar(ImageBarIdx.IMAGE_BAR_GRAY);
 
-                image_avg_gray.Visibility = Visibility.Visible;
-                image_avg_RGB.Visibility = Visibility.Hidden;
-
-                image_delta_gray.Visibility = Visibility.Visible;
-                image_delta_RGB.Visibility = Visibility.Hidden;
-
-                if (stressLabel.Content.Equals("Stress Data"))
+                if (checkReverceColorPallete.IsChecked == true)
                 {
-                    image_stress_gray.Visibility = Visibility.Visible;
-                    image_stress_RGB.Visibility = Visibility.Hidden;
+                    turnImage(ImageIdx.IMAGE_GRAY_REVERSE);
                 }
-                else if (stressLabel.Content.Equals("Loss Data"))
+                else
                 {
-                    image_loss_gray.Visibility = Visibility.Visible;
-                    image_loss_RGB.Visibility = Visibility.Hidden;
+                    turnImage(ImageIdx.IMAGE_GRAY);
                 }
-               
-                /*
-                image_stress_gray.Visibility = Visibility.Visible;
-                image_stress_RGB.Visibility = Visibility.Hidden;
-                */
-                  
-                image_rev_gray.Visibility = Visibility.Visible;
-                image_rev_RGB.Visibility = Visibility.Hidden;
+            }
+            else if (cb.Name.Equals("checkReverceColorPallete"))
+            {
+                if (checkColorPallete.IsChecked == true)
+                    turnImage(ImageIdx.IMAGE_COLOR);
+                else
+                    turnImage(ImageIdx.IMAGE_GRAY);
 
-                imageGrayBarGrid.Visibility = Visibility.Visible;
-                imageColorBarGrid.Visibility = Visibility.Hidden;
+                int flip = 1;
+                changeReverseBar(ImageBarIdx.IMAGE_BAR_COLOR, flip);
+                changeReverseBar(ImageBarIdx.IMAGE_BAR_GRAY, flip);
 
-                imageGrayBarGrid_avg.Visibility = Visibility.Visible;
-                imageColorBarGrid_avg.Visibility = Visibility.Hidden;
+                changeReverseBarContent();
 
-                imageGrayBarGrid_delta.Visibility = Visibility.Visible;
-                imageColorBarGrid_delta.Visibility = Visibility.Hidden;
-
-                imageGrayBarGrid_stress.Visibility = Visibility.Visible;
-                imageColorBarGrid_stress.Visibility = Visibility.Hidden;
-
-                imageGrayBarGrid_amp.Visibility = Visibility.Visible;
-                imageColorBarGrid_amp.Visibility = Visibility.Hidden;
             }
             else if (cb.Name.Equals("checkPoly"))
             {
