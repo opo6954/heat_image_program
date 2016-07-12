@@ -28,7 +28,7 @@ namespace PTW_Load.Chart
         {
             InitializeComponent();
 
-            chart = new TeeChart();
+            chart = new TeeChart(this);
             windowsFormsHost.Child = chart;
 
             Steema.TeeChart.Themes.BlackIsBackTheme theme = new Steema.TeeChart.Themes.BlackIsBackTheme(chart.Chart.Chart);
@@ -38,7 +38,11 @@ namespace PTW_Load.Chart
             chart.Chart.Aspect.View3D = false;
             chart.Chart.Legend.LegendStyle = Steema.TeeChart.LegendStyles.Series;
             chart.Chart.Legend.TextStyle = Steema.TeeChart.LegendTextStyles.Plain;
+
         }
+
+        
+
 
         public void Clear()
         {
@@ -60,21 +64,29 @@ namespace PTW_Load.Chart
 
         public void GetCursor(out int pos1, out int pos2)
         {
-            Steema.TeeChart.Tools.CursorTool cur1 = chart.Chart.Tools[0] as Steema.TeeChart.Tools.CursorTool;
-            int tmp1 = (int)cur1.XValue;
-
-            Steema.TeeChart.Tools.CursorTool cur2 = chart.Chart.Tools[1] as Steema.TeeChart.Tools.CursorTool;
-            int tmp2 = (int)cur2.XValue;
-
-            if (tmp1 > tmp2)
+            if (chart.Chart.Tools.Count > 0)
             {
-                pos1 = tmp2;
-                pos2 = tmp1;
+                Steema.TeeChart.Tools.CursorTool cur1 = chart.Chart.Tools[0] as Steema.TeeChart.Tools.CursorTool;
+                int tmp1 = (int)cur1.XValue;
+
+                Steema.TeeChart.Tools.CursorTool cur2 = chart.Chart.Tools[1] as Steema.TeeChart.Tools.CursorTool;
+                int tmp2 = (int)cur2.XValue;
+
+                if (tmp1 > tmp2)
+                {
+                    pos1 = tmp2;
+                    pos2 = tmp1;
+                }
+                else
+                {
+                    pos1 = tmp1;
+                    pos2 = tmp2;
+                }
             }
             else
             {
-                pos1 = tmp1;
-                pos2 = tmp2;
+                pos1 = 0;
+                pos2 = 0;
             }
         }
 
@@ -174,5 +186,21 @@ namespace PTW_Load.Chart
             chart.Chart.AutoRepaint = true;
             chart.Chart.Refresh();
         }
+
+        public void UpdateFrameCount()
+        {
+            if (this.Name == "teeChartPanel_h")
+            {
+                int start, end;
+                GetCursor(out start,out end);
+                MainWindow myWin = (MainWindow)System.Windows.Application.Current.MainWindow;
+
+                myWin.callBackTeeChart(start.ToString(), end.ToString());
+
+
+                
+            }
+        }
+
     }
 }

@@ -24,39 +24,85 @@
                 <ColumnDefinition Width="0.5*" />
                 <ColumnDefinition Width="5"/>
             </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">                
-                <Button Content="Load" Height="20" HorizontalAlignment="Left" Margin="12,4,0,0" Name="button_load" VerticalAlignment="Top" Width="75" Click="button_load_Click" />
-                <Button Content="Play" Height="20" HorizontalAlignment="Left" Margin="6,140,0,0" Name="button_play" VerticalAlignment="Top" Width="75" Click="button_play_Click" IsEnabled="false" RenderTransformOrigin="-0.653,0.862"/>
-                <Button Content="Analysis" Height="20" HorizontalAlignment="Left" Margin="86,140,0,0" Name="button_analysis" VerticalAlignment="Top" Width="75" Click="button_analysis_Click" IsEnabled="false" />
-                <Button Content="Export" Height="20" HorizontalAlignment="Left" Margin="166,140,0,0" Name="button_export" VerticalAlignment="Top" Width="75" Click="button_export_Click" IsEnabled="false" RenderTransformOrigin="-0.013,0.069"/>
-                <ComboBox Height="25" HorizontalAlignment="Left" DisplayMemberPath="dispNameKm" SelectionChanged="comboBox_Select"  SelectedValuePath="Km"  IsSynchronizedWithCurrentItem="True" IsEnabled="False" Margin="118,35,0,0" Name="comboBox_Km" VerticalAlignment="Top" Width="116" />
-                <TextBox Height="25" HorizontalAlignment="Left" Margin="46,35,0,0" Name="textBox_mpa" VerticalAlignment="Top" Width="67" IsEnabled="False" />
-                <TextBox Height="25" HorizontalAlignment="Left" Margin="46,63,0,0" Name="textBox_repeat" VerticalAlignment="Top" Width="67" IsEnabled="false" />
-                <CheckBox Content="Spot 0" Height="16" HorizontalAlignment="Left" Margin="12,96,0,0" Name="checkBox0" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
-                <CheckBox Content="Spot 1" Height="16" HorizontalAlignment="Left" Margin="71,96,0,0" Name="checkBox1" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
-                <CheckBox Content="Spot 2" Height="16" HorizontalAlignment="Left" Margin="130,96,0,0" Name="checkBox2" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
-                <CheckBox Content="Spot 3" Height="16" HorizontalAlignment="Left" Margin="12,116,0,0" Name="checkBox3" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
-                <CheckBox Content="Spot 4" Height="16" HorizontalAlignment="Left" Margin="71,116,0,0" Name="checkBox4" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
-                <CheckBox Content="Polygon" Height="16" HorizontalAlignment="Left" Margin="130,117,0,0" Name="checkPoly" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="True"/>
-                <ComboBox SelectionChanged="combo_Polygon" Height="20" SelectedIndex="0"  HorizontalAlignment="Left" IsEnabled="True" Margin="199,114,0,0" Name="comboBox_Poly" VerticalAlignment="Top" Width="39">
-                    <ComboBoxItem Tag="3" Content="3"/>
-                    <ComboBoxItem Tag="4" Content="4"/>
-                    <ComboBoxItem Tag="5" Content="5"/>
-                    <ComboBoxItem Tag="6" Content="6"/>
-                </ComboBox>
+            <Grid Grid.Column="0">  
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Button Content="Load" Height="20" HorizontalAlignment="Left" Name="button_load" VerticalAlignment="Top" Width="75" Click="button_load_Click" />
+                        <CheckBox Content="Color" Margin="20,0,0,0" Width="80" Height="16"  Name="checkColorPallete" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                        <CheckBox Content="Reverse" Width="80" Height="16"  Name="checkReverceColorPallete" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                    </StackPanel>
                 
-                <Label Content="Km" Height="28" HorizontalAlignment="Left" Margin="6,29,0,0" Name="label1" VerticalAlignment="Top" />                
-                <Label Content="Cycle" Height="28" HorizontalAlignment="Left" Margin="6,61,0,0" Name="label2" VerticalAlignment="Top" />
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="File load name" Height="29" Name="file_load_name_dir" Width="91"/>
+                        <TextBox Height="20" IsReadOnly="True" IsEnabled="True" Name="file_load_name" Width="120" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Frame number" Height="29" HorizontalAlignment="Left" Name="frame_load_name_dir" Width="91"/>
+                        <TextBox Height="20" HorizontalAlignment="Left" IsReadOnly="True" IsEnabled="True" Name="frame_load_name" Width="120" />
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal">
+                    <Label Content="Km" Height="28" Width="50" HorizontalAlignment="Left" Name="label1" />
+                    <TextBox Height="25" HorizontalAlignment="Left" Name="textBox_mpa" Width="67" IsEnabled="False" />
+                    <ComboBox Margin="20,0,0,0" Height="25" DisplayMemberPath="dispNameKm" SelectionChanged="comboBox_Select"  SelectedValuePath="Km"  IsSynchronizedWithCurrentItem="True" IsEnabled="False" Name="comboBox_Km" Width="100" />
+                    </StackPanel>
+                    
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <Label Content="Cycle" Height="28" Width="50" HorizontalAlignment="Left" Name="label2" VerticalAlignment="Top" />
+                        <TextBox Height="25" HorizontalAlignment="Left" Name="textBox_repeat" VerticalAlignment="Top" Width="67" IsEnabled="false" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                    <Button Margin="5,0,0,0" Content="Play" Height="20" HorizontalAlignment="Left" Name="button_play" Width="75" Click="button_play_Click" IsEnabled="false" RenderTransformOrigin="-0.653,0.862"/>
+                        <Button Margin="5,0,0,0" Content="Analysis" Height="20" HorizontalAlignment="Left" Name="button_analysis" VerticalAlignment="Top" Width="75" Click="button_analysis_Click" IsEnabled="false" />
+                        <Button Margin="5,0,0,0" Content="Export" Height="20" HorizontalAlignment="Left" Name="button_export" VerticalAlignment="Top" Width="75" Click="button_export_Click" IsEnabled="false" RenderTransformOrigin="-0.013,0.069"/>
+                    </StackPanel>
+                </StackPanel>
             </Grid>
             <GridSplitter Grid.Column="1"  Width ="5" HorizontalAlignment="Stretch"/>
-            <Grid Grid.Column="2" Grid.ColumnSpan="3" Margin="0,0,0,0">
-                <Label Content="File load name" Height="29" HorizontalAlignment="Left" Margin="12,3,0,0" Name="file_load_name_dir" VerticalAlignment="Top" Width="91"/>
-                <TextBox Height="20" HorizontalAlignment="Left" IsReadOnly="True" IsEnabled="True" Margin="108,8,0,0" Name="file_load_name" VerticalAlignment="Top" Width="100" />
-                <Label Content="Frame number" Height="29" HorizontalAlignment="Left" Margin="12,35,0,0" Name="frame_load_name_dir" VerticalAlignment="Top" Width="91"/>
-                <TextBox Height="20" HorizontalAlignment="Left" IsReadOnly="True" IsEnabled="True" Margin="108,40,0,0" Name="frame_load_name" VerticalAlignment="Top" Width="100" />
-                <CheckBox Content="Color Pallete" Height="16" HorizontalAlignment="Left" Margin="20,100,0,0" Name="checkColorPallete" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
-                <CheckBox Content="Reverse Color" Height="16" HorizontalAlignment="Left" Margin="20,120,0,0" Name="checkReverceColorPallete" VerticalAlignment="Top" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
-                
+            <Grid Grid.Column="2" Margin="0,10,0,0">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Locking Period"></Label>
+                        <TextBox Height="20" IsReadOnly="True" IsEnabled="True" Name="locking_period" Width="120" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Locking Phase"></Label>
+                        <TextBox Height="20" IsReadOnly="True" IsEnabled="True" Name="locking_phase" Width="120" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Width"></Label>
+                        <TextBox Name="widthText" Height="20" IsReadOnly="True" IsEnabled="True" Width="70" />
+                        <Label Content="Height"></Label>
+                        <TextBox Name="heightText" Height="20" IsReadOnly="True" IsEnabled="True" Width="70" />
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <Label Content="Spot Analysis"></Label>
+                        <ComboBox Name="combo_region" SelectionChanged="combo_region_event" Height="20" HorizontalAlignment="Left" IsEnabled="True" Width="100">
+                            <ComboBoxItem IsEnabled="False" Tag="0" Content="First Frame"/>
+                            <ComboBoxItem IsEnabled="False" Tag="1" Content="Average Frame"/>
+                            <ComboBoxItem IsEnabled="False" Tag="2" Content="Delta Frame"/>
+                            <ComboBoxItem IsEnabled="False" Tag="3" Content="Stress Frame"/>
+                            <ComboBoxItem IsEnabled="False" Tag="4" Content="Loss Frame"/>
+                            <ComboBoxItem IsEnabled="False" Tag="5" Content="Amplitude Frame"/>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
+                        <CheckBox Content="Spot 0" Width="65" Height="16" HorizontalAlignment="Left" Name="checkBox0" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                        <CheckBox Content="Spot 1" Width="65" Height="16" HorizontalAlignment="Left" Name="checkBox1" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                        <CheckBox Content="Spot 2" Width="65" Height="16" HorizontalAlignment="Left" Name="checkBox2" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                    </StackPanel>
+                    <StackPanel Margin="10,0,0,0" Orientation="Horizontal">
+                        <CheckBox Width="65" Content="Spot 3" Height="16" HorizontalAlignment="Left" Name="checkBox3" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                        <CheckBox Width="65" Content="Spot 4" Height="16" HorizontalAlignment="Left" Name="checkBox4" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="false"/>
+                        <CheckBox Width="65" Content="Polygon" Height="16" HorizontalAlignment="Left" Name="checkPoly" Checked="checkBox_Checked" Unchecked="checkBox_Unchecked" IsEnabled="True"/>
+                    <ComboBox SelectionChanged="combo_Polygon" Height="20" SelectedIndex="0"  HorizontalAlignment="Left" IsEnabled="True" Name="comboBox_Poly" Width="39">
+                        <ComboBoxItem Tag="3" Content="3"/>
+                        <ComboBoxItem Tag="4" Content="4"/>
+                        <ComboBoxItem Tag="5" Content="5"/>
+                        <ComboBoxItem Tag="6" Content="6"/>
+                    </ComboBox>
+                    </StackPanel>
+                </StackPanel>
                 
             </Grid>
 
@@ -112,7 +158,7 @@
                     <ColumnDefinition Width="1.5*" />
                     <ColumnDefinition Width="0.5*" />
                 </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0">
+                <Grid Grid.Column="0" Name="grid_edit_avg" PreviewMouseDown="Grid_PreviewMouseDown" PreviewMouseMove="Grid_PreviewMouseMove" PreviewMouseUp="Grid_PreviewMouseUp" SizeChanged="grid_edit_SizeChanged">
                 <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_avg_gray" Stretch="Fill" VerticalAlignment="Stretch" />
                 <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_avg_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
                 <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_avg_gray_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
@@ -153,7 +199,7 @@
                     <ColumnDefinition Width="1.5*" />
                     <ColumnDefinition Width="0.5*" />
                 </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0">
+                <Grid Grid.Column="0" Name="grid_edit_delta" PreviewMouseDown="Grid_PreviewMouseDown" PreviewMouseMove="Grid_PreviewMouseMove" PreviewMouseUp="Grid_PreviewMouseUp" SizeChanged="grid_edit_SizeChanged">
                     <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_delta_gray" Stretch="Fill" VerticalAlignment="Stretch" />
                     <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_delta_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
                     <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_delta_gray_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
@@ -201,7 +247,7 @@
                     <ColumnDefinition Width="1.5*" />
                     <ColumnDefinition Width="0.5*" />
                 </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0">
+                <Grid Grid.Column="0" Name="grid_edit_stress" PreviewMouseDown="Grid_PreviewMouseDown" PreviewMouseMove="Grid_PreviewMouseMove" PreviewMouseUp="Grid_PreviewMouseUp" SizeChanged="grid_edit_SizeChanged">
                     <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_stress_gray" Stretch="Fill" VerticalAlignment="Stretch" />
                     <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_stress_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
                     <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_stress_gray_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
@@ -250,7 +296,7 @@
                     <ColumnDefinition Width="1.5*" />
                     <ColumnDefinition Width="0.5*" />
                 </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0">
+                <Grid Grid.Column="0" Name="grid_edit_amp" PreviewMouseDown="Grid_PreviewMouseDown" PreviewMouseMove="Grid_PreviewMouseMove" PreviewMouseUp="Grid_PreviewMouseUp" SizeChanged="grid_edit_SizeChanged">
                     <Image HorizontalAlignment="Stretch" Visibility="Visible" Name="image_amp_gray" Stretch="Fill" VerticalAlignment="Stretch" />
                     <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_amp_RGB" Stretch="Fill" VerticalAlignment="Stretch" />
                     <Image HorizontalAlignment="Stretch" Visibility="Hidden" Name="image_amp_gray_reverse" Stretch="Fill" VerticalAlignment="Stretch"/>
@@ -274,7 +320,7 @@
                         <Label Content="0" Height="29" HorizontalAlignment="Left" Margin="0,130,0,0" Name="colorValue0_amp" VerticalAlignment="Top" Width="38"/>
                         <Image Width="50" Visibility="Visible" Name="imageGrayBarGrid_amp" VerticalAlignment="Top"  />
                         <Image Width="50" Visibility="Hidden"  Name="imageColorBarGrid_amp" VerticalAlignment="Top" />
-                        <Label Content="DL" Height="29" HorizontalAlignment="Right" Margin="0,10,0,0"  VerticalAlignment="Top" Width="40">
+                        <Label Content="" Height="29" HorizontalAlignment="Right" Margin="0,10,0,0"  VerticalAlignment="Top" Width="40">
                             <Label.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                     <GradientStop Color="LightGray" Offset="0.1"/>
@@ -312,15 +358,37 @@
                 </Label.Background>
             </Label>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"></GridSplitter>
-            <Label Grid.Column="2" Content="Frame Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30">
-                <Label.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="LightGray" Offset="0.1"/>
-                        <GradientStop Color="GhostWhite" Offset="0.8"/>
-                    </LinearGradientBrush>
-                </Label.Background>
-            </Label>
-            <Label Grid.Column="2" Content="DL" Height="29" HorizontalAlignment="Right" VerticalAlignment="Top" Width="40">
+            
+            
+            
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Label Content="Frame Data" HorizontalContentAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="100" Height="30">
+                    <Label.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="LightGray" Offset="0.1"/>
+                            <GradientStop Color="GhostWhite" Offset="0.8"/>
+                        </LinearGradientBrush>
+                    </Label.Background>
+                </Label>
+
+                
+                <Label Content="Frame selection" HorizontalAlignment="Left">
+                    <Label.Background>
+                        <LinearGradientBrush>
+                            <GradientStop Color="AliceBlue" Offset="0.1"></GradientStop>
+                            <GradientStop Color="GhostWhite" Offset="0.8"></GradientStop>
+                        </LinearGradientBrush>
+                    </Label.Background>
+                    
+                </Label>
+            <Label Content="Start frame" HorizontalAlignment="Center"></Label>
+                <TextBox Text="0" Name="startFrame" IsReadOnly="True" Width="50"></TextBox>
+            <Label Content="End frame" HorizontalAlignment="Center"></Label>
+                <TextBox Text="0" Name="endFrame" IsReadOnly="True" Width="50"></TextBox>
+                
+            </StackPanel>
+
+            <Label Grid.Column="2" Content="" Height="29" HorizontalAlignment="Right" VerticalAlignment="Top" Width="40">
                 <Label.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                         <GradientStop Color="LightGray" Offset="0.1"/>
@@ -329,9 +397,8 @@
                 </Label.Background>
             </Label>
 
-            
-            
-            
+
+
         </Grid>
         <Grid Grid.Row="7">
             <Grid.ColumnDefinitions>

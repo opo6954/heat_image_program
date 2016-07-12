@@ -23,6 +23,10 @@ namespace PTW_Load.MeasureItem
         private int imageWidth;
         private int imageHeight;
 
+        private int offSetX=8;
+        private int offSetY = 8;
+
+
         public int ptID;
 
         public bool isShown = true;
@@ -133,8 +137,8 @@ namespace PTW_Load.MeasureItem
 
 
 
-                    X = (int)((margin.Left + 16) * imageWidth / realWidth);
-                    Y = (int)((margin.Top + 16) * imageHeight / realHeight);
+                    X = (int)((margin.Left + offSetX) * imageWidth / realWidth);
+                    Y = (int)((margin.Top + offSetY) * imageHeight / realHeight);
 
 
                     polyLayer.drawLabel();
@@ -181,8 +185,8 @@ namespace PTW_Load.MeasureItem
         {
 
             Thickness margin = Margin;
-            margin.Left = (X * realWidth / imageWidth)-16;
-            margin.Top = (Y * realHeight / imageHeight)-16;
+            margin.Left = (X * realWidth / imageWidth)-offSetX;
+            margin.Top = (Y * realHeight / imageHeight)-offSetY;
             Margin = margin;
 
         }

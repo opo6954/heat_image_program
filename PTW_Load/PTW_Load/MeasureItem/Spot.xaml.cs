@@ -21,6 +21,9 @@ namespace PTW_Load.MeasureItem
     {
         private Point prePosition = new Point();
         private bool IsPress = false;
+
+        private int offSetX = 10;
+        private int offSetY = 16;
         
 
         private int ImageWidth;
@@ -82,13 +85,7 @@ namespace PTW_Load.MeasureItem
             VerticalAlignment = VerticalAlignment.Top;
             HorizontalAlignment = HorizontalAlignment.Left;
 
-            unit.Content = unitName;
-
-            FormattedText t = new FormattedText(unit.Content.ToString(), System.Globalization.CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight, new Typeface(unit.FontFamily, unit.FontStyle, unit.FontWeight, unit.FontStretch), unit.FontSize, Brushes.Black);
-
-            unit.Width = t.Width + 5;
-            unit.Height = t.Height;
+            
 
 
 
@@ -129,8 +126,8 @@ namespace PTW_Load.MeasureItem
                 margin.Top += moveY;
                 Margin = margin;
 
-                X = (int)((margin.Left + 16) * ImageWidth / RealWidth);
-                Y = (int)((margin.Top + 16) * ImageHeight / RealHeight);
+                X = (int)((margin.Left + offSetX) * ImageWidth / RealWidth);
+                Y = (int)((margin.Top + offSetY) * ImageHeight / RealHeight);
 
                 prePosition.X = x;
                 prePosition.Y = y;
@@ -153,8 +150,59 @@ namespace PTW_Load.MeasureItem
             
             MainWindow myWin = (MainWindow)System.Windows.Application.Current.MainWindow;
 
-            if (myWin.StressImage != null)
-                value.Text = ((myWin.StressImage[Y * ImageHeight + X])).ToString();
+            short[] image=null;
+            double[] imageD = null;
+
+            double spotValue=-1;
+            
+
+            switch (myWin.currAnalysisRegion)
+            {
+                case 0:
+                    if(myWin.FirstFrameImage != null)
+                        image = myWin.FirstFrameImage;
+                    break;
+                case 1:
+                    if (myWin.AvgImage != null)
+                        image = myWin.AvgImage;
+                    break;
+                case 2:
+                    if (myWin.DeltaImage != null)
+                        image = myWin.DeltaImage;
+                    break;
+                case 3:
+                    if (myWin.StressImage != null)
+                        imageD = myWin.StressImage;
+                    break;
+                case 4:
+                    if (myWin.LossImage != null)
+                        image = myWin.LossImage;
+                    break;
+                case 5:
+                    if (myWin.AmplitudeImage != null)
+                        image = myWin.AmplitudeImage;
+                    break;
+            }
+            if (image == null && imageD == null)
+                return;
+            else
+            {
+                
+                if (myWin.currAnalysisRegion == 0)
+                {
+                    spotValue = (double)myWin.ConvertTemp(image[Y * ImageWidth + X]);
+                }
+                else if (myWin.currAnalysisRegion == 3)
+                {
+                    spotValue = imageD[Y * ImageWidth + X];
+                }
+                else
+                {
+                    spotValue = (double)image[Y * ImageWidth + X];
+                }
+
+                value.Text = spotValue.ToString();
+            }
         }
 
         public void MouseUpEvent(double x, double y)
@@ -182,8 +230,8 @@ namespace PTW_Load.MeasureItem
         public void Position()
         {
             Thickness margin = Margin;
-            margin.Left = (X * RealWidth / ImageWidth) - 16;
-            margin.Top = (Y * RealHeight / ImageHeight) - 16;
+            margin.Left = (X * RealWidth / ImageWidth) - offSetX;
+            margin.Top = (Y * RealHeight / ImageHeight) - offSetY;
             Margin = margin;
         }
     }

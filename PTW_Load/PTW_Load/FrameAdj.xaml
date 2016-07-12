@@ -1,0 +1,56 @@
+﻿<Window x:Class="PTW_Load.FrameAdj"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="FrameAdj" ResizeMode="NoResize" Height="300" Width="300">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <Label Content="File Info." FontSize="15">
+                <Label.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Color="AliceBlue" Offset="0.1"></GradientStop>
+                        <GradientStop Color="GhostWhite"  Offset="0.9"></GradientStop>
+                    </LinearGradientBrush>
+                    
+                </Label.Background>
+                
+            </Label>
+            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                <Label Content="File Name: " VerticalAlignment="Top" HorizontalAlignment="Left" ></Label>
+                <TextBox Text="D:\power\dkjfalaknewrkewrlweqr\adfadf" Width="200" IsReadOnly="True" Name="FileName" VerticalAlignment="Top" HorizontalAlignment="Center" ></TextBox>
+                
+                
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                <Label Content="Max Frame Count: " VerticalAlignment="Top" HorizontalAlignment="Left" ></Label>
+                <TextBox Text="3000" IsReadOnly="True" Name="frameCount" VerticalAlignment="Top" HorizontalAlignment="Center" ></TextBox>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                <Label Content="Width: " VerticalAlignment="Top" HorizontalAlignment="Left" ></Label>
+                <TextBox Text="640" IsReadOnly="True" Name="frameWidth" VerticalAlignment="Top" HorizontalAlignment="Left" ></TextBox>
+                <Label Content="Height: " VerticalAlignment="Top" HorizontalAlignment="Left" ></Label>
+                <TextBox Text="512" IsReadOnly="True" Name="frameHeight" VerticalAlignment="Top" HorizontalAlignment="Left" ></TextBox>
+            </StackPanel>
+            <Label Content="Frame Selection" FontSize="15">
+                <Label.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Color="AliceBlue" Offset="0.1"></GradientStop>
+                        <GradientStop Color="GhostWhite" Offset="0.9"></GradientStop>
+                    </LinearGradientBrush>
+                </Label.Background>
+            </Label>
+            <StackPanel Orientation="Horizontal">
+            <Label Content="Min Frame Count: "></Label>
+            <TextBox Text="20" Name="minFrameCount" Width="50" HorizontalAlignment="Left" ></TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Max Frame Count: "></Label>
+                <TextBox Text="2000" Name="maxFrameCount" Width="50" HorizontalAlignment="Left" ></TextBox>
+                <Label Content="(Maximum: 3000)" Name="LimitFrame"  FontWeight="Bold"></Label>
+            </StackPanel>
+            <Label Content=""></Label>
+            <Button Content="OK" Click="Button_Click_1" Width="100"></Button>
+            <Button Content="Cancel" Click="Button_Click_2" Width="100"></Button>
+        </StackPanel>
+        
+    </Grid>
+</Window>

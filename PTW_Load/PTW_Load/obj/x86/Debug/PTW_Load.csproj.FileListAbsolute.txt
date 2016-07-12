@@ -115,3 +115,5 @@ D:\lhw\parttime\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.Char
 D:\lhw\parttime\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.Properties.Resources.resources
 D:\lhw\parttime\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.csproj.GenerateResource.Cache
 D:\lhw\parttime\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\PTW_Load.exe.licenses
+D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\FrameAdj.baml
+D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Debug\FrameAdj.g.cs

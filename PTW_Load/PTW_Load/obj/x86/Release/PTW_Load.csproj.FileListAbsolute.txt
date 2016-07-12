@@ -121,3 +121,5 @@ D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\PTW_Load\o
 D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Release\MeasureItem\PolySpotAll.baml
 D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Release\MeasureItem\PolySpot.g.cs
 D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Release\MeasureItem\PolySpotAll.g.cs
+D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Release\FrameAdj.baml
+D:\1mythings\part-time\Heat image program\heat_image_program\PTW_Load\PTW_Load\obj\x86\Release\FrameAdj.g.cs

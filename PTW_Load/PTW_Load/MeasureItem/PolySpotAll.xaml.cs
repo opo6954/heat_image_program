@@ -21,7 +21,7 @@ namespace PTW_Load.MeasureItem
         public List<PolySpot> polyPt = new List<PolySpot>();
         public List<Line> polyLine = new List<Line>();
         public TextBox polyVal = new TextBox();
-        public Label polyUnit = new Label();
+        
 
         public int maxPt = 6;
         public int minPt = 3;
@@ -33,7 +33,30 @@ namespace PTW_Load.MeasureItem
 
         public int currIdx = 3;
 
+        delegate void OnMoveComponent(Grid before, Grid curr);
 
+        private void MoveComponent(Grid before, Grid curr)
+        {
+            foreach (PolySpot ps in polyPt)
+            {
+                before.Children.Remove(ps);
+                curr.Children.Add(ps);
+            }
+            foreach (Line l in polyLine)
+            {
+                before.Children.Remove(l);
+                curr.Children.Add(l);
+            }
+            before.Children.Remove(polyVal);
+            curr.Children.Add(polyVal);
+        }
+
+
+
+        public void moveAllObject(Grid g)
+        {
+            this.Dispatcher.Invoke(new OnMoveComponent(MoveComponent),new object[]{polyPt[0].Parent,g});
+        }
 
         public void addPt(int numPt)
         {
@@ -94,19 +117,77 @@ namespace PTW_Load.MeasureItem
         {
             
             MainWindow myWin = (MainWindow)System.Windows.Application.Current.MainWindow;
-            if (myWin.StressImage != null)
+
+            short[] image = null;
+            double[] imageD = null;
+
+            double spotValue=0;
+
+            switch (myWin.currAnalysisRegion)
             {
-                double avgStress = 0;
-
-                for (int i = 0; i < currIdx; i++)
-                {
-                    PolySpot ps = polyPt[i];
-                    avgStress += (double)(myWin.StressImage[ps.Y * imageHeight + ps.X]);
-                }
-
-                avgStress = avgStress / currIdx;
-                setPolySpotValue(avgStress);
+                case 0:
+                    if (myWin.FirstFrameImage != null)
+                        image = myWin.FirstFrameImage;
+                    break;
+                case 1:
+                    if (myWin.AvgImage != null)
+                        image = myWin.AvgImage;
+                    break;
+                case 2:
+                    if (myWin.DeltaImage != null)
+                        image = myWin.DeltaImage;
+                    break;
+                case 3:
+                    if (myWin.StressImage != null)
+                        imageD = myWin.StressImage;
+                    break;
+                case 4:
+                    if (myWin.LossImage != null)
+                        image = myWin.LossImage;
+                    break;
+                case 5:
+                    if (myWin.AmplitudeImage != null)
+                        image = myWin.AmplitudeImage;
+                    break;
             }
+
+            if (image == null && imageD == null)
+                return;
+            else
+            {
+                if (myWin.currAnalysisRegion == 0)
+                {
+                    
+
+                    for (int i = 0; i < currIdx; i++)
+                    {
+                        PolySpot ps = polyPt[i];
+                        spotValue += (double)(myWin.ConvertTemp(image[ps.Y * imageWidth + ps.X]));
+                    }
+                    spotValue = spotValue / currIdx;
+                }
+                else if (myWin.currAnalysisRegion == 3)
+                {
+                    for (int i = 0; i < currIdx; i++)
+                    {
+                        PolySpot ps = polyPt[i];
+                        spotValue += (double)(imageD[ps.Y * imageWidth + ps.X]);
+                    }
+                    spotValue = spotValue / currIdx;
+                }
+                else
+                {
+                    for (int i = 0; i < currIdx; i++)
+                    {
+                        PolySpot ps = polyPt[i];
+                        spotValue += (double)(image[ps.Y * imageWidth + ps.Y]);
+                    }
+                    spotValue = spotValue / currIdx;
+                }
+            }
+
+            setPolySpotValue(spotValue);
+            
         }
 
         public void setPolySpotValue(double value)
@@ -123,7 +204,7 @@ namespace PTW_Load.MeasureItem
                 v = Visibility.Collapsed;
 
             polyVal.Visibility = v;
-            polyUnit.Visibility = v;
+            
 
 
             foreach (PolySpot ps in polyPt)
@@ -180,36 +261,21 @@ namespace PTW_Load.MeasureItem
 
             
 
-            polyUnit.Content = unitName;
 
-
-
-            polyUnit.VerticalContentAlignment = VerticalAlignment.Top;
-            polyUnit.Padding = new Thickness(0, 0, 0, 0);
-            polyUnit.FontSize = 10;
 
 
 
             polyVal.Background = System.Windows.Media.Brushes.AliceBlue;
-            polyUnit.Background = System.Windows.Media.Brushes.AntiqueWhite;
-            polyUnit.Foreground = System.Windows.Media.Brushes.Black;
+           
 
-
-
-            FormattedText t = new FormattedText(polyUnit.Content.ToString(), System.Globalization.CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight, new Typeface(polyUnit.FontFamily, polyUnit.FontStyle, polyUnit.FontWeight, polyUnit.FontStretch), polyUnit.FontSize, Brushes.Black);
-
-            polyUnit.Width = t.Width + 5;
-            polyUnit.Height = t.Height;
-            
             
                 
             drawLabel();
         }
         public void initPt()
         {
-            int[] initX = new int[6]{150,200,300,350,300,200};
-            int[] initY = new int[6]{150,100,100,150,200,200};
+            int[] initX = new int[6]{100,150,250,300,250,150};
+            int[] initY = new int[6]{100,50,50,100,150,150};
             
             for (int i = 0; i < maxPt; i++)
             {
@@ -290,7 +356,7 @@ namespace PTW_Load.MeasureItem
 
             
             th.Left = th.Left + 60;
-            polyUnit.Margin = th;
+            
             
 
             

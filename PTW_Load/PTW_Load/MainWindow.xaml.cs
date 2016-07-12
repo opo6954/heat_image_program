@@ -33,19 +33,19 @@ namespace PTW_Load
     /// </summary>
     /// 
 
-    
-    
+
+
     public partial class MainWindow : Window
     {
-        
+
         [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static unsafe void CalcurateMinMax(IntPtr img, IntPtr sum, IntPtr pmax, IntPtr pmin, int size, out int min, out int max, int bit);
 
         [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static unsafe void DrawImage(IntPtr hBit, IntPtr img, int width, int height, int min, int max, int span, int bit);
+        extern public static unsafe void DrawImage(IntPtr hBit, IntPtr img, int width, int height, int min, int max, int span, int bit, bool isReverse);
 
         [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static unsafe void DrawImageRGB(IntPtr hBit, IntPtr img, int width, int height, int min, int max, int span, int bit);
+        extern public static unsafe void DrawImageRGB(IntPtr hBit, IntPtr img, int width, int height, int min, int max, int span, int bit, bool isReverse);
 
         [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static unsafe void GetAvgData(IntPtr sum, IntPtr avg, int count, int size);
@@ -57,16 +57,16 @@ namespace PTW_Load
         extern public static unsafe void CalcurateMinMax2(IntPtr img, int size, out int min, out int max);
 
         [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static unsafe void DrawImage2(IntPtr hBit, IntPtr img, int width, int height, int min, int max, int span, int bit);
+        extern public static unsafe void DrawImage2(IntPtr hBit, IntPtr img, int width, int height, int min, int max, int span, int bit, bool isReverse);
 
         [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static unsafe void DrawImage2_Double(IntPtr hBit, IntPtr img, int width, int height, double min, double max, double span, int bit);
+        extern public static unsafe void DrawImage2_Double(IntPtr hBit, IntPtr img, int width, int height, double min, double max, double span, int bit, bool isReverse);
 
         [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static unsafe void DrawImage2RGB(IntPtr hBit, IntPtr img, int width, int height, int min, int max, int span, int bit);
+        extern public static unsafe void DrawImage2RGB(IntPtr hBit, IntPtr img, int width, int height, int min, int max, int span, int bit, bool isReverse);
 
         [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static unsafe void DrawImage2RGB_Double(IntPtr hBit, IntPtr img, int width, int height, double min, double max, double span, int bit);
+        extern public static unsafe void DrawImage2RGB_Double(IntPtr hBit, IntPtr img, int width, int height, double min, double max, double span, int bit, bool isReverse);
 
         [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static unsafe void setIntZeros(IntPtr sum, int size);
@@ -75,62 +75,87 @@ namespace PTW_Load
         extern public static unsafe void setShortZeros(IntPtr sum, int size);
 
         [DllImport("CalcLib.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static unsafe void CalcurateMinMax_Double(IntPtr img, int size, out double min,out double max);
+        extern public static unsafe void CalcurateMinMax_Double(IntPtr img, int size, out double min, out double max);
 
 
         MemoryMappedFile mmf;
 
         Bitmap avgGrayBmp;
         Bitmap avgColorBmp;
-        
+        Bitmap avgGrayBmpReverse;
+        Bitmap avgColorBmpReverse;
+
         Bitmap ampGrayBmp;
         Bitmap ampColorBmp;
+        Bitmap ampGrayBmpReverse;
+        Bitmap ampColorBmpReverse;
 
         Bitmap deltaGrayBmp;
         Bitmap deltaColorBmp;
+        Bitmap deltaGrayBmpReverse;
+        Bitmap deltaColorBmpReverse;
+
 
         Bitmap stressGrayBmp;
         Bitmap stressColorBmp;
+        Bitmap stressGrayBmpReverse;
+        Bitmap stressColorBmpReverse;
+
 
         Bitmap lossGrayBmp;
         Bitmap lossColorBmp;
+        Bitmap lossGrayBmpReverse;
+        Bitmap lossColorBmpReverse;
 
         //UI control
-        List<System.Windows.Controls.Image> imageList = new List<System.Windows.Controls.Image>();
-        List<System.Windows.Controls.Image> imageBarList = new List<System.Windows.Controls.Image>();
+        public List<System.Windows.Controls.Image> imageList = new List<System.Windows.Controls.Image>();
+        public List<System.Windows.Controls.Image> imageBarList = new List<System.Windows.Controls.Image>();
+        public List<Grid> spotAnalysisGridList = new List<Grid>();
 
-        enum ImageIdx { IMAGE_GRAY=0, IMAGE_GRAY_REVERSE, IMAGE_COLOR, IMAGE_COLOR_REVERSE };
+        enum ImageIdx { IMAGE_GRAY = 0, IMAGE_GRAY_REVERSE, IMAGE_COLOR, IMAGE_COLOR_REVERSE };
         enum ImageBarIdx { IMAGE_BAR_GRAY = 0, IMAGE_BAR_COLOR };
+        enum ImageOrderIdx { IMAGE_FIRSTFRAME = 0, IMAGE_AVG, IMAGE_DELTA, IMAGE_STRESS, IMAGE_LOSS, IMAGE_AMPLITUDE };
+        enum SpotAnalysisIdx {ANALYSIS_INIT=0, ANALYSIS_AFTER_LOAD=1,ANALYSIS_AFTER_PLAY=5,ANALYSIS_AFTER_ANALYSIS=6};
 
         /*
          순서는 display, avg, delta, stress, loss, amplitude순서
          내부의 순서는 gray, gray_reverse, RGB, RGB_reverse로 되어 있음
          */
 
-        
+        public int currAnalysisRegion;
+
         int MainHeaderSize;
         int FrameHeaderSize;
         int FrameBodySize;
         int FrameFullSize;
         int FrameCount;
+        String fileName;
         long StartPosition;
+        bool isLoadStart = false;
+        public bool isAbort = false;
+        bool isColor=false;
+        bool isReverse = false;
+       
+
+        public int minFrameCount;
+        public int maxFrameCount;
 
         //resolution 지원 부분, 지금은 640 512랑 320 256 사이즈만 지원
 
 
 
-        enum FRAMERESOULTION {SIZE640512=0, SIZE320256=1}
+        enum FRAMERESOULTION { SIZE640512 = 0, SIZE320256 = 1 }
 
-        FrameResolutionInfo[] frameSizeInfo = new FrameResolutionInfo[2] {new FrameResolutionInfo(640,512), new FrameResolutionInfo(320,256)};
+        FrameResolutionInfo[] frameSizeInfo = new FrameResolutionInfo[2] { new FrameResolutionInfo(640, 512), new FrameResolutionInfo(320, 256) };
 
         FRAMERESOULTION fr;
-        
+
         int frameTotSize;
         public int frameWidth;
         public int frameHeight;
 
         //List<string> mylist = new List<string>(new string[] { "element1", "element2", "element3" });
-        
+
 
 
         private List<Spot> SpotItems = new List<Spot>();
@@ -141,18 +166,20 @@ namespace PTW_Load
         private PolySpot PressedPoly = null;
         private List<Material> MaterialItems = new List<Material>();
 
-        
 
-        
+
+
 
 
         int start;
         int end;
 
-        short[] AvgImage;
-        short[] DeltaImage;
+        public short[] FirstFrameImage;
+        public short[] AvgImage;
+        public short[] DeltaImage;
         public double[] StressImage;
         public short[] LossImage;
+        public short[] AmplitudeImage;
 
         double max_stress;
         double min_stress;
@@ -161,7 +188,7 @@ namespace PTW_Load
         short min_loss;
 
 
-        short[] AmplitudeImage;
+        
 
         double mpa;
 
@@ -170,13 +197,54 @@ namespace PTW_Load
         {
             InitializeComponent();
         }
+
+        public void callBackTeeChart(String start, String end)
+        {
+            this.Dispatcher.Invoke(new OnShowFrameCount(ShowFrameCount), new object[] { start, end });
+        }
+
+        delegate void OnShowFrameCount(String start, String end);
+        private void ShowFrameCount(String start, String end)
+        {
+            startFrame.Text = start;
+            endFrame.Text = end;
+        }
+
+        delegate void OnEnableComboRegion(SpotAnalysisIdx idx);
+        private void EnableComboRegion(SpotAnalysisIdx idx)
+        {
+            
+            for (int i = 0; i < combo_region.Items.Count; i++)
+            {
+                ComboBoxItem item = combo_region.Items[i] as ComboBoxItem;
+                item.IsEnabled = false;
+            }
+
+            for (int i = 0; i < (int)idx; i++)
+            {
+                ComboBoxItem item = combo_region.Items[i] as ComboBoxItem;
+                item.IsEnabled = true;
+            }
+
+            if ((int)idx == 1)
+            {
+                combo_region.SelectedIndex = 0;
+                
+            }
+
+
+
+        }
+
+
+
         delegate void OnInitSpot();
         private void InitSpot()
         {
-             for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++)
             {
-                
-                Spot spot = new Spot(frameWidth, frameHeight,"℃");
+
+                Spot spot = new Spot(frameWidth, frameHeight, "℃");
 
                 spot.Visibility = Visibility.Collapsed;
 
@@ -191,7 +259,7 @@ namespace PTW_Load
                     spot.Y = 128;
                 }
 
-                 
+
 
                 spot.RealWidth = grid_edit.ActualWidth;
                 spot.RealHeight = grid_edit.ActualHeight;
@@ -209,8 +277,8 @@ namespace PTW_Load
 
 
             polySpotAll.setImageSize(frameWidth, frameHeight);
-            polySpotAll.initialize(grid_edit.ActualWidth, grid_edit.ActualHeight,"℃");
-            
+            polySpotAll.initialize(grid_edit.ActualWidth, grid_edit.ActualHeight, "℃");
+
 
             polySpotAll.setVisible(false);
 
@@ -225,9 +293,10 @@ namespace PTW_Load
             }
 
             grid_edit.Children.Add(polySpotAll.polyVal);
-            grid_edit.Children.Add(polySpotAll.polyUnit);
+            
+
         }
-           
+
         private void initSpotInfo()
         {
             this.Dispatcher.Invoke(new OnInitSpot(InitSpot));
@@ -237,6 +306,9 @@ namespace PTW_Load
         {
             imageList.Clear();
             imageBarList.Clear();
+            spotAnalysisGridList.Clear();
+
+            
 
             imageList.Add(image_display_gray);
             imageList.Add(image_display_gray_reverse);
@@ -282,10 +354,18 @@ namespace PTW_Load
 
             imageBarList.Add(imageGrayBarGrid_amp);
             imageBarList.Add(imageColorBarGrid_amp);
-            
+
+            spotAnalysisGridList.Add(grid_edit);
+            spotAnalysisGridList.Add(grid_edit_avg);
+            spotAnalysisGridList.Add(grid_edit_delta);
+            spotAnalysisGridList.Add(grid_edit_stress);
+            spotAnalysisGridList.Add(grid_edit_stress);
+            spotAnalysisGridList.Add(grid_edit_amp);
 
 
-            
+
+
+
 
 
         }
@@ -302,7 +382,7 @@ namespace PTW_Load
 
         }
 
-        
+
 
 
         private double findValueWithPt(string valStr)
@@ -310,21 +390,21 @@ namespace PTW_Load
             string[] index = valStr.Split(',');
 
             double valueUp = findValueWithoutPt(index[0]);
-            double valueD=0;
+            double valueD = 0;
 
 
             //index[1]에만 소수점 자리 포함됨
             //1 0
             for (int i = index[1].Length - 1; i >= 0; i--)
             {
-                valueD = valueD + char.GetNumericValue(index[1][i]) * Math.Pow(10, -1 * (i+1));
+                valueD = valueD + char.GetNumericValue(index[1][i]) * Math.Pow(10, -1 * (i + 1));
             }
 
             return valueUp + valueD;
         }
         private double findValueWithoutPt(string valueStr)
         {
-            double valueD=0;
+            double valueD = 0;
 
 
             for (int i = valueStr.Length - 1; i >= 0; i--)
@@ -339,13 +419,13 @@ namespace PTW_Load
         {
             string[] value = val.Split('E');
 
-            double valueUp=-1;
+            double valueUp = -1;
 
             if (value[0].Contains(','))
                 valueUp = findValueWithPt(value[0]);
             else
                 valueUp = findValueWithoutPt(value[0]);
-            
+
 
             double index = 0;
             double isMinus = 1;
@@ -364,7 +444,7 @@ namespace PTW_Load
 
             return valueUp;
 
-}
+        }
 
         private void setMaterials()
         {
@@ -375,38 +455,38 @@ namespace PTW_Load
                     string currentLine = sr.ReadLine();
 
                     int infoCnt = 0;
-                    string _name="";
-                    double _alpha=-1;
-                    double _Cp=-1;
-                    double _Km=-1;
-                    double _Rho=-1;
+                    string _name = "";
+                    double _alpha = -1;
+                    double _Cp = -1;
+                    double _Km = -1;
+                    double _Rho = -1;
 
-                    
+
                     while (currentLine != null)
                     {
-                        
+
                         if (currentLine.Contains('['))
                         {
                             _name = currentLine.TrimStart('[');
                             _name = _name.TrimEnd(']');
-                            
+
                             infoCnt++;
                         }
                         else if (currentLine.Contains("="))
                         {
                             string[] num = currentLine.Split('=');//0번째: 이름. 1번째: 값
 
-                            double valueD=0;
+                            double valueD = 0;
 
 
                             if (num[1].Contains('E'))//if exponential is contained
                             {
                                 valueD = findIndex(num[1]);
-                             }
+                            }
                             else//그냥 숫자인 경우
                             {
-                                
-                                if(num[1].Contains(','))//소수점 포함될 시 0,0001
+
+                                if (num[1].Contains(','))//소수점 포함될 시 0,0001
                                 {
                                     valueD = findValueWithPt(num[1]);
                                 }
@@ -436,22 +516,22 @@ namespace PTW_Load
 
                             infoCnt++;
                         }
-                        
+
 
                         if (infoCnt == 5)
                         {
-                            MaterialItems.Add(new Material() { name=_name, alpha=_alpha,Cp=_Cp,Km=_Km,Rho=_Rho,dispNameKm=_name + "  " + _Km.ToString()});
+                            MaterialItems.Add(new Material() { name = _name, alpha = _alpha, Cp = _Cp, Km = _Km, Rho = _Rho, dispNameKm = _name + "  " + _Km.ToString() });
                             infoCnt = 0;
                         }
 
                         currentLine = sr.ReadLine();
                     }
-                    
+
                 }
             }
             catch (Exception e)
             {
-                
+
             }
 
             //combobox에 집어넣자
@@ -461,7 +541,7 @@ namespace PTW_Load
             foreach (Material mat in MaterialItems)
             {
                 comboBox_Km.Items.Add(mat);
-                
+
             }
         }
 
@@ -482,18 +562,10 @@ namespace PTW_Load
             BitmapFrame imgGray = BitmapFrame.Create(imgStreamGray);
             BitmapFrame imgColor = BitmapFrame.Create(imgStreamColor);
 
-           
-            
+
+
 
             imageGrayBarGrid.Source = imgGray;
-            /*
-             * LHWLHW
-             * //bar 그림의 y축을 바꾸는 곳
-            imageGrayBarGrid.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
-            ScaleTransform flipTrans = new ScaleTransform();
-            flipTrans.ScaleY = -1;
-            imageGrayBarGrid.RenderTransform = flipTrans;
-            */
             imageColorBarGrid.Source = imgColor;
 
             imageGrayBarGrid_avg.Source = imgGray;
@@ -508,6 +580,9 @@ namespace PTW_Load
             imageGrayBarGrid_amp.Source = imgGray;
             imageColorBarGrid_amp.Source = imgColor;
 
+
+
+
             grayImgRrc.Dispose();
             colorImgRrc.Dispose();
 
@@ -518,21 +593,29 @@ namespace PTW_Load
         {
 
             //DebugInfo.Content = "power"; 이런 식으로 DebugInfo 내용을 변경하면 됩니다.
+            if (isLoadStart == false)
+            {
+                
+                Thread load = new Thread(Load);
+                load.Name = "Load";
+                load.Start();
+                 
+                
+            }
+            else
+                MessageBox.Show("파일을 읽고 있는 중입니다.");
 
-            Thread load = new Thread(Load);
-            load.Start();
-            
         }
 
         private void button_play_Click(object sender, RoutedEventArgs e)
         {
             teeChartPanel_h.GetCursor(out start, out end);
             teeChartPanel.Clear();
-              
+
             //km값 설정하는 곳, combobox랑 매치시키자, play thread 내부에서 말이지
             //mpa = double.Parse(textBox_mpa.Text);
 
-            
+
 
             if (textBox_mpa.Text != null)
             {
@@ -573,7 +656,7 @@ namespace PTW_Load
              * 4: amplitude
             */
             float divider = 5;
-            
+
             float diff = (max - min) / divider;
 
             List<Label> listLabel = new List<Label>();
@@ -617,12 +700,13 @@ namespace PTW_Load
                     break;
             }
 
-
+            
             listLabel[0].Content = min.ToString();
             listLabel[1].Content = (min + diff).ToString();
             listLabel[2].Content = (min + 2 * diff).ToString();
-            listLabel[3].Content = (min + 3*diff).ToString();
+            listLabel[3].Content = (min + 3 * diff).ToString();
             listLabel[4].Content = max.ToString();
+
         }
 
         delegate void OnChangeSpotValue(Spot spot, double value);
@@ -631,12 +715,12 @@ namespace PTW_Load
             spot.setSpotValue(value);
         }
 
-        delegate void OnChangePolySpotValue(PolySpotAll psAll, double value);
-        private void ChangePolySpotValue(PolySpotAll psAll, double value)
+        delegate void OnChangePolySpotValue();
+        private void ChangePolySpotValue()
         {
-            psAll.setPolySpotValue(value);
+            polySpotAll.updatePolySpotValue();
         }
-        
+
 
 
         delegate void OnChangeUI(bool state);
@@ -651,7 +735,7 @@ namespace PTW_Load
                     imageList[i].Source = null;
             }
 
-            comboBox_Km.IsEnabled = state;            
+            comboBox_Km.IsEnabled = state;
             button_play.IsEnabled = state;
             textBox_repeat.IsEnabled = state;
             button_analysis.IsEnabled = state;
@@ -662,8 +746,8 @@ namespace PTW_Load
             checkBox4.IsEnabled = state;
             checkColorPallete.IsEnabled = state;
             checkReverceColorPallete.IsEnabled = state;
-            
-            
+
+
             button_export.IsEnabled = state;
         }
 
@@ -672,11 +756,11 @@ namespace PTW_Load
         {
             teeChartPanel.AddItem(items);
         }
-        
+
 
         private void Play()
         {
-            
+
             IntPtr pSum = Marshal.AllocHGlobal(frameTotSize * 4);
             IntPtr pAvg = Marshal.AllocHGlobal(frameTotSize * 2);
             IntPtr pMax = Marshal.AllocHGlobal(frameTotSize * 2);
@@ -684,7 +768,7 @@ namespace PTW_Load
             IntPtr pDelta = Marshal.AllocHGlobal(frameTotSize * 2);
 
             //comboBox_Km.sel
-            
+
             setIntZeros(pSum, frameTotSize);
             setShortZeros(pMax, frameTotSize);
             setShortZeros(pMin, frameTotSize);
@@ -704,16 +788,16 @@ namespace PTW_Load
                 Marshal.Copy(body, 0, p, frameTotSize);
 
                 List<double> spotData = new List<double>();
-                
+
 
                 //spot을 spot 온도에 추가하는 부분임
                 foreach (Spot spot in SpotItems)
                 {
                     if (spot.Visibility == Visibility.Visible)
                     {
-                        spotData.Add(ConvertTemp(body[spot.Y *frameHeight + spot.X]));
-                        
-                        
+                        spotData.Add(ConvertTemp(body[spot.Y * frameHeight + spot.X]));
+
+
                     }
                     else
                         spotData.Add(-1);
@@ -721,45 +805,45 @@ namespace PTW_Load
 
                 this.Dispatcher.Invoke(new OnData(Data), new object[] { spotData });
 
-                
+
                 CalcurateMinMax(p, pSum, pMax, pMin, frameTotSize * 2, out Min, out Max, 16);
-                
-                Bitmap bmp = new Bitmap(frameWidth,frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0,frameWidth,frameHeight);
-                BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                
 
-                
-                
-                DrawImage(bmpData.Scan0, p, frameWidth,frameHeight, Min, Max, Max - Min, 16);
-                
+                if (isColor == true)
+                {
+                    if(isReverse == true)
+                        DrawImageFromFrameDataRGB(p, image_display_RGB_reverse, Min, Max, true);
+                    else
+                        DrawImageFromFrameDataRGB(p, image_display_RGB, Min, Max, false);
+                }
+                else
+                {
+                    if(isReverse == true)
+                        DrawImageFromFrameData(p, image_display_gray_reverse, Min, Max, true);
+                    else
+                        DrawImageFromFrameData(p, image_display_gray, Min, Max, false);
 
-                bmp.UnlockBits(bmpData);
-
-                //dispatcher 소환해서 xml의 element에 접근 가능함
-                
-                this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image_display_gray });
-
-
-                Bitmap bmpRGB = new Bitmap(frameWidth,frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                
-                BitmapData bmpDataRGB = bmpRGB.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                
-                DrawImageRGB(bmpDataRGB.Scan0, p,frameWidth,frameHeight, Min, Max, Max - Min, 16);
-
-                bmpRGB.UnlockBits(bmpDataRGB);
-
-
-
-                this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmpRGB, image_display_RGB });
-
-
+                }
 
                 Marshal.FreeHGlobal(p);
-
-
             }
-            
+
+            //첫 프레임을 다시 표시하자
+            short[] firstBody = GetFrame(0);
+
+            IntPtr firstP = Marshal.AllocHGlobal(frameTotSize * 2);
+            Marshal.Copy(firstBody, 0, firstP, frameTotSize);
+
+            int min2, max2;
+
+            CalcurateMinMax(firstP, pSum, pMax, pMin, frameTotSize * 2, out min2, out max2, 16);
+
+            DrawImageFromFrameData(firstP, image_display_gray, min2, max2, false);
+            DrawImageFromFrameData(firstP, image_display_gray_reverse, min2, max2, true);
+            DrawImageFromFrameDataRGB(firstP, image_display_RGB, min2, max2, false);
+            DrawImageFromFrameDataRGB(firstP, image_display_RGB_reverse, min2, max2, true);
+
+
+
             GetAvgData(pSum, pAvg, end - start, frameTotSize);
 
             short[] tmp = new short[frameTotSize];
@@ -767,15 +851,20 @@ namespace PTW_Load
             Marshal.Copy(pMax, tmp, 0, frameTotSize);
             Marshal.Copy(pMin, tmp2, 0, frameTotSize);
 
-            GetDeltaData(pDelta, pMax, pMin,frameTotSize);
+            GetDeltaData(pDelta, pMax, pMin, frameTotSize);
 
-            
 
-            DrawImageFromData(pAvg, image_avg_gray,ref avgGrayBmp);
-            DrawImageFromDataRGB(pAvg, image_avg_RGB, ref avgColorBmp); 
 
-            DrawImageFromData(pDelta, image_delta_gray, ref deltaGrayBmp);
-            DrawImageFromDataRGB(pDelta, image_delta_RGB, ref deltaColorBmp);
+            DrawImageFromData(pAvg, image_avg_gray, ref avgGrayBmp, false);
+            DrawImageFromData(pAvg, image_avg_gray_reverse, ref avgGrayBmpReverse, true);
+            DrawImageFromDataRGB(pAvg, image_avg_RGB, ref avgColorBmp, false);
+            DrawImageFromDataRGB(pAvg, image_avg_RGB_reverse, ref avgColorBmpReverse, true);
+
+
+            DrawImageFromData(pDelta, image_delta_gray, ref deltaGrayBmp, false);
+            DrawImageFromData(pDelta, image_delta_gray_reverse, ref deltaGrayBmpReverse, true);
+            DrawImageFromDataRGB(pDelta, image_delta_RGB, ref deltaColorBmp, false);
+            DrawImageFromDataRGB(pDelta, image_delta_RGB_reverse, ref deltaColorBmpReverse, true);
 
             short[] firstFrame = GetFrame(start);
             AvgImage = new short[frameTotSize];
@@ -783,7 +872,7 @@ namespace PTW_Load
             StressImage = new double[frameTotSize];
             LossImage = new short[frameTotSize];
 
-            
+
             Marshal.Copy(pAvg, AvgImage, 0, frameTotSize);
             Marshal.Copy(pDelta, DeltaImage, 0, frameTotSize);
 
@@ -798,12 +887,13 @@ namespace PTW_Load
 
             max_stress = max_delta;
             min_stress = min_delta;
-
+            
 
 
             for (int i = 0; i < frameTotSize; i++)
             {
-                StressImage[i] = (double)(DeltaImage[i] / (mpa * ConvertTemp(firstFrame[i])));
+                StressImage[i] = (double)(DeltaImage[i] / (mpa * ConvertTemp(firstFrame[i])/100.0));
+                StressImage[i] = StressImage[i] / 1000000;
                 //StressImage[i] = (short)(DeltaImage[i] / (mpa * ConvertTemp(firstFrame[i])/100.0));
                 LossImage[i] = (short)AvgImage[i];
 
@@ -830,61 +920,46 @@ namespace PTW_Load
             }
 
             
-
-            foreach (Spot spot in SpotItems)
-            {
-                if (spot.Visibility == Visibility.Visible)
-                {
-                    this.Dispatcher.Invoke(new OnChangeSpotValue(ChangeSpotValue), new Object[] {spot, (double)(StressImage[spot.Y*frameHeight + spot.X])});
-                }
-            }
-
-            double avgStress = 0;
-
-            for(int i=0; i<polySpotAll.currIdx; i++)
-            {
-                PolySpot ps = polySpotAll.polyPt[i];
-                avgStress += (double)(StressImage[ps.Y*frameHeight + ps.X]);
-            }
-
-            avgStress = avgStress / polySpotAll.currIdx;
-
-            this.Dispatcher.Invoke(new OnChangePolySpotValue(ChangePolySpotValue), new Object[] {polySpotAll, avgStress});
-
-            this.Dispatcher.Invoke(new OnchangeContentsLabel(ChangeContentsLabel), new object[] { stressLabel,"Stress Data"});
+            this.Dispatcher.Invoke(new OnchangeContentsLabel(ChangeContentsLabel), new object[] { stressLabel, "Stress Data" });
 
             //이 부분으로 short에서bitmap 생성후 파일 저장하장
 
-            
+
             Marshal.Copy(StressImage, 0, pRet, frameTotSize);
 
-            DrawImageFromData_Double(pRet, image_stress_gray, ref stressGrayBmp);
-            DrawImageFromDataRGB_Double(pRet, image_stress_RGB, ref stressColorBmp);
+            DrawImageFromData_Double(pRet, image_stress_gray, ref stressGrayBmp, false);
+            DrawImageFromData_Double(pRet, image_stress_gray_reverse, ref stressGrayBmpReverse, true);
+            DrawImageFromDataRGB_Double(pRet, image_stress_RGB, ref stressColorBmp, false);
+            DrawImageFromDataRGB_Double(pRet, image_stress_RGB_reverse, ref stressColorBmpReverse, true);
 
             Marshal.Copy(LossImage, 0, pLoss, frameTotSize);
 
 
-            DrawImageFromData(pLoss, image_loss_gray, ref lossGrayBmp);
-            DrawImageFromDataRGB(pLoss, image_loss_RGB, ref lossColorBmp);
+            DrawImageFromData(pLoss, image_loss_gray, ref lossGrayBmp, false);
+            DrawImageFromData(pLoss, image_loss_gray_reverse, ref lossGrayBmpReverse, true);
+            DrawImageFromDataRGB(pLoss, image_loss_RGB, ref lossColorBmp, false);
+            DrawImageFromDataRGB(pLoss, image_loss_RGB_reverse, ref lossColorBmpReverse, true);
 
 
-            this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 1,min_avg,max_avg});
+            this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 1, min_avg, max_avg });
 
             this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 2, min_delta, max_delta });
 
             this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 3, (float)min_stress, (float)max_stress });
 
 
-            
+
             Marshal.FreeHGlobal(pRet);
             Marshal.FreeHGlobal(pLoss);
-            
+
             Marshal.FreeHGlobal(pSum);
             Marshal.FreeHGlobal(pAvg);
             Marshal.FreeHGlobal(pMax);
             Marshal.FreeHGlobal(pMin);
             Marshal.FreeHGlobal(pDelta);
-             
+
+            this.Dispatcher.Invoke(new OnEnableComboRegion(EnableComboRegion), new object[] { SpotAnalysisIdx.ANALYSIS_AFTER_PLAY });
+
         }
 
         public int ConvertTemp(int pixel)
@@ -957,9 +1032,9 @@ namespace PTW_Load
             }
         }
 
-        private short [] GetFrame(int index)
+        private short[] GetFrame(int index)
         {
-            short[] body = new short[ frameTotSize];
+            short[] body = new short[frameTotSize];
             int StartPosition = MainHeaderSize + FrameFullSize * index;
 
             using (MemoryMappedViewAccessor accessor = mmf.CreateViewAccessor(StartPosition + FrameHeaderSize, FrameBodySize))
@@ -996,64 +1071,119 @@ namespace PTW_Load
             return body;
         }
 
-        private void DrawImageFromData_Double(IntPtr data, System.Windows.Controls.Image image, ref Bitmap bmp)
+        private void DrawImageFromData_Double(IntPtr data, System.Windows.Controls.Image image, ref Bitmap bmp, bool isReverse)
         {
 
-            
+
             double max;
             double min;
             CalcurateMinMax_Double(data, frameTotSize, out min, out max);
 
-            Bitmap deltabmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            Bitmap deltabmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             System.Drawing.Rectangle deltarect = new System.Drawing.Rectangle(0, 0, frameWidth, frameHeight);
             BitmapData deltaData = deltabmp.LockBits(deltarect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            
+
             //LHW DEBUG
-            DrawImage2_Double(deltaData.Scan0, data, frameWidth, frameHeight, min, max, max - min, 16);
+            DrawImage2_Double(deltaData.Scan0, data, frameWidth, frameHeight, min, max, max - min, 16, isReverse);
             //DrawImage2RGB(deltaData.Scan0, data, 640, 512, min, max, max - min, 16);
 
             deltabmp.UnlockBits(deltaData);
 
             bmp = deltabmp.Clone() as Bitmap;
 
-            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { deltabmp, image });        
+            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { deltabmp, image });
         }
 
-        private void DrawImageFromData(IntPtr data, System.Windows.Controls.Image image, ref Bitmap bmp)
+        private void DrawImageFromFrameData(IntPtr data, System.Windows.Controls.Image image, int Min, int Max, bool isReverse)
+        {
+            Bitmap bmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, frameWidth, frameHeight);
+            BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            DrawImage(bmpData.Scan0, data, frameWidth, frameHeight, Min, Max, Max - Min, 16, isReverse);
+            bmp.UnlockBits(bmpData);
+
+            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image });
+        }
+
+        private void DrawImageFromFrameData(IntPtr data, System.Windows.Controls.Image image, int Min, int Max, ref Bitmap myBitmap, bool isReverse)
+        {
+            Bitmap bmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, frameWidth, frameHeight);
+            BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            DrawImage(bmpData.Scan0, data, frameWidth, frameHeight, Min, Max, Max - Min, 16, isReverse);
+            bmp.UnlockBits(bmpData);
+
+            myBitmap = bmp.Clone() as Bitmap;
+
+
+            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image });
+        }
+
+        private void DrawImageFromFrameDataRGB(IntPtr data, System.Windows.Controls.Image image, int Min, int Max, bool isReverse)
+        {
+            Bitmap bmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, frameWidth, frameHeight);
+            BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            DrawImageRGB(bmpData.Scan0, data, frameWidth, frameHeight, Min, Max, Max - Min, 16, isReverse);
+            bmp.UnlockBits(bmpData);
+
+            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image });
+        }
+
+        private void DrawImageFromFrameDataRGB(IntPtr data, System.Windows.Controls.Image image, int Min, int Max, ref Bitmap myBitmap, bool isReverse)
+        {
+            Bitmap bmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, frameWidth, frameHeight);
+            BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            DrawImageRGB(bmpData.Scan0, data, frameWidth, frameHeight, Min, Max, Max - Min, 16, isReverse);
+            bmp.UnlockBits(bmpData);
+
+            myBitmap = bmp.Clone() as Bitmap;
+
+
+            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image });
+        }
+
+
+        private void DrawImageFromData(IntPtr data, System.Windows.Controls.Image image, ref Bitmap bmp, bool isReverse)
         {
             int max;
             int min;
             CalcurateMinMax2(data, frameTotSize, out min, out max);
 
-            Bitmap deltabmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            Bitmap deltabmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             System.Drawing.Rectangle deltarect = new System.Drawing.Rectangle(0, 0, frameWidth, frameHeight);
             BitmapData deltaData = deltabmp.LockBits(deltarect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             //LHW DEBUG
-            DrawImage2(deltaData.Scan0, data, frameWidth, frameHeight, min, max, max - min, 16);
+            DrawImage2(deltaData.Scan0, data, frameWidth, frameHeight, min, max, max - min, 16, isReverse);
             //DrawImage2RGB(deltaData.Scan0, data, 640, 512, min, max, max - min, 16);
 
             deltabmp.UnlockBits(deltaData);
 
             bmp = deltabmp.Clone() as Bitmap;
 
-            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { deltabmp, image });        
+            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { deltabmp, image });
 
         }
 
-        private void DrawImageFromDataRGB_Double(IntPtr data, System.Windows.Controls.Image image, ref Bitmap bmp)
+        private void DrawImageFromDataRGB_Double(IntPtr data, System.Windows.Controls.Image image, ref Bitmap bmp, bool isReverse)
         {
             double max;
             double min;
             CalcurateMinMax_Double(data, frameTotSize, out min, out max);
 
-            Bitmap deltabmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            Bitmap deltabmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             System.Drawing.Rectangle deltarect = new System.Drawing.Rectangle(0, 0, frameWidth, frameHeight);
             BitmapData deltaData = deltabmp.LockBits(deltarect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             //LHW DEBUG
 
-            DrawImage2RGB_Double(deltaData.Scan0, data, frameWidth, frameHeight, min, max, max - min, 16);
+            DrawImage2RGB_Double(deltaData.Scan0, data, frameWidth, frameHeight, min, max, max - min, 16, isReverse);
 
             deltabmp.UnlockBits(deltaData);
 
@@ -1064,19 +1194,19 @@ namespace PTW_Load
         }
 
 
-        private void DrawImageFromDataRGB(IntPtr data, System.Windows.Controls.Image image, ref Bitmap bmp)
+        private void DrawImageFromDataRGB(IntPtr data, System.Windows.Controls.Image image, ref Bitmap bmp, bool isReverse)
         {
             int max;
             int min;
-            CalcurateMinMax2(data,frameTotSize, out min, out max);
+            CalcurateMinMax2(data, frameTotSize, out min, out max);
 
-            Bitmap deltabmp = new Bitmap(frameWidth,frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            System.Drawing.Rectangle deltarect = new System.Drawing.Rectangle(0, 0,frameWidth,frameHeight);
+            Bitmap deltabmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            System.Drawing.Rectangle deltarect = new System.Drawing.Rectangle(0, 0, frameWidth, frameHeight);
             BitmapData deltaData = deltabmp.LockBits(deltarect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             //LHW DEBUG
 
-            DrawImage2RGB(deltaData.Scan0, data,frameWidth,frameHeight, min, max, max - min, 16);
+            DrawImage2RGB(deltaData.Scan0, data, frameWidth, frameHeight, min, max, max - min, 16, isReverse);
 
             deltabmp.UnlockBits(deltaData);
 
@@ -1086,8 +1216,12 @@ namespace PTW_Load
             this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { deltabmp, image });
         }
 
+
+
         private void Load()
         {
+            isLoadStart = true;
+
             this.Dispatcher.Invoke(new OnChangeUI(ChangeUI), new object[] { false });
             if (mmf != null)
                 mmf.Dispose();
@@ -1096,11 +1230,14 @@ namespace PTW_Load
             if (dialog.ShowDialog().Value)
             {
                 mmf = MemoryMappedFile.CreateFromFile(dialog.FileName);
+                fileName = dialog.FileName;
 
-                this.Dispatcher.Invoke(new OnChangeUI(ChangeUI), new object [] {true});
+                this.Dispatcher.Invoke(new OnChangeUI(ChangeUI), new object[] { true });
             }
             else
             {
+                isLoadStart = false;
+                this.Dispatcher.Invoke(new OnEnableComboRegion(EnableComboRegion), new object[] {SpotAnalysisIdx.ANALYSIS_INIT});
                 return;
             }
 
@@ -1109,7 +1246,7 @@ namespace PTW_Load
             {
                 MainHeader header;
 
-                 accessor.Read(0, out header);
+                accessor.Read(0, out header);
 
                 byte[] tmp = new byte[5];
                 byte[] dword = new byte[4];
@@ -1154,10 +1291,10 @@ namespace PTW_Load
                     short add = header.ADDynamic;
                 }
             }
-            
-            for(int i=0; i< frameSizeInfo.Length; i++)
+
+            for (int i = 0; i < frameSizeInfo.Length; i++)
             {
-                if(FrameBodySize == frameSizeInfo[i].totSize * 2)
+                if (FrameBodySize == frameSizeInfo[i].totSize * 2)
                 {
                     fr = (FRAMERESOULTION)i;
                     frameWidth = frameSizeInfo[i].width;
@@ -1165,6 +1302,67 @@ namespace PTW_Load
                     frameTotSize = frameSizeInfo[i].totSize;
                 }
             }
+
+            //이 부분에서 새로운 window 창을 엽니다.
+
+            //LHWLHWLHW
+
+
+
+
+            var waitHandle = new AutoResetEvent(false);
+            
+            Thread thread = new Thread(() =>
+                {
+                    FrameAdj fa = new FrameAdj(fileName, FrameCount, frameWidth, frameHeight, 3000);
+
+
+
+
+                    
+                    
+                    fa.ShowDialog();
+
+                    
+                    
+                    if (fa.isOkay == true)
+                    {
+                        maxFrameCount = fa.maxCnt;
+                        minFrameCount = fa.minCnt;
+                        isAbort = false;
+                        waitHandle.Set();
+                    }
+                    else if (fa.isCancel == true)
+                    {
+                        isAbort = true;
+                        waitHandle.Set();
+                    }
+                    
+
+                    
+                    //System.Windows.Threading.Dispatcher.Run();
+
+                });
+            thread.Name = "dialog";
+            thread.SetApartmentState(ApartmentState.STA);
+            
+            
+            thread.Start();
+            
+            
+
+            //지금 thread는 잠깐 멈춰야함
+
+            waitHandle.WaitOne();
+
+            if (isAbort == true)
+            {
+                isLoadStart = false;
+                this.Dispatcher.Invoke(new OnEnableComboRegion(EnableComboRegion), new object[] { SpotAnalysisIdx.ANALYSIS_INIT });
+                return;
+            }
+
+            
 
 
             //set the size of frame to polyspot and spot
@@ -1181,15 +1379,15 @@ namespace PTW_Load
             setShortZeros(pMax, frameTotSize);
             setShortZeros(pMin, frameTotSize);
             setShortZeros(pDelta, frameTotSize);
-            
 
-            this.Dispatcher.Invoke(new OnChangeContentsTextBox(ChangeContentsTextBox), new object[]{file_load_name, dialog.FileName});
+
+            this.Dispatcher.Invoke(new OnChangeContentsTextBox(ChangeContentsTextBox), new object[] { file_load_name, dialog.FileName });
             this.Dispatcher.Invoke(new OnChangeContentsTextBox(ChangeContentsTextBox), new object[] { frame_load_name, FrameCount.ToString() });
 
 
-            
+            for(int i=minFrameCount; i<maxFrameCount; i++)
             //for (int i = 0; i < FrameCount; i++)
-            for (int i = 0; i < 20; i++)
+            //for (int i = 0; i < 20; i++)
             {
                 StartPosition = MainHeaderSize + FrameFullSize * i;
                 using (MemoryMappedViewAccessor accessor = mmf.CreateViewAccessor(StartPosition, FrameHeaderSize))
@@ -1239,17 +1437,18 @@ namespace PTW_Load
             }
 
             teeChartPanel_h.AddCursor();
-            
+
             //첫 Frame을 그린다.
             //첫 frame만 그리는듯
             using (MemoryMappedViewAccessor accessor = mmf.CreateViewAccessor(MainHeaderSize + FrameHeaderSize, FrameBodySize))
             {
-                short[] body = new short[frameTotSize];
+                FirstFrameImage = new short[frameTotSize];
+                
 
                 if (fr == FRAMERESOULTION.SIZE640512)
                 {
                     FrameBody_640 fbody;
-                    
+
                     //640 512 320 256
                     for (int h = 0; h < frameHeight; h++)
                     {
@@ -1257,14 +1456,14 @@ namespace PTW_Load
                         accessor.Read((long)(frameWidth * h * 2), out fbody);
                         unsafe
                         {
-                            Marshal.Copy((IntPtr)fbody.Frame, body, frameWidth * h, frameWidth);
+                            Marshal.Copy((IntPtr)fbody.Frame, FirstFrameImage, frameWidth * h, frameWidth);
                         }
                     }
                 }
                 else if (fr == FRAMERESOULTION.SIZE320256)
                 {
                     FrameBody_320 fbody;
-                    
+
                     //640 512 320 256
                     for (int h = 0; h < frameHeight; h++)
                     {
@@ -1272,51 +1471,28 @@ namespace PTW_Load
                         accessor.Read((long)(frameWidth * h * 2), out fbody);
                         unsafe
                         {
-                            Marshal.Copy((IntPtr)fbody.Frame, body, frameWidth * h, frameWidth);
+                            Marshal.Copy((IntPtr)fbody.Frame, FirstFrameImage, frameWidth * h, frameWidth);
                         }
                     }
                 }
 
-
                 int Min;
                 int Max;
                 IntPtr p = Marshal.AllocHGlobal(frameTotSize * 2);
-                Marshal.Copy(body, 0, p, frameTotSize);
-                
+                Marshal.Copy(FirstFrameImage, 0, p, frameTotSize);
+
                 CalcurateMinMax(p, pSum, pMax, pMin, frameTotSize * 2, out Min, out Max, 16);
 
-                Bitmap bmp = new Bitmap( frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, frameWidth, frameHeight);
-                BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-                //LHW DEBUG
-                DrawImage(bmpData.Scan0, p, frameWidth, frameHeight, Min, Max, Max - Min, 16);
-                
-                bmp.UnlockBits(bmpData);
-
-
-                //LHWLHW
-                this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image_display_gray });
-
-
-                Bitmap bmpRGB = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                
-                BitmapData bmpDataRGB = bmpRGB.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-
-                DrawImageRGB(bmpDataRGB.Scan0, p, frameWidth, frameHeight, Min, Max, Max - Min, 16);
-                bmpRGB.UnlockBits(bmpDataRGB);
-
-                
-
-
-                this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmpRGB, image_display_RGB });
-
-                
+                DrawImageFromFrameData(p, image_display_gray, Min, Max, false);
+                DrawImageFromFrameData(p, image_display_gray_reverse, Min, Max, true);
+                DrawImageFromFrameDataRGB(p, image_display_RGB, Min, Max, false);
+                DrawImageFromFrameDataRGB(p, image_display_RGB_reverse, Min, Max, true);
 
 
 
-                this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new Object[] {0, Min, Max });
+
+
+                this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new Object[] { 0, Min, Max });
 
                 Marshal.FreeHGlobal(p);
 
@@ -1325,7 +1501,7 @@ namespace PTW_Load
             }
 
 
-            
+
 
             Marshal.FreeHGlobal(pSum);
             Marshal.FreeHGlobal(pAvg);
@@ -1336,18 +1512,96 @@ namespace PTW_Load
             //initialize();
 
             initSpotInfo();
-            
 
-            
+            this.Dispatcher.Invoke(new OnEnableComboRegion(EnableComboRegion), new object[] { SpotAnalysisIdx.ANALYSIS_AFTER_LOAD});
 
+            this.Dispatcher.Invoke(new OnChangeContentsTextBox(ChangeContentsTextBox), new object[] {widthText, frameWidth.ToString() });
+            this.Dispatcher.Invoke(new OnChangeContentsTextBox(ChangeContentsTextBox), new object[] { heightText, frameHeight.ToString() });
+
+
+
+            int s = MainHeaderSize;
+            int lockPeriod=-1;
+            int lockPhase = -1;
+
+
+            using (MemoryMappedViewAccessor accessor = mmf.CreateViewAccessor(StartPosition, FrameHeaderSize))
+            {
+                FrameHeader fheader;
+
+                accessor.Read(0, out fheader);
+
+                byte[] time = new byte[4];
+                byte[] word = new byte[2];
+                byte[] dword = new byte[4];
+
+                unsafe
+                {
+                    Marshal.Copy((IntPtr)fheader.LockinPeriod, dword, 0, 4);
+                    lockPeriod = BitConverter.ToInt32(dword, 0);
+
+                    Marshal.Copy((IntPtr)fheader.LockinPhase, dword, 0, 4);
+                    lockPhase = BitConverter.ToInt32(dword, 0);
+                }
+            }
+
+
+            this.Dispatcher.Invoke(new OnChangeContentsTextBox(ChangeContentsTextBox), new object[] { locking_period,lockPeriod.ToString()});
+            this.Dispatcher.Invoke(new OnChangeContentsTextBox(ChangeContentsTextBox), new object[] { locking_phase, lockPhase.ToString() });
+
+
+            /*
+             * private void ReadFrameHeader(int index)
+        {
+            int StartPosition = MainHeaderSize + FrameFullSize * index;
+
+            using (MemoryMappedViewAccessor accessor = mmf.CreateViewAccessor(StartPosition, FrameHeaderSize))
+            {
+                FrameHeader fheader;
+
+                accessor.Read(0, out fheader);
+
+                byte[] time = new byte[4];
+                byte[] word = new byte[2];
+                byte[] dword = new byte[4];
+
+                unsafe
+                {
+                    Marshal.Copy((IntPtr)fheader.FrameTime, time, 0, 4);
+
+                    byte minute = time[0];
+                    byte hour = time[1];
+                    byte cent = time[2];
+                    byte second = time[3];
+
+                    byte ft = fheader.FrameThousands;
+
+                    Marshal.Copy((IntPtr)fheader.FrameMillions, word, 0, 2);
+                    short fm = BitConverter.ToInt16(word, 0);
+
+                    Marshal.Copy((IntPtr)fheader.LockinPeriod, dword, 0, 4);
+                    int lockinPeriod = BitConverter.ToInt32(dword, 0);
+
+                    Marshal.Copy((IntPtr)fheader.LockinPhase, dword, 0, 4);
+                    int lockinPhase = BitConverter.ToInt32(dword, 0);
+                }
+            }
+        }
+             * */
+
+
+
+            isLoadStart = false;
 
 
         }
-    
+
+
 
         delegate void OnDraw(Bitmap bit, System.Windows.Controls.Image image);
         private void Draw(Bitmap bit, System.Windows.Controls.Image image)
         {
+            
             using (MemoryStream memory = new MemoryStream())
             {
                 bit.Save(memory, ImageFormat.Png);
@@ -1359,7 +1613,7 @@ namespace PTW_Load
                 bitmapImage.EndInit();
 
                 image.Source = bitmapImage;
-                
+
             }
 
             bit.Dispose();
@@ -1393,9 +1647,9 @@ namespace PTW_Load
             int period = (int)((AnalysisMax - AnalysisMin) / (4 * repeat));
             int[] index = new int[4 * repeat];
 
-            for(int i = 0; i < 4 * repeat; i++)
+            for (int i = 0; i < 4 * repeat; i++)
             {
-                index[i] =  AnalysisMin + period * i;
+                index[i] = AnalysisMin + period * i;
             }
 
             RawData raw = new RawData();
@@ -1478,6 +1732,9 @@ namespace PTW_Load
 
             //raw.Phase();
             raw.Amplitude();
+
+            this.Dispatcher.Invoke(new OnEnableComboRegion(EnableComboRegion), new object[] { SpotAnalysisIdx.ANALYSIS_AFTER_ANALYSIS });
+
         }
 
         void raw_AmplitudeImage(short[] image, int w, int h, short min, short max)
@@ -1487,41 +1744,22 @@ namespace PTW_Load
 
             AmplitudeImage = image;
 
-            IntPtr p = Marshal.AllocHGlobal( frameTotSize * 2);
+            IntPtr p = Marshal.AllocHGlobal(frameTotSize * 2);
             Marshal.Copy(image, 0, p, frameTotSize);
 
-            CalcurateMinMax2(p,frameTotSize, out Min, out Max);
-
-            Max = 35;
-
-            Bitmap bmp = new Bitmap(frameWidth, frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, frameWidth, frameHeight);
-            BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            
-            DrawImage(bmpData.Scan0, p,frameWidth,frameHeight, Min, Max, Max - Min, 16);
-            bmp.UnlockBits(bmpData);
-
-            ampGrayBmp = bmp.Clone() as Bitmap;
-
-            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image_amp_gray});
+            CalcurateMinMax2(p, frameTotSize, out Min, out Max);
 
 
-            Bitmap bmpRGB = new Bitmap(frameWidth,frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            
-            BitmapData bmpDataRGB = bmpRGB.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            //LHW DEBUG
-            DrawImageRGB(bmpDataRGB.Scan0, p, frameWidth, frameHeight, Min, Max, Max - Min, 16);
-            bmpRGB.UnlockBits(bmpDataRGB);
-
-            ampColorBmp = bmpRGB.Clone() as Bitmap;
+            if (Max == 0)
+                Max = 35;
 
 
+            DrawImageFromFrameData(p, image_amp_gray, Min, Max, ref ampGrayBmp, false);
+            DrawImageFromFrameData(p, image_amp_gray_reverse, Min, Max, ref ampGrayBmpReverse, true);
+            DrawImageFromFrameDataRGB(p, image_amp_RGB, Min, Max, ref ampColorBmp, false);
+            DrawImageFromFrameDataRGB(p, image_amp_RGB_reverse, Min, Max, ref ampColorBmpReverse, true);
 
-            this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new Object[] {4, Min,Max});
-            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmpRGB, image_amp_RGB });
-
-
-
+            this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new Object[] { 4, Min, Max });
 
 
             Marshal.FreeHGlobal(p);
@@ -1535,26 +1773,12 @@ namespace PTW_Load
             IntPtr p = Marshal.AllocHGlobal(frameTotSize * 2);
             Marshal.Copy(image, 0, p, frameTotSize);
 
-            CalcurateMinMax2(p,frameTotSize, out Min, out Max);
+            CalcurateMinMax2(p, frameTotSize, out Min, out Max);
 
-            Bitmap bmp = new Bitmap(frameWidth,frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0,frameWidth, frameHeight);
-            BitmapData bmpData = bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            DrawImage(bmpData.Scan0, p,frameWidth,frameHeight, Min, Max, Max - Min, 16);
-            bmp.UnlockBits(bmpData);
-
-            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmp, image_delta_gray});
-
-
-            Bitmap bmpRGB = new Bitmap(frameWidth,frameHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            
-            BitmapData bmpDataRGB = bmpRGB.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            DrawImageRGB(bmpDataRGB.Scan0, p,frameWidth,frameHeight, Min, Max, Max - Min, 16);
-            bmpRGB.UnlockBits(bmpDataRGB);
-
-            this.Dispatcher.Invoke(new OnDraw(Draw), new Object[] { bmpRGB, image_delta_RGB });
-
-
+            DrawImageFromFrameData(p, image_delta_gray, Min, Max, false);
+            DrawImageFromFrameData(p, image_delta_gray_reverse, Min, Max, true);
+            DrawImageFromFrameDataRGB(p, image_delta_RGB, Min, Max, false);
+            DrawImageFromFrameDataRGB(p, image_delta_RGB_reverse, Min, Max, true);
 
             Marshal.FreeHGlobal(p);
         }
@@ -1581,34 +1805,34 @@ namespace PTW_Load
         }
         private void changeReverseBarContent()
         {
-           
+
             List<Label> listLabel = new List<Label>();
 
-            
+
             listLabel.Add(colorValue0);
             listLabel.Add(colorValue1);
             listLabel.Add(colorValue2);
             listLabel.Add(colorValue3);
             listLabel.Add(colorValue4);
-            
+
             listLabel.Add(colorValue0_avg);
             listLabel.Add(colorValue1_avg);
             listLabel.Add(colorValue2_avg);
             listLabel.Add(colorValue3_avg);
             listLabel.Add(colorValue4_avg);
-            
+
             listLabel.Add(colorValue0_delta);
             listLabel.Add(colorValue1_delta);
             listLabel.Add(colorValue2_delta);
             listLabel.Add(colorValue3_delta);
             listLabel.Add(colorValue4_delta);
-            
+
             listLabel.Add(colorValue0_stress);
             listLabel.Add(colorValue1_stress);
             listLabel.Add(colorValue2_stress);
             listLabel.Add(colorValue3_stress);
             listLabel.Add(colorValue4_stress);
-            
+
             listLabel.Add(colorValue0_amp);
             listLabel.Add(colorValue1_amp);
             listLabel.Add(colorValue2_amp);
@@ -1625,17 +1849,17 @@ namespace PTW_Load
                 flipString.Reverse();
                 for (int j = 0; j < 5; j++)
                 {
-                    listLabel[i*5+j].Content = flipString[j];
+                    listLabel[i * 5 + j].Content = flipString[j];
                 }
             }
         }
 
         private void Grid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            System.Windows.Point p = e.GetPosition(grid_edit);
+            System.Windows.Point p = e.GetPosition(spotAnalysisGridList[currAnalysisRegion]);
 
             foreach (Spot spot in SpotItems)
-            { 
+            {
                 if (spot.MouseDownEvent(p.X, p.Y))
                 {
                     PressedSpot = spot;
@@ -1659,7 +1883,7 @@ namespace PTW_Load
 
         private void Grid_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            System.Windows.Point p = e.GetPosition(grid_edit);
+            System.Windows.Point p = e.GetPosition(spotAnalysisGridList[currAnalysisRegion]);
 
             if (PressedSpot != null)
             {
@@ -1679,10 +1903,13 @@ namespace PTW_Load
                     return;
             }
 
-            foreach (PolySpot spot in polySpotAll.polyPt)
+            if (polySpotAll != null)
             {
-                if (spot.MouseMoveEvent(p.X, p.Y))
-                    return;
+                foreach (PolySpot spot in polySpotAll.polyPt)
+                {
+                    if (spot.MouseMoveEvent(p.X, p.Y))
+                        return;
+                }
             }
 
             Mouse.OverrideCursor = null;
@@ -1692,11 +1919,11 @@ namespace PTW_Load
         {
             PressedSpot = null;
 
-            System.Windows.Point p = e.GetPosition(grid_edit);
+            System.Windows.Point p = e.GetPosition(spotAnalysisGridList[currAnalysisRegion]);
 
             foreach (Spot spot in SpotItems)
             {
-                
+
                 spot.MouseUpEvent(p.X, p.Y);
             }
 
@@ -1709,32 +1936,57 @@ namespace PTW_Load
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             initialize();
-
-
-            
         }
 
         private void grid_edit_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             foreach (Spot spot in SpotItems)
             {
-                spot.RealWidth = grid_edit.ActualWidth;
-                spot.RealHeight = grid_edit.ActualHeight;
+                spot.RealWidth = spotAnalysisGridList[currAnalysisRegion].ActualWidth;
+                spot.RealHeight = spotAnalysisGridList[currAnalysisRegion].ActualHeight;
                 spot.Position();
             }
             if (polySpotAll != null)
             {
                 foreach (PolySpot spot in polySpotAll.polyPt)
                 {
-                    spot.realWidth = grid_edit.ActualWidth;
-                    spot.realHeight = grid_edit.ActualHeight;
+                    spot.realWidth = spotAnalysisGridList[currAnalysisRegion].ActualWidth;
+                    spot.realHeight = spotAnalysisGridList[currAnalysisRegion].ActualHeight;
                     spot.Position();
                 }
             }
 
         }
 
-        private void comboBox_Select(object sender,  SelectionChangedEventArgs e)
+        private void combo_region_event(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox cb = sender as ComboBox;
+
+            currAnalysisRegion = cb.SelectedIndex;
+
+
+            foreach (Spot sp in SpotItems)
+            {
+                Grid parent = sp.Parent as Grid;
+                parent.Children.Remove(sp);
+                spotAnalysisGridList[currAnalysisRegion].Children.Add(sp);
+
+                sp.setStressValue();
+
+            }
+
+            polySpotAll.moveAllObject(spotAnalysisGridList[currAnalysisRegion]);
+            polySpotAll.updatePolySpotValue();
+            
+                        
+            
+            
+
+            
+
+        }
+
+        private void comboBox_Select(object sender, SelectionChangedEventArgs e)
         {
             ComboBox cb = sender as ComboBox;
 
@@ -1790,11 +2042,25 @@ namespace PTW_Load
             }
         }
 
-        
+        private System.Windows.Controls.Image getDrawingImage(ImageOrderIdx orderIdx, ImageIdx flags)
+        {
+            return imageList[(int)orderIdx * 4 + (int)flags];
+        }
+        private List<System.Windows.Controls.Image> getDrawingImage(ImageOrderIdx orderIdx)
+        {
+            List<System.Windows.Controls.Image> myList = new List<System.Windows.Controls.Image>();
+
+            for (int i = 0; i < 4; i++)
+                myList.Add(imageList[(int)orderIdx*4 + i]);
+            return myList;
+        }
+
+
+
 
         private void combo_Polygon(object sender, SelectionChangedEventArgs e)
         {
-            
+
             ComboBox cb = sender as ComboBox;
 
             ComboBoxItem cbitem = (ComboBoxItem)cb.SelectedItem;
@@ -1805,10 +2071,11 @@ namespace PTW_Load
 
             if (polySpotAll != null)
             {
-                
+
                 polySpotAll.addPt(int.Parse(val));
                 polySpotAll.drawLabel();
-                polySpotAll.setVisible(true);                
+                polySpotAll.updatePolySpotValue();
+                polySpotAll.setVisible(true);
             }
         }
 
@@ -1818,27 +2085,33 @@ namespace PTW_Load
 
             if (cb.Name.Equals("checkBox0"))
             {
+                SpotItems[0].setStressValue();
                 SpotItems[0].Visibility = Visibility.Visible;
             }
             else if (cb.Name.Equals("checkBox1"))
             {
+                SpotItems[1].setStressValue();
                 SpotItems[1].Visibility = Visibility.Visible;
             }
             else if (cb.Name.Equals("checkBox2"))
             {
+                SpotItems[2].setStressValue();
                 SpotItems[2].Visibility = Visibility.Visible;
             }
             else if (cb.Name.Equals("checkBox3"))
             {
+                SpotItems[3].setStressValue();
                 SpotItems[3].Visibility = Visibility.Visible;
             }
             else if (cb.Name.Equals("checkBox4"))
             {
+                SpotItems[4].setStressValue();
                 SpotItems[4].Visibility = Visibility.Visible;
             }
             else if (cb.Name.Equals("checkColorPallete"))
             {
                 //만일 reverse가 체크된 경우 RGB reverse image를 보인다
+                isColor = true;
 
                 turnImageBar(ImageBarIdx.IMAGE_BAR_COLOR);
 
@@ -1848,29 +2121,31 @@ namespace PTW_Load
                 }
                 else
                 {
-                    turnImage(ImageIdx.IMAGE_COLOR);  
+                    turnImage(ImageIdx.IMAGE_COLOR);
                 }
             }
 
             else if (cb.Name.Equals("checkReverceColorPallete"))
             {
                 //만일 reverse가 체크된 경우 RGB reverse image를 보인다
-                
+                isReverse = true;
+
                 if (checkColorPallete.IsChecked == true)
-                    turnImage(ImageIdx.IMAGE_COLOR_REVERSE);   
+                    turnImage(ImageIdx.IMAGE_COLOR_REVERSE);
                 else
                     turnImage(ImageIdx.IMAGE_GRAY_REVERSE);
-                
+
                 int flip = -1;
                 changeReverseBar(ImageBarIdx.IMAGE_BAR_COLOR, flip);
                 changeReverseBar(ImageBarIdx.IMAGE_BAR_GRAY, flip);
-                
-                changeReverseBarContent();
+
+                //changeReverseBarContent();
 
             }
-                
+
             else if (cb.Name.Equals("checkPoly"))
             {
+                polySpotAll.updatePolySpotValue();
                 polySpotAll.setVisible(true);
                 comboBox_Poly.IsEnabled = true;
             }
@@ -1903,6 +2178,8 @@ namespace PTW_Load
             }
             else if (cb.Name.Equals("checkColorPallete"))
             {
+                isColor = false;
+
                 turnImageBar(ImageBarIdx.IMAGE_BAR_GRAY);
 
                 if (checkReverceColorPallete.IsChecked == true)
@@ -1916,6 +2193,8 @@ namespace PTW_Load
             }
             else if (cb.Name.Equals("checkReverceColorPallete"))
             {
+                isReverse = false;
+
                 if (checkColorPallete.IsChecked == true)
                     turnImage(ImageIdx.IMAGE_COLOR);
                 else
@@ -1924,8 +2203,6 @@ namespace PTW_Load
                 int flip = 1;
                 changeReverseBar(ImageBarIdx.IMAGE_BAR_COLOR, flip);
                 changeReverseBar(ImageBarIdx.IMAGE_BAR_GRAY, flip);
-
-                changeReverseBarContent();
 
             }
             else if (cb.Name.Equals("checkPoly"))
@@ -1936,14 +2213,14 @@ namespace PTW_Load
             }
         }
 
-        private void save_image(short [] image, string name)
+        private void save_image(short[] image, string name)
         {
             var encoder = new PngBitmapEncoder();
 
             RenderTargetBitmap bitmap = new RenderTargetBitmap(
-                frameWidth ,frameHeight, 96, 96, PixelFormats.Pbgra32);
+                frameWidth, frameHeight, 96, 96, PixelFormats.Pbgra32);
 
-            
+
 
 
         }
@@ -1960,7 +2237,7 @@ namespace PTW_Load
                     Save(AvgImage, dialog.FileName + ".csv", 100.0);
 
                     avgGrayBmp.Save(dialog.FileName + "_gray.png", ImageFormat.Png);
-                    avgColorBmp.Save(dialog.FileName+"_color.png", ImageFormat.Png);
+                    avgColorBmp.Save(dialog.FileName + "_color.png", ImageFormat.Png);
 
                     avgGrayBmp.Dispose();
                     avgColorBmp.Dispose();
@@ -2012,7 +2289,6 @@ namespace PTW_Load
                     ampGrayBmp.Dispose();
                     ampColorBmp.Dispose();
 
-
                 }
             }
         }
@@ -2040,14 +2316,14 @@ namespace PTW_Load
 
             for (int h = 0; h < frameHeight; h++)
             {
-                for (int w = 0; w < frameWidth; w++)    
+                for (int w = 0; w < frameWidth; w++)
                 {
-                    csv.Append(String.Format("{0},", data[h *frameHeight + w] / divide));
+                    csv.Append(String.Format("{0},", data[h * frameHeight + w] / divide));
                 }
                 csv.Remove(csv.Length - 1, 1);
                 csv.Append(Environment.NewLine);
             }
-//csv.Append(String.Format("{0},{1},{2},{3},{4},{5},{6}{7}", data.WriteTime.ToString("yyyyMMddHHmmss"), data.Max_0, data.Avg_0, data.Min_0, data.Max_1, data.Avg_1, data.Min_1, Environment.NewLine));
+            //csv.Append(String.Format("{0},{1},{2},{3},{4},{5},{6}{7}", data.WriteTime.ToString("yyyyMMddHHmmss"), data.Max_0, data.Avg_0, data.Min_0, data.Max_1, data.Avg_1, data.Min_1, Environment.NewLine));
 
             File.WriteAllText(fileName, csv.ToString());
         }
@@ -2058,133 +2334,155 @@ namespace PTW_Load
             {
                 this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 3, (float)min_stress, (float)max_stress });
             }
-                image_loss_gray.Visibility = Visibility.Hidden;
-                image_loss_RGB.Visibility = Visibility.Hidden;
 
-                this.Dispatcher.Invoke(new OnchangeContentsLabel(ChangeContentsLabel), new object[] { stressLabel, "Stress Data" });
+            this.Dispatcher.Invoke(new OnchangeContentsLabel(ChangeContentsLabel), new object[] { stressLabel, "Stress Data" });
 
-                
 
-                if (checkColorPallete.IsChecked == true)
-                {
-                    image_stress_RGB.Visibility = Visibility.Visible;
-                    image_stress_gray.Visibility = Visibility.Hidden;
-                }
-                else
-                {
-                    image_stress_gray.Visibility = Visibility.Visible;
-                    image_stress_RGB.Visibility = Visibility.Hidden;
-                }
-            
+            List<System.Windows.Controls.Image> myList = getDrawingImage(ImageOrderIdx.IMAGE_LOSS);
+
+            for (int i = 0; i < myList.Count; i++)
+                myList[i].Visibility = Visibility.Hidden;
+
+            myList = getDrawingImage(ImageOrderIdx.IMAGE_STRESS);
+            for (int i = 0; i < myList.Count; i++)
+                myList[i].Visibility = Visibility.Hidden;
+
+            if (checkColorPallete.IsChecked == true && checkReverceColorPallete.IsChecked == false)
+            {
+                myList[(int)ImageIdx.IMAGE_COLOR].Visibility = Visibility.Visible;
+            }
+            else if (checkColorPallete.IsChecked == true && checkReverceColorPallete.IsChecked == true)
+            {
+                myList[(int)ImageIdx.IMAGE_COLOR_REVERSE].Visibility = Visibility.Visible;
+            }
+            else if (checkColorPallete.IsChecked == false && checkReverceColorPallete.IsChecked == false)
+            {
+                myList[(int)ImageIdx.IMAGE_GRAY].Visibility = Visibility.Visible;
+            }
+            else if (checkColorPallete.IsChecked == false && checkReverceColorPallete.IsChecked == true)
+            {
+                myList[(int)ImageIdx.IMAGE_GRAY_REVERSE].Visibility = Visibility.Visible;
+            }
         }
 
         private void LossButton_Click_1(object sender, RoutedEventArgs e)
         {
             if (LossImage != null)
             {
-                this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 3, min_loss, max_loss });
+                this.Dispatcher.Invoke(new OnChangeLabelBar(ChangeLabelBar), new object[] { 3, (float)min_loss, (float)max_loss });
             }
-                image_stress_gray.Visibility = Visibility.Hidden;
-                image_stress_RGB.Visibility = Visibility.Hidden;
 
-                this.Dispatcher.Invoke(new OnchangeContentsLabel(ChangeContentsLabel), new object[] { stressLabel, "Loss Data" });
+            this.Dispatcher.Invoke(new OnchangeContentsLabel(ChangeContentsLabel), new object[] { stressLabel, "Loss Data" });
 
-                
 
-                if (checkColorPallete.IsChecked == true)
-                {
-                    image_loss_gray.Visibility = Visibility.Hidden;
-                    image_loss_RGB.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    image_loss_RGB.Visibility = Visibility.Hidden;
-                    image_loss_gray.Visibility = Visibility.Visible;
-                }
+            List<System.Windows.Controls.Image> myList = getDrawingImage(ImageOrderIdx.IMAGE_STRESS);
+
+            for (int i = 0; i < myList.Count; i++)
+                myList[i].Visibility = Visibility.Hidden;
+
+            myList = getDrawingImage(ImageOrderIdx.IMAGE_LOSS);
+            for (int i = 0; i < myList.Count; i++)
+                myList[i].Visibility = Visibility.Hidden;
+
+            if (checkColorPallete.IsChecked == true && checkReverceColorPallete.IsChecked == false)
+            {
+                myList[(int)ImageIdx.IMAGE_COLOR].Visibility = Visibility.Visible;
             }
-            /*
-             * loss 버튼이 눌릴 경우 loss 이미지를 보여주기, 그리고 오른쪽의 단위 값만 바꿔주기
-             * */        
-    }
-
-    public unsafe struct MainHeader
-    {
-        public fixed byte Signature[5];
-        public fixed byte Version[5];
-        public byte FinDeFichier;
-        public fixed byte MainHeaderSize[4];
-        public fixed byte FrameHeaderSize[4];
-        public fixed byte FrameFullSize[4];
-        public fixed byte FrameBodySize[4];
-        public fixed byte FrameCount[4];
-        public fixed byte CurrentFrame[4];
-        public fixed byte SaveDate[4];
-        public fixed byte SaveTime[4];
-        public byte SaveMilli;
-        public fixed byte CameraName[20];
-        public fixed byte LensName[20];
-        public fixed byte FilterName[20];
-        public fixed byte ApertureName[20];
-        public fixed byte BilletSpeed[4];
-        public fixed byte BilletDiameter[4];
-        public fixed byte BilletShape[2];
-        public fixed byte Reserved0[7];
-        public fixed byte Emissivity[4];
-        public fixed byte BgTemperture[4];
-        public fixed byte Distance[4];
-        public fixed byte IRUS[17];
-        public fixed byte AtmTransmission[4];
-        public fixed byte Ext0[10];
-        public fixed byte AtsTemperature[4];
-        public fixed byte Ext1[189];
-        public short PPL;
-        public short LPF;
-        public short ADDynamic;
-    }
-
-    public unsafe struct FrameHeader
-    {
-        public fixed byte Reserved0[80];
-        public fixed byte FrameTime[4];
-        public fixed byte Reserved1[76];
-        public byte FrameThousands;
-        public fixed byte FrameMillions[2];
-        public fixed byte Ext0[85];
-        public fixed byte LockinVersion[2];
-        public fixed byte LockinPeriod[4];
-        public fixed byte LockinPhase[4];
-        public byte LockinMin;
-        public byte LockinMax;
-        public byte NumberOfSignal;
-        public fixed byte Signal1[2];
-        public fixed byte Signal2[2];
-        public fixed byte Signal3[2];
-        public fixed byte Signal4[2];
-    }
-
-    public unsafe struct FrameBody_640
-    {
-        public fixed short Frame[640];
-    }
-
-    public unsafe struct FrameBody_320
-    {
-        public fixed short Frame[320];
-    }
-
-    public struct FrameResolutionInfo
-    {
-        public int width;
-        public int height;
-
-        public int totSize;
-
-        public FrameResolutionInfo(int _width, int _height)
-        {
-            width = _width;
-            height = _height;
-
-            totSize = _width * _height;
+            else if (checkColorPallete.IsChecked == true && checkReverceColorPallete.IsChecked == true)
+            {
+                myList[(int)ImageIdx.IMAGE_COLOR_REVERSE].Visibility = Visibility.Visible;
+            }
+            else if (checkColorPallete.IsChecked == false && checkReverceColorPallete.IsChecked == false)
+            {
+                myList[(int)ImageIdx.IMAGE_GRAY].Visibility = Visibility.Visible;
+            }
+            else if (checkColorPallete.IsChecked == false && checkReverceColorPallete.IsChecked == true)
+            {
+                myList[(int)ImageIdx.IMAGE_GRAY_REVERSE].Visibility = Visibility.Visible;
+            }
         }
+
+
+        public unsafe struct MainHeader
+        {
+            public fixed byte Signature[5];
+            public fixed byte Version[5];
+            public byte FinDeFichier;
+            public fixed byte MainHeaderSize[4];
+            public fixed byte FrameHeaderSize[4];
+            public fixed byte FrameFullSize[4];
+            public fixed byte FrameBodySize[4];
+            public fixed byte FrameCount[4];
+            public fixed byte CurrentFrame[4];
+            public fixed byte SaveDate[4];
+            public fixed byte SaveTime[4];
+            public byte SaveMilli;
+            public fixed byte CameraName[20];
+            public fixed byte LensName[20];
+            public fixed byte FilterName[20];
+            public fixed byte ApertureName[20];
+            public fixed byte BilletSpeed[4];
+            public fixed byte BilletDiameter[4];
+            public fixed byte BilletShape[2];
+            public fixed byte Reserved0[7];
+            public fixed byte Emissivity[4];
+            public fixed byte BgTemperture[4];
+            public fixed byte Distance[4];
+            public fixed byte IRUS[17];
+            public fixed byte AtmTransmission[4];
+            public fixed byte Ext0[10];
+            public fixed byte AtsTemperature[4];
+            public fixed byte Ext1[189];
+            public short PPL;
+            public short LPF;
+            public short ADDynamic;
+        }
+
+        public unsafe struct FrameHeader
+        {
+            public fixed byte Reserved0[80];
+            public fixed byte FrameTime[4];
+            public fixed byte Reserved1[76];
+            public byte FrameThousands;
+            public fixed byte FrameMillions[2];
+            public fixed byte Ext0[85];
+            public fixed byte LockinVersion[2];
+            public fixed byte LockinPeriod[4];
+            public fixed byte LockinPhase[4];
+            public byte LockinMin;
+            public byte LockinMax;
+            public byte NumberOfSignal;
+            public fixed byte Signal1[2];
+            public fixed byte Signal2[2];
+            public fixed byte Signal3[2];
+            public fixed byte Signal4[2];
+        }
+
+        public unsafe struct FrameBody_640
+        {
+            public fixed short Frame[640];
+        }
+
+        public unsafe struct FrameBody_320
+        {
+            public fixed short Frame[320];
+        }
+
+        public struct FrameResolutionInfo
+        {
+            public int width;
+            public int height;
+
+            public int totSize;
+
+            public FrameResolutionInfo(int _width, int _height)
+            {
+                width = _width;
+                height = _height;
+
+                totSize = _width * _height;
+            }
+        }
+
     }
 }

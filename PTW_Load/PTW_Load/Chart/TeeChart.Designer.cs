@@ -42,6 +42,9 @@
             this.tChart.Size = new System.Drawing.Size(150, 150);
             this.tChart.TabIndex = 0;
             this.tChart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tChart_MouseDown);
+            this.tChart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.tChart_MouseMove);
+            this.tChart.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tChart_MouseUp);
+            
             // 
             // chartController
             // 

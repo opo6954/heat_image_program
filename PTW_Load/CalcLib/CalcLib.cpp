@@ -172,8 +172,8 @@ void CalcurateMinMax2(int *img, int size, int *min, int *max)
 	*min = minVal;
 	*max = maxVal;
 }
-
-void DrawImage(int *hBit, int *img, int width, int height, int min, int max, int span, int bit)
+//온도로 바꾼 값을 그린다.
+void DrawImage(int *hBit, int *img, int width, int height, int min, int max, int span, int bit, bool isReverse)
 {
 	//SIMD를 통한 속도 개선 필요
 	//__m128i* dest = (__m128i*)(hBit);
@@ -201,13 +201,19 @@ void DrawImage(int *hBit, int *img, int width, int height, int min, int max, int
 			pixel = ConvertTemp(pixel);
 
 			byte pix = (byte)(((pixel - min) * 255) / span);
+			pix=255-pix;
+			if(isReverse == true)
+				pix = 255 - pix;
 			hBit[i] = 0xff000000 + RGB(pix, pix, pix);
 			i++;
 		}
 	}
 }
 
-void DrawImageRGB(int *hBit, int *img, int width, int height, int min, int max, int span, int bit)
+
+
+//온도로 바꾼 값을 그린다
+void DrawImageRGB(int *hBit, int *img, int width, int height, int min, int max, int span, int bit, bool isReverse)
 {
 	unsigned char* buf = (unsigned char*)img;
 
@@ -241,9 +247,11 @@ void DrawImageRGB(int *hBit, int *img, int width, int height, int min, int max, 
 			byte r;
 			byte g;
 			byte b;
+			
 
 			switch (state)
 			{
+				/*
 			case 0:
 				b=0;
 				g = pixValue;
@@ -264,8 +272,56 @@ void DrawImageRGB(int *hBit, int *img, int width, int height, int min, int max, 
 				g = 255-pixValue;
 				r = 0;
 				break;
+				*/
+				case 0:
+				b=255;
+				g = pixValue;
+				r = 0;
+				break;
+			case 1:
+				b=255-pixValue;
+				g = 255;
+				r = 0;
+				break;
+			case 2:
+				b=0;
+				g = 255;
+				r = pixValue;
+				break;
+			case 3:
+				b=0;
+				g=255-pixValue;
+				r=255;
+				break;
 			default:
 				break;
+			}
+
+			if(isReverse == true)
+			{
+				byte colorSet[3];
+
+				colorSet[0] = r;
+				colorSet[1] = g;
+				colorSet[2] = b;
+				byte max = 0;
+				byte min = 255;
+
+				for(int i=0; i<3; i++)
+				{
+					if(colorSet[i] > max)
+						max = colorSet[i];
+					if(colorSet[i] < min)
+						min = colorSet[i];
+				}
+
+				int minMaxSum = min + max;
+
+				r = minMaxSum - r;
+				g = minMaxSum - g;
+				b = minMaxSum - b;
+
+
 			}
 
 			hBit[i] = 0xff000000 + RGB(b, g, r);
@@ -274,8 +330,8 @@ void DrawImageRGB(int *hBit, int *img, int width, int height, int min, int max, 
 	}
 }
 
-
-void DrawImage2RGB(int *hBit, int *img, int width, int height, int min, int max, int span, int bit)
+//주어진 data 그대로 그린다
+void DrawImage2RGB(int *hBit, int *img, int width, int height, int min, int max, int span, int bit, bool isReverse)
 {
 	unsigned char* buf = (unsigned char*)img;
 
@@ -309,6 +365,7 @@ void DrawImage2RGB(int *hBit, int *img, int width, int height, int min, int max,
 
 			switch (state)
 			{
+				/*
 			case 0:
 				b=0;
 				g = pixValue;
@@ -329,8 +386,54 @@ void DrawImage2RGB(int *hBit, int *img, int width, int height, int min, int max,
 				g = 255-pixValue;
 				r = 0;
 				break;
+				*/
+				case 0:
+				b=255;
+				g = pixValue;
+				r = 0;
+				break;
+			case 1:
+				b=255-pixValue;
+				g = 255;
+				r = 0;
+				break;
+			case 2:
+				b=0;
+				g = 255;
+				r = pixValue;
+				break;
+			case 3:
+				b=0;
+				g=255-pixValue;
+				r=255;
+				break;
 			default:
 				break;
+			}
+
+			if(isReverse == true)
+			{
+				byte colorSet[3];
+
+				colorSet[0] = r;
+				colorSet[1] = g;
+				colorSet[2] = b;
+				byte max = 0;
+				byte min = 255;
+
+				for(int i=0; i<3; i++)
+				{
+					if(colorSet[i] > max)
+						max = colorSet[i];
+					if(colorSet[i] < min)
+						min = colorSet[i];
+				}
+
+				int minMaxSum = min + max;
+
+				r = minMaxSum - r;
+				g = minMaxSum - g;
+				b = minMaxSum - b;
 			}
 
 			hBit[i] = 0xff000000 + RGB(b, g, r);
@@ -338,7 +441,8 @@ void DrawImage2RGB(int *hBit, int *img, int width, int height, int min, int max,
 		}
 	}
 }
-void DrawImage2RGB_Double(int *hBit, int *img, int width, int height, double min, double max, double span, int bit)
+//있는 그대로 그리되 double형식으로 그린다.ㅇ
+void DrawImage2RGB_Double(int *hBit, int *img, int width, int height, double min, double max, double span, int bit, bool isReverse)
 {
 	double* buf = (double*)img;
 
@@ -366,6 +470,27 @@ void DrawImage2RGB_Double(int *hBit, int *img, int width, int height, double min
 			switch (state)
 			{
 			case 0:
+				b=255;
+				g = pixValue;
+				r = 0;
+				break;
+			case 1:
+				b=255-pixValue;
+				g = 255;
+				r = 0;
+				break;
+			case 2:
+				b=0;
+				g = 255;
+				r = pixValue;
+				break;
+			case 3:
+				b=0;
+				g=255-pixValue;
+				r=255;
+				break;
+				/*
+			case 0:
 				b=0;
 				g = pixValue;
 				r = 255;
@@ -385,8 +510,16 @@ void DrawImage2RGB_Double(int *hBit, int *img, int width, int height, double min
 				g = 255-pixValue;
 				r = 0;
 				break;
+				*/
 			default:
 				break;
+			}
+
+			if(isReverse == true)
+			{
+				r = 255 - r;
+				g = 255 - g;
+				b = 255 - b;
 			}
 
 			hBit[i] = 0xff000000 + RGB(b, g, r);
@@ -395,7 +528,7 @@ void DrawImage2RGB_Double(int *hBit, int *img, int width, int height, double min
 	}
 }
 
-void DrawImage2_Double(int *hBit, int *img, int width, int height, double min, double max, double span, int bit)
+void DrawImage2_Double(int *hBit, int *img, int width, int height, double min, double max, double span, int bit, bool isReverse)
 {
 	double* buf = (double*)img;
 
@@ -408,6 +541,10 @@ void DrawImage2_Double(int *hBit, int *img, int width, int height, double min, d
 			double pixel = buf[i];
 
 			byte pix = (byte)(((pixel - min) * 255) / span);
+			pix=255-pix;
+			if(isReverse == true)
+				pix = 255 - pix;
+
 			hBit[i] = 0xff000000 + RGB(pix,pix,pix);
 			i++;
 		}
@@ -415,7 +552,7 @@ void DrawImage2_Double(int *hBit, int *img, int width, int height, double min, d
 }
 
 
-void DrawImage2(int *hBit, int *img, int width, int height, int min, int max, int span, int bit)
+void DrawImage2(int *hBit, int *img, int width, int height, int min, int max, int span, int bit, bool isReverse)
 {
 	//SIMD를 통한 속도 개선 필요
 	//__m128i* dest = (__m128i*)(hBit);
@@ -441,6 +578,10 @@ void DrawImage2(int *hBit, int *img, int width, int height, int min, int max, in
 			}
 
 			byte pix = (byte)(((pixel - min) * 255) / span);
+			pix=255-pix;
+			if(isReverse == true)
+				pix = 255 - pix;
+
 			hBit[i] = 0xff000000 + RGB(pix, pix, pix);
 			i++;
 		}

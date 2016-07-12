@@ -88,6 +88,9 @@
     <Compile Include="Chart\TeeChartPanel.xaml.cs">
       <DependentUpon>TeeChartPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FrameAdj.xaml.cs">
+      <DependentUpon>FrameAdj.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Materials.cs" />
     <Compile Include="MeasureItem\PolySpot.xaml.cs">
       <DependentUpon>PolySpot.xaml</DependentUpon>
@@ -100,6 +103,10 @@
     </Compile>
     <Compile Include="RawData.cs" />
     <Page Include="Chart\TeeChartPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FrameAdj.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
